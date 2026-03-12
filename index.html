@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Compton - Floor Plans</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Georgia', serif;
+            background: #faf9f7;
+            color: #2c3e50;
+            padding: 40px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #1a365d;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+        .header p {
+            color: #718096;
+            font-style: italic;
+        }
+        .floor {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            page-break-inside: avoid;
+        }
+        .floor h2 {
+            font-size: 1.4rem;
+            color: #1a365d;
+            border-bottom: 2px solid #c9a227;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        .wing {
+            margin-bottom: 25px;
+        }
+        .wing-label {
+            font-size: 0.85rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+        .corridor {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .corridor-side {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .corridor-divider {
+            height: 3px;
+            background: linear-gradient(90deg, #c9a227, #d4af37, #c9a227);
+            margin: 6px 0;
+            border-radius: 2px;
+        }
+        .corridor-label {
+            font-size: 0.7rem;
+            color: #a0aec0;
+            text-align: center;
+            padding: 2px 0;
+        }
+        .room {
+            background: #f7f5f2;
+            border: 1px solid #e2d9c8;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #2d3748;
+            min-width: 50px;
+            text-align: center;
+        }
+        .room:hover {
+            background: #c9a227;
+            color: white;
+            border-color: #c9a227;
+        }
+        .layout-note {
+            font-size: 0.8rem;
+            color: #718096;
+            font-style: italic;
+            margin-top: 8px;
+        }
+        .legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: #718096;
+        }
+        .legend-icon {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+        .legend-icon.north { background: #e6f3ff; border: 1px solid #90cdf4; }
+        .legend-icon.south { background: #f0fff4; border: 1px solid #9ae6b4; }
+        @media print {
+            body { padding: 20px; }
+            .floor { box-shadow: none; border: 1px solid #e2e8f0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>THE COMPTON</h1>
+        <p>Guest Room Floor Plans</p>
+    </div>
+
+    <div class="floor">
+        <h2>Fourth Floor</h2>
+        
+        <div class="wing">
+            <div class="wing-label">West Wing</div>
+            <div class="corridor">
+                <div class="corridor-side">
+                    <div class="room">401</div>
+                    <div class="room">403</div>
+                    <div class="room">407</div>
+                    <div class="room">409</div>
+                    <div class="room">411</div>
+                    <div class="room">413</div>
+                    <div class="room">415</div>
+                    <div class="room">417</div>
+                    <div class="room">419</div>
+                    <div class="room">421</div>
+                </div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-label">← Corridor →</div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-side">
+                    <div class="room">402</div>
+                    <div class="room">404</div>
+                    <div class="room">406</div>
+                    <div class="room">408</div>
+                    <div class="room">410</div>
+                    <div class="room">412</div>
+                    <div class="room">414</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wing">
+            <div class="wing-label">East Wing</div>
+            <div class="corridor">
+                <div class="corridor-side">
+                    <div class="room">423</div>
+                    <div class="room">425</div>
+                    <div class="room">427</div>
+                </div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-label">← Corridor →</div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-side">
+                    <div class="room">426</div>
+                    <div class="room">428</div>
+                    <div class="room">430</div>
+                    <div class="room">432</div>
+                    <div class="room">434</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wing">
+            <div class="wing-label">South Wing</div>
+            <div class="corridor">
+                <div class="corridor-side">
+                    <div class="room">443</div>
+                    <div class="room">445</div>
+                    <div class="room">447</div>
+                </div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-label">← Corridor →</div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-side">
+                    <div class="room">436</div>
+                    <div class="room">438</div>
+                    <div class="room">440</div>
+                    <div class="room">442</div>
+                    <div class="room">444</div>
+                    <div class="room">446</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floor">
+        <h2>Fifth Floor</h2>
+        
+        <div class="wing">
+            <div class="wing-label">West Wing</div>
+            <div class="corridor">
+                <div class="corridor-side">
+                    <div class="room">501</div>
+                    <div class="room">503</div>
+                    <div class="room">507</div>
+                    <div class="room">509</div>
+                    <div class="room">511</div>
+                    <div class="room">513</div>
+                    <div class="room">515</div>
+                    <div class="room">517</div>
+                    <div class="room">519</div>
+                    <div class="room">521</div>
+                </div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-label">← Corridor →</div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-side">
+                    <div class="room">502</div>
+                    <div class="room">504</div>
+                    <div class="room">506</div>
+                    <div class="room">508</div>
+                    <div class="room">510</div>
+                    <div class="room">512</div>
+                    <div class="room">514</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wing">
+            <div class="wing-label">East Wing</div>
+            <div class="corridor">
+                <div class="corridor-side">
+                    <div class="room">523</div>
+                    <div class="room">525</div>
+                    <div class="room">527</div>
+                </div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-label">← Corridor →</div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-side">
+                    <div class="room">526</div>
+                    <div class="room">528</div>
+                    <div class="room">530</div>
+                    <div class="room">532</div>
+                    <div class="room">534</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wing">
+            <div class="wing-label">South Wing</div>
+            <div class="corridor">
+                <div class="corridor-side">
+                    <div class="room">543</div>
+                    <div class="room">545</div>
+                    <div class="room">547</div>
+                </div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-label">← Corridor →</div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-side">
+                    <div class="room">536</div>
+                    <div class="room">538</div>
+                    <div class="room">540</div>
+                    <div class="room">542</div>
+                    <div class="room">544</div>
+                    <div class="room">546</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floor">
+        <h2>Sixth Floor</h2>
+        
+        <div class="wing">
+            <div class="wing-label">West Wing</div>
+            <div class="corridor">
+                <div class="corridor-side">
+                    <div class="room">601</div>
+                    <div class="room">603</div>
+                    <div class="room">607</div>
+                    <div class="room">609</div>
+                    <div class="room">611</div>
+                    <div class="room">613</div>
+                    <div class="room">615</div>
+                    <div class="room">617</div>
+                    <div class="room">619</div>
+                    <div class="room">621</div>
+                </div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-label">← Corridor →</div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-side">
+                    <div class="room">602</div>
+                    <div class="room">604</div>
+                    <div class="room">606</div>
+                    <div class="room">608</div>
+                    <div class="room">610</div>
+                    <div class="room">612</div>
+                    <div class="room">614</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wing">
+            <div class="wing-label">East Wing</div>
+            <div class="corridor">
+                <div class="corridor-side">
+                    <div class="room">623</div>
+                    <div class="room">625</div>
+                    <div class="room">627</div>
+                </div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-label">← Corridor →</div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-side">
+                    <div class="room">626</div>
+                    <div class="room">628</div>
+                    <div class="room">630</div>
+                    <div class="room">632</div>
+                    <div class="room">634</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wing">
+            <div class="wing-label">South Wing</div>
+            <div class="corridor">
+                <div class="corridor-side">
+                    <div class="room">643</div>
+                    <div class="room">645</div>
+                    <div class="room">647</div>
+                </div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-label">← Corridor →</div>
+                <div class="corridor-divider"></div>
+                <div class="corridor-side">
+                    <div class="room">636</div>
+                    <div class="room">638</div>
+                    <div class="room">640</div>
+                    <div class="room">642</div>
+                    <div class="room">644</div>
+                    <div class="room">646</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
