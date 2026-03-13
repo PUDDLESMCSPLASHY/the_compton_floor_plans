@@ -538,16 +538,18 @@
         // Z-shaped layout based on actual floor plan - SCALED UP 25%
         // Tall rooms (portrait): width=35, height=105 (3:1 ratio)
         // Wide rooms (landscape): width=105, height=35 (3:1 ratio)
-        const TW = 35; // tall room width (28 * 1.25)
-        const TH = 105; // tall room height (84 * 1.25)
-        const WW = 105; // wide room width (84 * 1.25)
-        const WH = 35; // wide room height (28 * 1.25)
-        const TW2 = 45; // size 2 tall room width (36 * 1.25)
-        const TW3 = 70; // size 3 tall room width (56 * 1.25)
-        const CORR = 35; // corridor gap (28 * 1.25)
+        const TW = 35; // tall room width
+        const TH = 105; // tall room height
+        const WW = 105; // wide room width (423, 425, 427)
+        const WH = 35; // wide room height
+        const WW2 = 137; // 426-434 width (1.3x wider than WW)
+        const WH2 = 26; // 426-434 height (0.75x of WH)
+        const TW2 = 45; // size 2 tall room width
+        const TW3 = 70; // size 3 tall room width
+        const CORR = 35; // corridor gap
         const STAIR = TW + 5; // stair gap
         const padding = 25;
-        const SP = 5; // spacing between rooms (4 * 1.25)
+        const SP = 5; // spacing between rooms
         
         const floorLayouts = {
             4: {
@@ -578,12 +580,12 @@
                 '425': [TW2+TW*5+SP*6+TW+SP+WW+CORR, TH+WH+CORR+SP, WW, WH],
                 '427': [TW2+TW*5+SP*6+TW+SP+WW+CORR, TH+WH*2+CORR+SP*2, WW, WH],
                 
-                // VERTICAL (WIDE rooms): 426, 428, 430, 432, 434 - 426 ACROSS from 427 (shifted down TW)
-                '426': [TW2+TW*5+SP*6+TW+SP, TH+WH*2+CORR+SP*2+TW, WW, WH],
-                '428': [TW2+TW*5+SP*6+TW+SP, TH+WH*3+CORR+SP*3+TW, WW, WH],
-                '430': [TW2+TW*5+SP*6+TW+SP, TH+WH*4+CORR+SP*4+TW, WW, WH],
-                '432': [TW2+TW*5+SP*6+TW+SP, TH+WH*5+CORR+SP*5+TW, WW, WH],
-                '434': [TW2+TW*5+SP*6+TW+SP, TH+WH*6+CORR+SP*6+TW, WW, WH],
+                // VERTICAL rooms: 426, 428, 430, 432, 434 - 426 ACROSS from 427 (1.3x wider, 0.75x tall)
+                '426': [TW2+TW*5+SP*6+TW+SP, TH+WH*2+CORR+SP*2+TW, WW2, WH2],
+                '428': [TW2+TW*5+SP*6+TW+SP, TH+WH*2+WH2+CORR+SP*3+TW, WW2, WH2],
+                '430': [TW2+TW*5+SP*6+TW+SP, TH+WH*2+WH2*2+CORR+SP*4+TW, WW2, WH2],
+                '432': [TW2+TW*5+SP*6+TW+SP, TH+WH*2+WH2*3+CORR+SP*5+TW, WW2, WH2],
+                '434': [TW2+TW*5+SP*6+TW+SP, TH+WH*2+WH2*4+CORR+SP*6+TW, WW2, WH2],
                 
                 // 443, 445, 447 (shifted down TW)
                 '443': [TW2+TW*5+SP*6+TW+SP+WW+CORR+WW+SP, TH+WH*2+CORR+SP*2+TW, TW2, TH],
@@ -709,13 +711,13 @@
             
             let svg = `<svg class="floor-svg" viewBox="-80 -20 ${svgW + 160} ${svgH + 60}" width="${svgW + 160}" height="${svgH + 60}">`;
             
-            // Compass in top-right corner (no arrow)
+            // Compass in top-right corner (W at top, N at right, E at bottom, S at left)
             svg += `<g transform="translate(${svgW + 50}, 25)">`;
             svg += `<circle cx="0" cy="0" r="22" fill="white" stroke="#c9a227" stroke-width="1.5"/>`;
-            svg += `<text x="0" y="-8" text-anchor="middle" font-size="10" fill="#1a365d" font-weight="600">N</text>`;
-            svg += `<text x="0" y="14" text-anchor="middle" font-size="8" fill="#a0aec0">S</text>`;
-            svg += `<text x="-12" y="3" text-anchor="middle" font-size="8" fill="#a0aec0">W</text>`;
-            svg += `<text x="12" y="3" text-anchor="middle" font-size="8" fill="#a0aec0">E</text>`;
+            svg += `<text x="0" y="-8" text-anchor="middle" font-size="10" fill="#1a365d" font-weight="600">W</text>`;
+            svg += `<text x="0" y="14" text-anchor="middle" font-size="8" fill="#a0aec0">E</text>`;
+            svg += `<text x="-12" y="3" text-anchor="middle" font-size="8" fill="#a0aec0">S</text>`;
+            svg += `<text x="12" y="3" text-anchor="middle" font-size="8" fill="#a0aec0">N</text>`;
             svg += `</g>`;
             
             // Corridor line between top row rooms (thin solid line, centered in corridor)
@@ -735,14 +737,14 @@
             svg += `<line x1="${horzCorr2StartX}" y1="${horzCorr2Y}" x2="${horzCorr2EndX}" y2="${horzCorr2Y}" stroke="#c9a227" stroke-width="1.5"/>`;
             
             // Landmark labels
-            // City Square - NW corner near x21 rooms
-            svg += `<text class="landmark-label" x="${svgW/2 + 100}" y="-5" text-anchor="middle">↑ City Square</text>`;
+            // A Street Promenade - top (west)
+            svg += `<text class="landmark-label" x="${svgW/2}" y="-5" text-anchor="middle">↑ A Street Promenade</text>`;
             
-            // Promenade - West side
-            svg += `<text class="landmark-label" x="-55" y="${svgH/3 + 20}" text-anchor="middle" transform="rotate(-90, -55, ${svgH/3 + 20})">← Promenade</text>`;
+            // City Square - right side (north)
+            svg += `<text class="landmark-label" x="${svgW + 55}" y="${svgH/4}" text-anchor="middle" transform="rotate(90, ${svgW + 55}, ${svgH/4})">City Square →</text>`;
             
-            // Dave Peel Park - East side  
-            svg += `<text class="landmark-label" x="${svgW + 55}" y="${svgH/2 + 20}" text-anchor="middle" transform="rotate(90, ${svgW + 55}, ${svgH/2 + 20})">Dave Peel Park →</text>`;
+            // Dave Peel Park - bottom (east)  
+            svg += `<text class="landmark-label" x="${svgW/2 + 100}" y="${svgH + 35}" text-anchor="middle">↓ Dave Peel Park</text>`;
             
             // Elevator indicator (in blank space between 427 and 443, bottom-left corner but not in hallway)
             const room427 = floorLayouts[currentFloor][currentFloor + '27'];
