@@ -588,6 +588,7 @@
             const room = roomData[roomNum];
             if (!room) return false;
             
+            // AND logic: room must match ALL active filters
             for (const filter of activeFilters) {
                 let matches = false;
                 switch(filter) {
@@ -607,9 +608,9 @@
                     case 'twoqueens': matches = room['Room Type Name']?.includes('Queen'); break;
                     case 'ada': matches = !!room['ADA']; break;
                 }
-                if (matches) return true;
+                if (!matches) return false; // If ANY filter doesn't match, room is out
             }
-            return false;
+            return true; // Only true if ALL filters matched
         }
         
         function getMatchingRoomCount() {
