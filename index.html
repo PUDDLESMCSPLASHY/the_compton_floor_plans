@@ -536,61 +536,63 @@
         const WP = 70;
         
         // Z-shaped layout based on actual floor plan
-        // Grid: each cell = 48x36 pixels
-        const G = 48; // grid width
-        const GH = 36; // grid height
-        const GAP = 8; // corridor gap
+        const RW = 44; // room width
+        const RH = 32; // room height
+        const CORR = 16; // corridor gap
+        const STAIR = 30; // stair gap between 403 and 407
+        const padding = 20;
         
         const floorLayouts = {
             4: {
-                // TOP ROW - North side (odd rooms, city/promenade view) - left to right
-                '401': [0, 0, G+12, GH],                    // Corner suite (wider)
-                '403': [G+16, 0, G, GH],
-                // [stair gap here]
-                '407': [G*2+24+40, 0, G, GH],
-                '409': [G*3+28+40, 0, G, GH],
-                '411': [G*4+32+40, 0, G, GH],
-                '413': [G*5+36+40, 0, G, GH],
-                // [BOH gap spans width of ~2 rooms]
-                '415': [G*6+40+40+60, 0, G, GH],
-                '417': [G*7+44+40+60, 0, G, GH],
-                '419': [G*8+48+40+60, 0, G, GH],
-                '421': [G*9+52+40+60, 0, G+12, GH],         // Corner suite at NE
+                // TOP ROW - North side (odd rooms, city/promenade view)
+                // 401, 403 | STAIR GAP | 407, 409 | 411, 413 | (rest continues...)
+                '401': [0, 0, RW+12, RH],                    // Corner suite (wider)
+                '403': [RW+16, 0, RW, RH],
+                // [STAIR GAP here - 30px]
+                '407': [RW*2+16+STAIR, 0, RW, RH],
+                '409': [RW*3+20+STAIR, 0, RW, RH],
+                '411': [RW*4+24+STAIR, 0, RW, RH],
+                '413': [RW*5+28+STAIR, 0, RW, RH],
+                '415': [RW*6+32+STAIR, 0, RW, RH],
+                '417': [RW*7+36+STAIR, 0, RW, RH],
+                '419': [RW*8+40+STAIR, 0, RW, RH],
+                '421': [RW*9+44+STAIR, 0, RW+12, RH],         // Corner suite at NE
                 
-                // TOP ROW - South side (even rooms, park view) - left to right, stops at BOH
-                '402': [0, GH+GAP, G, GH],
-                '404': [G+4, GH+GAP, G, GH],
-                '406': [G*2+8+40, GH+GAP, G, GH],
-                '408': [G*3+12+40, GH+GAP, G, GH],
-                '410': [G*4+16+40, GH+GAP, G, GH],
-                '412': [G*5+20+40, GH+GAP, G, GH],
-                '414': [G*6+24+40, GH+GAP, G, GH],
-                // [BOH gap here - no rooms 416, 418, 420]
+                // TOP ROW - South side (even rooms) - aligned with odd rooms above
+                '402': [0, RH+CORR, RW+12, RH],              // Same width as 401
+                '404': [RW+16, RH+CORR, RW, RH],             // Aligned with 403
+                // [STAIR GAP matches above]
+                '406': [RW*2+16+STAIR, RH+CORR, RW, RH],     // Aligned with 407
+                '408': [RW*3+20+STAIR, RH+CORR, RW, RH],     // Aligned with 409
+                '410': [RW*4+24+STAIR, RH+CORR, RW, RH],     // Aligned with (between 409-411)
+                '412': [RW*5+28+STAIR, RH+CORR, RW, RH],     // Aligned with 413
+                '414': [RW*6+32+STAIR, RH+CORR, RW, RH],     // Aligned with 415
+                // [BOH gap here]
                 
-                // VERTICAL SECTION - East side of corridor (going down from 421)
-                '423': [G*9+52+40+60, GH+GAP, G, GH],
-                '425': [G*9+52+40+60, GH*2+GAP*2, G, GH],
-                '427': [G*9+52+40+60, GH*3+GAP*3, G, GH],
+                // VERTICAL SECTION - continuing from 421, going down
+                '423': [RW*9+44+STAIR+RW+16, 0, RW, RH],
+                '425': [RW*9+44+STAIR+RW+16, RH+4, RW, RH],
+                '427': [RW*9+44+STAIR+RW+16, RH*2+8, RW, RH],
                 
-                // VERTICAL SECTION - West side of corridor (426 across from 427, going down to 434)
-                '426': [G*9+52+40+60-G-GAP, GH*3+GAP*3, G, GH],
-                '428': [G*9+52+40+60-G-GAP, GH*4+GAP*4, G, GH],
-                '430': [G*9+52+40+60-G-GAP, GH*5+GAP*5, G, GH],
-                '432': [G*9+52+40+60-G-GAP, GH*6+GAP*6, G, GH],
-                '434': [G*9+52+40+60-G-GAP, GH*7+GAP*7, G, GH],
+                // VERTICAL SECTION - West side (426 across from 427, going down)
+                '426': [RW*9+44+STAIR+RW+16-RW-CORR, RH*2+8, RW, RH],
+                '428': [RW*9+44+STAIR+RW+16-RW-CORR, RH*3+12, RW, RH],
+                '430': [RW*9+44+STAIR+RW+16-RW-CORR, RH*4+16, RW, RH],
+                '432': [RW*9+44+STAIR+RW+16-RW-CORR, RH*5+20, RW, RH],
+                '434': [RW*9+44+STAIR+RW+16-RW-CORR, RH*6+24, RW, RH],
                 
-                // BOTTOM ROW - North side (443, 445, 447 going right from elevator corner)
-                '443': [G*9+52+40+60+G+GAP, GH*3+GAP*3, G, GH],
-                '445': [G*9+52+40+60+G+GAP, GH*4+GAP*4, G, GH],
-                '447': [G*9+52+40+60+G+GAP, GH*5+GAP*5, G+12, GH],  // Corner suite
+                // BOTTOM SECTION - 443, 445, 447 (continuing from elevator area)
+                '443': [RW*9+44+STAIR+RW*2+20, RH*2+8, RW, RH],
+                '445': [RW*9+44+STAIR+RW*2+20, RH*3+12, RW, RH],
+                '447': [RW*9+44+STAIR+RW*2+20, RH*4+16, RW+12, RH],  // Corner suite
                 
-                // BOTTOM ROW - South side (446 across from 447, then left to 436)
-                '446': [G*9+52+40+60+G*2+GAP*2, GH*5+GAP*5, G+24, GH],  // Presidential (wider)
-                '444': [G*9+52+40+60+G*2+GAP*2, GH*6+GAP*6, G, GH],
-                '442': [G*9+52+40+60+G+GAP, GH*6+GAP*6, G, GH],
-                '440': [G*9+52+40+60, GH*6+GAP*6, G, GH],
-                '438': [G*9+52+40+60-G-4, GH*6+GAP*6, G, GH],
-                '436': [G*9+52+40+60-G*2-8, GH*6+GAP*6, G, GH],
+                // BOTTOM ROW - 446 across from 447, then left
+                '446': [RW*9+44+STAIR+RW*3+24, RH*4+16, RW+24, RH],  // Presidential
+                '444': [RW*9+44+STAIR+RW*3+24, RH*5+20, RW, RH],
+                '442': [RW*9+44+STAIR+RW*2+20, RH*5+20, RW, RH],
+                '440': [RW*9+44+STAIR+RW+16, RH*5+20, RW, RH],
+                '438': [RW*9+44+STAIR, RH*5+20, RW, RH],
+                '436': [RW*8+40+STAIR, RH*5+20, RW, RH],
             }
         };
         
@@ -697,14 +699,13 @@
                 maxY = Math.max(maxY, y + h);
             });
             
-            const padding = 20;
             const svgW = maxX + padding * 2;
             const svgH = maxY + padding * 2;
             
-            let svg = `<svg class="floor-svg" viewBox="-80 -70 ${svgW + 160} ${svgH + 120}" width="${svgW + 160}" height="${svgH + 120}">`;
+            let svg = `<svg class="floor-svg" viewBox="-80 -20 ${svgW + 160} ${svgH + 60}" width="${svgW + 160}" height="${svgH + 60}">`;
             
-            // Compass in top-left corner
-            svg += `<g transform="translate(20, 20)">`;
+            // Compass in top-right corner
+            svg += `<g transform="translate(${svgW + 50}, 25)">`;
             svg += `<circle cx="0" cy="0" r="22" fill="white" stroke="#c9a227" stroke-width="1.5"/>`;
             svg += `<text x="0" y="-8" text-anchor="middle" font-size="10" fill="#1a365d" font-weight="600">N</text>`;
             svg += `<text x="0" y="14" text-anchor="middle" font-size="8" fill="#a0aec0">S</text>`;
@@ -713,19 +714,22 @@
             svg += `<path d="M0,-18 L3,-6 L0,-8 L-3,-6 Z" fill="#1a365d"/>`;
             svg += `</g>`;
             
+            // Corridor line between top row rooms (thin solid line)
+            svg += `<line x1="${padding}" y1="${padding + RH + CORR/2}" x2="${padding + RW*7+36+STAIR}" y2="${padding + RH + CORR/2}" stroke="#c9a227" stroke-width="2"/>`;
+            
             // Landmark labels
             // City Square - NW corner near x21 rooms
-            svg += `<text class="landmark-label" x="${svgW/2 + 100}" y="-40" text-anchor="middle">↑ City Square</text>`;
+            svg += `<text class="landmark-label" x="${svgW/2 + 100}" y="-5" text-anchor="middle">↑ City Square</text>`;
             
             // Promenade - West side
-            svg += `<text class="landmark-label" x="-55" y="${svgH/3}" text-anchor="middle" transform="rotate(-90, -55, ${svgH/3})">← Promenade</text>`;
+            svg += `<text class="landmark-label" x="-55" y="${svgH/3 + 20}" text-anchor="middle" transform="rotate(-90, -55, ${svgH/3 + 20})">← Promenade</text>`;
             
             // Dave Peel Park - East side  
-            svg += `<text class="landmark-label" x="${svgW + 55}" y="${svgH/2}" text-anchor="middle" transform="rotate(90, ${svgW + 55}, ${svgH/2})">Dave Peel Park →</text>`;
+            svg += `<text class="landmark-label" x="${svgW + 55}" y="${svgH/2 + 20}" text-anchor="middle" transform="rotate(90, ${svgW + 55}, ${svgH/2 + 20})">Dave Peel Park →</text>`;
             
             // Elevator indicator (at corner between 427 and 443)
             const room427 = floorLayouts[currentFloor][currentFloor + '27'];
-            const elevX = room427 ? room427[0] + padding + G + 4 : 500;
+            const elevX = room427 ? room427[0] + padding + RW + 4 : 500;
             const elevY = room427 ? room427[1] + padding : 150;
             svg += `<rect x="${elevX}" y="${elevY}" width="28" height="28" fill="#e2e8f0" stroke="#718096" stroke-width="1" rx="3"/>`;
             svg += `<text x="${elevX + 14}" y="${elevY + 12}" text-anchor="middle" font-size="7" fill="#4a5568">ELEV</text>`;
