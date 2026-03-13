@@ -538,61 +538,60 @@
         // Z-shaped layout based on actual floor plan
         const RW = 44; // room width
         const RH = 32; // room height
-        const CORR = 16; // corridor gap
-        const STAIR = 30; // stair gap between 403 and 407
+        const CORR = 12; // corridor gap
+        const STAIR = RW + 4; // stair gap = size of one room
         const padding = 20;
         
         const floorLayouts = {
             4: {
-                // TOP ROW - North side (odd rooms, city/promenade view)
-                // 401, 403 | STAIR GAP | 407, 409 | 411, 413 | (rest continues...)
-                '401': [0, 0, RW+12, RH],                    // Corner suite (wider)
-                '403': [RW+16, 0, RW, RH],
-                // [STAIR GAP here - 30px]
-                '407': [RW*2+16+STAIR, 0, RW, RH],
-                '409': [RW*3+20+STAIR, 0, RW, RH],
-                '411': [RW*4+24+STAIR, 0, RW, RH],
-                '413': [RW*5+28+STAIR, 0, RW, RH],
-                '415': [RW*6+32+STAIR, 0, RW, RH],
-                '417': [RW*7+36+STAIR, 0, RW, RH],
-                '419': [RW*8+40+STAIR, 0, RW, RH],
-                '421': [RW*9+44+STAIR, 0, RW+12, RH],         // Corner suite at NE
+                // TOP ROW - North side: 401, 403, [gap], 407, 409, 411, 413, 415, 417, 419, 421
+                '401': [0, 0, RW, RH],
+                '403': [RW+4, 0, RW, RH],
+                // [STAIR GAP = room width]
+                '407': [RW*2+4+STAIR, 0, RW, RH],
+                '409': [RW*3+8+STAIR, 0, RW, RH],
+                '411': [RW*4+12+STAIR, 0, RW, RH],
+                '413': [RW*5+16+STAIR, 0, RW, RH],
+                '415': [RW*6+20+STAIR, 0, RW, RH],
+                '417': [RW*7+24+STAIR, 0, RW, RH],
+                '419': [RW*8+28+STAIR, 0, RW, RH],
+                '421': [RW*9+32+STAIR, 0, RW, RH],
                 
-                // TOP ROW - South side (even rooms) - aligned with odd rooms above
-                '402': [0, RH+CORR, RW+12, RH],              // Same width as 401
-                '404': [RW+16, RH+CORR, RW, RH],             // Aligned with 403
-                // [STAIR GAP matches above]
-                '406': [RW*2+16+STAIR, RH+CORR, RW, RH],     // Aligned with 407
-                '408': [RW*3+20+STAIR, RH+CORR, RW, RH],     // Aligned with 409
-                '410': [RW*4+24+STAIR, RH+CORR, RW, RH],     // Aligned with (between 409-411)
-                '412': [RW*5+28+STAIR, RH+CORR, RW, RH],     // Aligned with 413
-                '414': [RW*6+32+STAIR, RH+CORR, RW, RH],     // Aligned with 415
-                // [BOH gap here]
+                // TOP ROW - South side: 402, 404, 406, 408, 410, 412, 414 (no gap between 404-406)
+                '402': [0, RH+CORR, RW, RH],                 // Under 401
+                '404': [RW+4, RH+CORR, RW, RH],              // Under 403
+                '406': [RW*2+8, RH+CORR, RW, RH],            // Under gap (no gap in even row)
+                '408': [RW*3+12, RH+CORR, RW, RH],
+                '410': [RW*4+16, RH+CORR, RW, RH],
+                '412': [RW*5+20, RH+CORR, RW, RH],
+                '414': [RW*6+24, RH+CORR, RW, RH],
+                // [BOH gap here - 415-421 have no rooms below]
                 
-                // VERTICAL SECTION - continuing from 421, going down
-                '423': [RW*9+44+STAIR+RW+16, 0, RW, RH],
-                '425': [RW*9+44+STAIR+RW+16, RH+4, RW, RH],
-                '427': [RW*9+44+STAIR+RW+16, RH*2+8, RW, RH],
+                // 423 directly under 421
+                '423': [RW*9+32+STAIR, RH+CORR, RW, RH],
+                '425': [RW*9+32+STAIR, RH*2+CORR*2, RW, RH],
+                '427': [RW*9+32+STAIR, RH*3+CORR*3, RW, RH],
                 
-                // VERTICAL SECTION - West side (426 across from 427, going down)
-                '426': [RW*9+44+STAIR+RW+16-RW-CORR, RH*2+8, RW, RH],
-                '428': [RW*9+44+STAIR+RW+16-RW-CORR, RH*3+12, RW, RH],
-                '430': [RW*9+44+STAIR+RW+16-RW-CORR, RH*4+16, RW, RH],
-                '432': [RW*9+44+STAIR+RW+16-RW-CORR, RH*5+20, RW, RH],
-                '434': [RW*9+44+STAIR+RW+16-RW-CORR, RH*6+24, RW, RH],
+                // 426: top-left touches bottom-right of 414, across from 427
+                '426': [RW*7+28, RH*2+CORR, RW, RH],
+                '428': [RW*7+28, RH*3+CORR+4, RW, RH],
+                '430': [RW*7+28, RH*4+CORR+8, RW, RH],
+                '432': [RW*7+28, RH*5+CORR+12, RW, RH],
+                '434': [RW*7+28, RH*6+CORR+16, RW, RH],
                 
-                // BOTTOM SECTION - 443, 445, 447 (continuing from elevator area)
-                '443': [RW*9+44+STAIR+RW*2+20, RH*2+8, RW, RH],
-                '445': [RW*9+44+STAIR+RW*2+20, RH*3+12, RW, RH],
-                '447': [RW*9+44+STAIR+RW*2+20, RH*4+16, RW+12, RH],  // Corner suite
+                // 443: top-left touches bottom-right of 427
+                // 445 to immediate right of 443, 447 to immediate right of 445
+                '443': [RW*10+36+STAIR, RH*3+CORR*3, RW, RH],
+                '445': [RW*11+40+STAIR, RH*3+CORR*3, RW, RH],
+                '447': [RW*12+44+STAIR, RH*3+CORR*3, RW, RH],
                 
-                // BOTTOM ROW - 446 across from 447, then left
-                '446': [RW*9+44+STAIR+RW*3+24, RH*4+16, RW+24, RH],  // Presidential
-                '444': [RW*9+44+STAIR+RW*3+24, RH*5+20, RW, RH],
-                '442': [RW*9+44+STAIR+RW*2+20, RH*5+20, RW, RH],
-                '440': [RW*9+44+STAIR+RW+16, RH*5+20, RW, RH],
-                '438': [RW*9+44+STAIR, RH*5+20, RW, RH],
-                '436': [RW*8+40+STAIR, RH*5+20, RW, RH],
+                // 446 directly across from 447, same size
+                '446': [RW*12+44+STAIR, RH*4+CORR*4, RW, RH],
+                '444': [RW*11+40+STAIR, RH*4+CORR*4, RW, RH],
+                '442': [RW*10+36+STAIR, RH*4+CORR*4, RW, RH],
+                '440': [RW*9+32+STAIR, RH*4+CORR*4, RW, RH],
+                '438': [RW*8+28+STAIR, RH*4+CORR*4, RW, RH],
+                '436': [RW*7+28, RH*7+CORR+20, RW, RH],
             }
         };
         
@@ -704,14 +703,13 @@
             
             let svg = `<svg class="floor-svg" viewBox="-80 -20 ${svgW + 160} ${svgH + 60}" width="${svgW + 160}" height="${svgH + 60}">`;
             
-            // Compass in top-right corner
+            // Compass in top-right corner (no arrow)
             svg += `<g transform="translate(${svgW + 50}, 25)">`;
             svg += `<circle cx="0" cy="0" r="22" fill="white" stroke="#c9a227" stroke-width="1.5"/>`;
             svg += `<text x="0" y="-8" text-anchor="middle" font-size="10" fill="#1a365d" font-weight="600">N</text>`;
             svg += `<text x="0" y="14" text-anchor="middle" font-size="8" fill="#a0aec0">S</text>`;
             svg += `<text x="-12" y="3" text-anchor="middle" font-size="8" fill="#a0aec0">W</text>`;
             svg += `<text x="12" y="3" text-anchor="middle" font-size="8" fill="#a0aec0">E</text>`;
-            svg += `<path d="M0,-18 L3,-6 L0,-8 L-3,-6 Z" fill="#1a365d"/>`;
             svg += `</g>`;
             
             // Corridor line between top row rooms (thin solid line)
