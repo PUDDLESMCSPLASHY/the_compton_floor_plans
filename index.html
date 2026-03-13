@@ -166,6 +166,18 @@
             stroke-dasharray: 8 4;
         }
         
+        .landmark-label {
+            font-family: 'Georgia', serif;
+            font-size: 12px;
+            fill: #a0aec0;
+            font-style: italic;
+        }
+        .landmark-arrow {
+            stroke: #cbd5e0;
+            stroke-width: 1.5;
+            fill: none;
+        }
+        
         /* Filter Panel */
         .filter-tab {
             position: absolute;
@@ -669,7 +681,19 @@
             const svgW = maxX + padding * 2;
             const svgH = maxY + padding * 2;
             
-            let svg = `<svg class="floor-svg" viewBox="0 0 ${svgW} ${svgH}" width="${svgW}" height="${svgH}">`;
+            let svg = `<svg class="floor-svg" viewBox="-60 -50 ${svgW + 120} ${svgH + 80}" width="${svgW + 120}" height="${svgH + 80}">`;
+            
+            // Landmark labels
+            // City Square - NW corner near x21 rooms
+            svg += `<text class="landmark-label" x="420" y="-25" text-anchor="middle">↑ City Square</text>`;
+            
+            // Promenade - West side
+            svg += `<text class="landmark-label" x="-45" y="${padding + H + 20}" text-anchor="middle" transform="rotate(-90, -45, ${padding + H + 20})">← Promenade</text>`;
+            
+            // Dave Peel Park - East side
+            svg += `<text class="landmark-label" x="${svgW + 45}" y="${padding + H * 3 + 30}" text-anchor="middle" transform="rotate(90, ${svgW + 45}, ${padding + H * 3 + 30})">Dave Peel Park →</text>`;
+            
+            // Corridors
             svg += `<path class="corridor" d="M ${padding + 30} ${padding + H + 10} L ${padding + 380} ${padding + H + 10}"/>`;
             svg += `<path class="corridor" d="M ${padding + 420} ${padding + H + 10} L ${padding + 420} ${padding + H * 5 + 30}"/>`;
             svg += `<path class="corridor" d="M ${padding + 430} ${padding + H * 4 + 36} L ${padding + 580} ${padding + H * 4 + 36}"/>`;
