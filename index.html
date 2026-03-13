@@ -59,6 +59,7 @@
         .main {
             display: flex;
             height: calc(100vh - 130px);
+            position: relative;
         }
         
         /* Room List - Left Side */
@@ -92,6 +93,8 @@
         .room-item:hover { background: #f7f5f2; }
         .room-item.selected { background: #c9a227; color: white; }
         .room-item.selected .room-type { color: white; opacity: 0.9; }
+        .room-item.dimmed { opacity: 0.3; }
+        .room-item.highlighted { background: #fef3c7; }
         .room-num {
             font-weight: 600;
             min-width: 35px;
@@ -116,7 +119,6 @@
         }
         .floor-plan {
             position: relative;
-            /* Scale will be applied dynamically */
         }
         .floor-svg {
             display: block;
@@ -145,14 +147,16 @@
         .room-box.presidential { fill: #faf5ff; stroke: #805ad5; }
         .room-box.presidential:hover { fill: #e9d8fd; }
         .room-box.presidential.selected { fill: #805ad5; }
-        
-        .room-label {
+        .room-box.dimmed { opacity: 0.2; }
+        .room-box.highlighted { fill: #fef3c7; stroke: #d97706; stroke-width: 2; }
+        .room-label { 
             font-family: 'Georgia', serif;
             font-size: 11px;
             fill: #2d3748;
             text-anchor: middle;
             pointer-events: none;
         }
+        .room-label.dimmed { opacity: 0.2; }
         .room-box.selected + .room-label { fill: white; }
         
         .corridor {
@@ -162,11 +166,146 @@
             stroke-dasharray: 8 4;
         }
         
+        /* Filter Panel */
+        .filter-tab {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1a365d;
+            color: white;
+            padding: 15px 8px;
+            border-radius: 8px 0 0 8px;
+            cursor: pointer;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            z-index: 50;
+            transition: all 0.2s;
+        }
+        .filter-tab:hover { background: #2d4a6f; padding-right: 12px; }
+        .filter-tab.has-filters { background: #c9a227; }
+        
+        .filter-panel {
+            position: absolute;
+            right: -280px;
+            top: 0;
+            bottom: 0;
+            width: 280px;
+            background: white;
+            border-left: 1px solid #e2d9c8;
+            padding: 20px;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 40;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+        }
+        .filter-panel.open { right: 0; }
+        
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2d9c8;
+        }
+        .filter-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a365d;
+        }
+        .filter-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #a0aec0;
+            line-height: 1;
+        }
+        .filter-close:hover { color: #1a365d; }
+        
+        .filter-section {
+            margin-bottom: 20px;
+        }
+        .filter-section-title {
+            font-size: 0.75rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+        }
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .filter-btn {
+            padding: 6px 12px;
+            border: 1.5px solid #e2d9c8;
+            background: white;
+            color: #4a5568;
+            font-family: 'Georgia', serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover {
+            border-color: #c9a227;
+            background: #faf5eb;
+        }
+        .filter-btn.active {
+            background: #c9a227;
+            border-color: #c9a227;
+            color: white;
+        }
+        .filter-btn.ada {
+            border-color: #68d391;
+        }
+        .filter-btn.ada.active {
+            background: #48bb78;
+            border-color: #48bb78;
+        }
+        
+        .clear-filters {
+            width: 100%;
+            padding: 10px;
+            border: 2px dashed #e2d9c8;
+            background: transparent;
+            color: #718096;
+            font-family: 'Georgia', serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+        .clear-filters:hover {
+            border-color: #c9a227;
+            color: #c9a227;
+        }
+        
+        .filter-count {
+            text-align: center;
+            padding: 12px;
+            background: #f7f5f2;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        .filter-count strong {
+            color: #c9a227;
+        }
+        
         /* Room Details Panel */
         .room-details {
             position: fixed;
             bottom: 20px;
-            right: 20px;
+            left: 340px;
             background: white;
             border-radius: 12px;
             padding: 20px;
@@ -294,6 +433,66 @@
         <div class="floor-plan-container">
             <div class="floor-plan" id="floor-plan"></div>
         </div>
+        
+        <!-- Filter Tab -->
+        <div class="filter-tab" id="filter-tab" onclick="toggleFilter()">Filter</div>
+        
+        <!-- Filter Panel -->
+        <div class="filter-panel" id="filter-panel">
+            <div class="filter-header">
+                <span class="filter-title">Filter Rooms</span>
+                <button class="filter-close" onclick="toggleFilter()">×</button>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-section-title">View</div>
+                <div class="filter-buttons">
+                    <button class="filter-btn" data-filter="city">City View</button>
+                    <button class="filter-btn" data-filter="park">Park View</button>
+                    <button class="filter-btn" data-filter="square">Square View</button>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-section-title">Features</div>
+                <div class="filter-buttons">
+                    <button class="filter-btn" data-filter="corner">Corner Room</button>
+                    <button class="filter-btn" data-filter="windowseat">Window Seat</button>
+                    <button class="filter-btn" data-filter="tub">Soaking Tub</button>
+                    <button class="filter-btn" data-filter="sofabed">Sofa Bed</button>
+                    <button class="filter-btn" data-filter="adjoining">Adjoining</button>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-section-title">Location</div>
+                <div class="filter-buttons">
+                    <button class="filter-btn" data-filter="elevator">Near Elevator</button>
+                    <button class="filter-btn" data-filter="ice">Near Ice</button>
+                    <button class="filter-btn" data-filter="stairs">Near Stairs</button>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-section-title">Room Type</div>
+                <div class="filter-buttons">
+                    <button class="filter-btn" data-filter="suite">Suites</button>
+                    <button class="filter-btn" data-filter="presidential">Presidential</button>
+                    <button class="filter-btn" data-filter="twoqueens">Two Queens</button>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-section-title">Accessibility</div>
+                <div class="filter-buttons">
+                    <button class="filter-btn ada" data-filter="ada">ADA Accessible</button>
+                </div>
+            </div>
+            
+            <button class="clear-filters" onclick="clearFilters()">Clear All Filters</button>
+            
+            <div class="filter-count" id="filter-count"></div>
+        </div>
     </div>
     
     <div class="legend">
@@ -319,27 +518,23 @@
     <script>
         const roomData = {"401":{"Room Number":"401","Code":"SSK","Room Category":"Studio Suites","SF":"510","Room Type Name":"Studio Suite King","View Direction":"West/South","Corner":"Corner","City/Park":"City","1/2 Sinks":"2","Window Seat":"No"},"402":{"Room Number":"402","Code":"PQQC","Room Category":"Premium Rooms","SF":"385","Room Type Name":"Premium Two Queen Corner","View Direction":"East/South","Corner":"Corner","City/Park":"Park","Window Seat":"No"},"403":{"Room Number":"403","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Stairs":"Stairs","City/Park":"City","Window Seat":"Yes"},"404":{"Room Number":"404","Code":"DQQAB","Room Category":"Deluxe Rooms","SF":"385","Room Type Name":"Deluxe Two Queen Accessible Bathroom","View Direction":"East","ADA":"Yes","ADA Bathroom":"Seat","Stairs":"Stairs","City/Park":"Park","Window Seat":"No"},"406":{"Room Number":"406","Code":"DQQ","Room Category":"Deluxe Rooms","SF":"385","Room Type Name":"Deluxe Two Queen","View Direction":"East","Stairs":"Stairs","City/Park":"Park","Window Seat":"No"},"407":{"Room Number":"407","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Stairs":"Stairs","City/Park":"City","Window Seat":"Yes"},"408":{"Room Number":"408","Code":"DQQ","Room Category":"Deluxe Rooms","SF":"385","Room Type Name":"Deluxe Two Queen","View Direction":"East","Stairs":"Stairs","City/Park":"Park","Window Seat":"No"},"409":{"Room Number":"409","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","City/Park":"City","Window Seat":"Yes"},"410":{"Room Number":"410","Code":"DQQ","Room Category":"Deluxe Rooms","SF":"385","Room Type Name":"Deluxe Two Queen","View Direction":"East","City/Park":"Park","Window Seat":"No"},"411":{"Room Number":"411","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","City/Park":"City","Window Seat":"Yes"},"412":{"Room Number":"412","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","City/Park":"Park","Window Seat":"No"},"413":{"Room Number":"413","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","City/Park":"City","Window Seat":"Yes"},"414":{"Room Number":"414","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","City/Park":"Park","Window Seat":"No"},"415":{"Room Number":"415","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Ice":"Ice","City/Park":"City","Window Seat":"Yes"},"417":{"Room Number":"417","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Ice":"Ice","City/Park":"City","Window Seat":"Yes"},"419":{"Room Number":"419","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Ice":"Ice","City/Park":"City","Window Seat":"Yes"},"421":{"Room Number":"421","Code":"SPK","Room Category":"One Bedroom Suites","SF":"510","Room Type Name":"One Bedroom Suite King","Adjoining":"Yes","View Direction":"West/North","Ice":"Ice","Corner":"Corner","City/Park":"City","View of Square":"Yes","1/2 Sinks":"2","Window Seat":"Yes","Sofa Bed":"Yes","Notes":"Adjoining with 423"},"423":{"Room Number":"423","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","Adjoining":"Yes","View Direction":"North","Ice":"Ice","City/Park":"City","View of Square":"Yes","Window Seat":"Yes","Notes":"Adjoining with 421"},"425":{"Room Number":"425","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"North","City/Park":"City","View of Square":"Yes","Window Seat":"Yes"},"426":{"Room Number":"426","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"South","City/Park":"Park","Window Seat":"No"},"427":{"Room Number":"427","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"North","Last Sell":"Last Sell","City/Park":"City","View of Square":"Yes","Window Seat":"Yes","Notes":"Partial view"},"428":{"Room Number":"428","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"South","City/Park":"Park","Window Seat":"No"},"430":{"Room Number":"430","Code":"DKAH","Room Category":"Deluxe Rooms","SF":"340","Room Type Name":"Deluxe King Accessible Hearing","Adjoining":"Yes","View Direction":"South","ADA":"Yes","ADA Hearing":"ADA Hearing","Elevator":"Elevator","City/Park":"Park","Window Seat":"No","Notes":"Adjoining with 432"},"432":{"Room Number":"432","Code":"DKAH","Room Category":"Deluxe Rooms","SF":"340","Room Type Name":"Deluxe King Accessible Hearing","Adjoining":"Yes","View Direction":"South","ADA":"Yes","ADA Hearing":"ADA Hearing","Elevator":"Elevator","City/Park":"Park","Window Seat":"Yes","Notes":"Adjoining with 430"},"434":{"Room Number":"434","Code":"DKAH","Room Category":"Deluxe Rooms","SF":"340","Room Type Name":"Deluxe King Accessible Hearing","View Direction":"East/South","ADA":"Yes","ADA Hearing":"ADA Hearing","Corner":"Corner","City/Park":"Park","Window Seat":"No"},"436":{"Room Number":"436","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","Elevator":"Elevator","City/Park":"Park","Window Seat":"Yes"},"438":{"Room Number":"438","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","Elevator":"Elevator","City/Park":"Park","Window Seat":"Yes"},"440":{"Room Number":"440","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","Elevator":"Elevator","Stairs":"Stairs","City/Park":"Park","Window Seat":"Yes"},"442":{"Room Number":"442","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","Stairs":"Stairs","City/Park":"Park","Window Seat":"Yes"},"443":{"Room Number":"443","Code":"SSK","Room Category":"Studio Suites","SF":"510","Room Type Name":"Studio Suite King","View Direction":"West","Stairs":"Stairs","City/Park":"City","1/2 Sinks":"2","Tub":"Yes","Window Seat":"Yes"},"444":{"Room Number":"444","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","Adjoining":"Yes","View Direction":"East","Stairs":"Stairs","City/Park":"Park","Window Seat":"Yes","Notes":"Adjoining with 446"},"445":{"Room Number":"445","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Stairs":"Stairs","City/Park":"City","Window Seat":"Yes"},"446":{"Room Number":"446","Code":"PRESAB","Room Category":"Presidential Suites","SF":"900","Room Type Name":"Presidential Suite King Accessible Bathroom","Adjoining":"Yes","View Direction":"East/North","ADA":"Yes","ADA Bathroom":"Roll in Shower","Stairs":"Stairs","Corner":"Corner","City/Park":"Park","1/2 Sinks":"2","Window Seat":"No","Notes":"Adjoining with 444"},"447":{"Room Number":"447","Code":"SPK","Room Category":"One Bedroom Suites","SF":"510","Room Type Name":"One Bedroom Suite King","View Direction":"West/North","Corner":"Corner","City/Park":"City","View of Square":"Yes","1/2 Sinks":"2","Tub":"Yes","Window Seat":"Yes","Sofa Bed":"Yes"},"501":{"Room Number":"501","Code":"SSK","Room Category":"Studio Suites","SF":"510","Room Type Name":"Studio Suite King","View Direction":"West/South","Corner":"Corner","City/Park":"City","1/2 Sinks":"2","Window Seat":"No"},"502":{"Room Number":"502","Code":"PQQC","Room Category":"Premium Rooms","SF":"385","Room Type Name":"Premium Two Queen Corner","View Direction":"East/South","Corner":"Corner","City/Park":"Park","Window Seat":"No"},"503":{"Room Number":"503","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Stairs":"Stairs","City/Park":"City","Window Seat":"Yes"},"504":{"Room Number":"504","Code":"DQQ","Room Category":"Deluxe Rooms","SF":"385","Room Type Name":"Deluxe Two Queen","View Direction":"East","Stairs":"Stairs","City/Park":"Park","Window Seat":"No"},"506":{"Room Number":"506","Code":"DQQ","Room Category":"Deluxe Rooms","SF":"385","Room Type Name":"Deluxe Two Queen","View Direction":"East","Stairs":"Stairs","City/Park":"Park","Window Seat":"No"},"507":{"Room Number":"507","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Stairs":"Stairs","City/Park":"City","Window Seat":"Yes"},"508":{"Room Number":"508","Code":"DQQ","Room Category":"Deluxe Rooms","SF":"385","Room Type Name":"Deluxe Two Queen","View Direction":"East","Stairs":"Stairs","City/Park":"Park","Window Seat":"No"},"509":{"Room Number":"509","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","City/Park":"City","Window Seat":"Yes"},"510":{"Room Number":"510","Code":"DQQ","Room Category":"Deluxe Rooms","SF":"385","Room Type Name":"Deluxe Two Queen","View Direction":"East","City/Park":"Park","Window Seat":"No"},"511":{"Room Number":"511","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","City/Park":"City","Window Seat":"Yes"},"512":{"Room Number":"512","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","City/Park":"Park","Window Seat":"No"},"513":{"Room Number":"513","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","City/Park":"City","Window Seat":"Yes"},"514":{"Room Number":"514","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","City/Park":"Park","Window Seat":"No"},"515":{"Room Number":"515","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Ice":"Ice","City/Park":"City","Window Seat":"Yes"},"517":{"Room Number":"517","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Ice":"Ice","City/Park":"City","Window Seat":"Yes"},"519":{"Room Number":"519","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Ice":"Ice","City/Park":"City","Window Seat":"Yes"},"521":{"Room Number":"521","Code":"SPK","Room Category":"One Bedroom Suites","SF":"510","Room Type Name":"One Bedroom Suite King","Adjoining":"Yes","View Direction":"West/North","Ice":"Ice","Corner":"Corner","City/Park":"City","View of Square":"Yes","1/2 Sinks":"2","Tub":"Yes","Window Seat":"No","Sofa Bed":"Yes","Notes":"Adjoining to 523"},"523":{"Room Number":"523","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","Adjoining":"Yes","View Direction":"North","Ice":"Ice","City/Park":"City","Window Seat":"Yes","Notes":"Adjoining to 521"},"525":{"Room Number":"525","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"North","City/Park":"City","View of Square":"Yes","Window Seat":"Yes"},"526":{"Room Number":"526","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"South","City/Park":"Park","Window Seat":"No","Notes":"1 window only"},"527":{"Room Number":"527","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"North","City/Park":"City","Window Seat":"Yes","Notes":"1 window only"},"528":{"Room Number":"528","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"South","City/Park":"Park","Window Seat":"No"},"530":{"Room Number":"530","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","Adjoining":"Yes","View Direction":"South","Elevator":"Elevator","City/Park":"Park","Window Seat":"No","Notes":"Adjoining with 532"},"532":{"Room Number":"532","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","Adjoining":"Yes","View Direction":"South","Elevator":"Elevator","City/Park":"Park","Window Seat":"Yes","Notes":"Adjoining with 530"},"534":{"Room Number":"534","Code":"PKC","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King Corner","View Direction":"East/South","Corner":"Corner","City/Park":"Park","Window Seat":"No"},"536":{"Room Number":"536","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","Elevator":"Elevator","City/Park":"Park","Window Seat":"Yes"},"538":{"Room Number":"538","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","Elevator":"Elevator","City/Park":"Park","Window Seat":"Yes"},"539":{"Room Number":"539","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Elevator":"Elevator","City/Park":"City","Window Seat":"Yes","Notes":"Larger than other Premium King rooms"},"540":{"Room Number":"540","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","Elevator":"Elevator","Stairs":"Stairs","City/Park":"Park","Window Seat":"Yes"},"542":{"Room Number":"542","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","Stairs":"Stairs","City/Park":"Park","Window Seat":"Yes"},"543":{"Room Number":"543","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Stairs":"Stairs","City/Park":"City","Window Seat":"No","Notes":"Larger Room"},"544":{"Room Number":"544","Code":"DKAB","Room Category":"Deluxe Rooms","SF":"340","Room Type Name":"Deluxe King Accessible Bathroom","Adjoining":"Yes","View Direction":"East","ADA":"Yes","ADA Bathroom":"Seat","City/Park":"Park","Window Seat":"No","Notes":"Adjoining with 546"},"545":{"Room Number":"545","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Stairs":"Stairs","City/Park":"City","Window Seat":"Yes"},"546":{"Room Number":"546","Code":"PRESAH","Room Category":"Presidential Suites","SF":"900","Room Type Name":"Presidential Suite King Accessible Hearing","Adjoining":"Yes","View Direction":"East/North","ADA":"Yes","ADA Hearing":"ADA Hearing","Corner":"Corner","City/Park":"Park","1/2 Sinks":"2","Window Seat":"No","Notes":"Missing flasher in main living, Powder room, Adjoining with 544"},"547":{"Room Number":"547","Code":"SPK","Room Category":"One Bedroom Suites","SF":"510","Room Type Name":"One Bedroom Suite King","View Direction":"West/North","Corner":"Corner","City/Park":"City","1/2 Sinks":"2","Tub":"Yes","Window Seat":"Yes","Sofa Bed":"Yes"},"601":{"Room Number":"601","Code":"SSK","Room Category":"Studio Suites","SF":"510","Room Type Name":"Studio Suite King","View Direction":"West/South","Corner":"Corner","City/Park":"City","1/2 Sinks":"2","Window Seat":"No"},"602":{"Room Number":"602","Code":"PQQC","Room Category":"Premium Rooms","SF":"385","Room Type Name":"Premium Two Queen Corner","View Direction":"East/South","Corner":"Corner","City/Park":"Park","Window Seat":"No"},"603":{"Room Number":"603","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Stairs":"Stairs","City/Park":"City","Window Seat":"Yes"},"604":{"Room Number":"604","Code":"DQQ","Room Category":"Deluxe Rooms","SF":"385","Room Type Name":"Deluxe Two Queen","View Direction":"East","Stairs":"Stairs","City/Park":"Park","Window Seat":"No"},"606":{"Room Number":"606","Code":"DQQ","Room Category":"Deluxe Rooms","SF":"385","Room Type Name":"Deluxe Two Queen","View Direction":"East","Stairs":"Stairs","City/Park":"Park","Window Seat":"No"},"607":{"Room Number":"607","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Stairs":"Stairs","City/Park":"City","Window Seat":"Yes"},"608":{"Room Number":"608","Code":"DQQ","Room Category":"Deluxe Rooms","SF":"385","Room Type Name":"Deluxe Two Queen","View Direction":"East","Stairs":"Stairs","City/Park":"Park","Window Seat":"No"},"609":{"Room Number":"609","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","City/Park":"City","Window Seat":"Yes"},"610":{"Room Number":"610","Code":"DQQ","Room Category":"Deluxe Rooms","SF":"385","Room Type Name":"Deluxe Two Queen","View Direction":"East","City/Park":"Park","Window Seat":"No"},"611":{"Room Number":"611","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","City/Park":"City","Window Seat":"Yes"},"612":{"Room Number":"612","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","City/Park":"Park","Window Seat":"No"},"613":{"Room Number":"613","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","City/Park":"City","Window Seat":"Yes"},"614":{"Room Number":"614","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","City/Park":"Park","Window Seat":"No"},"615":{"Room Number":"615","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Ice":"Ice","City/Park":"City","Window Seat":"Yes"},"617":{"Room Number":"617","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Ice":"Ice","City/Park":"City","Window Seat":"Yes"},"619":{"Room Number":"619","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Ice":"Ice","City/Park":"City","Window Seat":"Yes"},"621":{"Room Number":"621","Code":"SPK","Room Category":"One Bedroom Suites","SF":"510","Room Type Name":"One Bedroom Suite King","Adjoining":"Yes","View Direction":"West/North","Ice":"Ice","Corner":"Corner","City/Park":"City","1/2 Sinks":"2","Tub":"Yes","Window Seat":"Yes","Sofa Bed":"Yes","Notes":"Adjoining with 623"},"623":{"Room Number":"623","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","Adjoining":"Yes","View Direction":"North","Ice":"Ice","City/Park":"City","Window Seat":"Yes","Notes":"Adjoining with 621"},"625":{"Room Number":"625","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"North","City/Park":"City","Window Seat":"Yes"},"626":{"Room Number":"626","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"South","City/Park":"Park","Window Seat":"No"},"627":{"Room Number":"627","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"North","City/Park":"City","Window Seat":"Yes"},"628":{"Room Number":"628","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"South","City/Park":"Park","Window Seat":"No"},"630":{"Room Number":"630","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","Adjoining":"Yes","View Direction":"South","Elevator":"Elevator","City/Park":"Park","Window Seat":"No","Notes":"Adjoining with 632"},"632":{"Room Number":"632","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","Adjoining":"Yes","View Direction":"South","Elevator":"Elevator","City/Park":"Park","Window Seat":"Yes","Notes":"Adjoining with 630"},"634":{"Room Number":"634","Code":"PKC","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King Corner","View Direction":"East/South","Corner":"Corner","City/Park":"Park","Window Seat":"No"},"636":{"Room Number":"636","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","Elevator":"Elevator","City/Park":"Park","Window Seat":"Yes"},"638":{"Room Number":"638","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","Elevator":"Elevator","City/Park":"Park","Window Seat":"Yes"},"639":{"Room Number":"639","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Elevator":"Elevator","City/Park":"City","Window Seat":"Yes","Notes":"Larger King"},"640":{"Room Number":"640","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","Elevator":"Elevator","Stairs":"Stairs","City/Park":"Park","Window Seat":"Yes"},"642":{"Room Number":"642","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"East","Stairs":"Stairs","City/Park":"Park","Window Seat":"Yes"},"643":{"Room Number":"643","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Stairs":"Stairs","City/Park":"City","Window Seat":"No","Notes":"Larger King"},"644":{"Room Number":"644","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","Adjoining":"Yes","View Direction":"East","Stairs":"Stairs","City/Park":"Park","Window Seat":"Yes","Notes":"Adjoining with 646"},"645":{"Room Number":"645","Code":"PK","Room Category":"Premium Rooms","SF":"340","Room Type Name":"Premium King","View Direction":"West","Stairs":"Stairs","City/Park":"City","Window Seat":"Yes"},"646":{"Room Number":"646","Code":"PRES","Room Category":"Presidential Suites","SF":"900","Room Type Name":"Presidential Suite King","Adjoining":"Yes","View Direction":"East/North","Corner":"Corner","City/Park":"Park","1/2 Sinks":"2","Window Seat":"No","Notes":"Adjoining with 644, Powder Room"},"647":{"Room Number":"647","Code":"SPK","Room Category":"One Bedroom Suites","SF":"510","Room Type Name":"One Bedroom Suite King","View Direction":"West/North","Corner":"Corner","City/Park":"City","1/2 Sinks":"2","Tub":"Yes","Window Seat":"Yes","Sofa Bed":"Yes"}};
 
-        // Floor layout positions (based on architectural plans)
-        // Coordinates are: [x, y, width, height]
-        const W = 44, H = 32; // Standard room size
-        const WL = 56; // Wide room (suites)
-        const WP = 70; // Presidential width
+        // Floor layout positions
+        const W = 44, H = 32;
+        const WL = 56;
+        const WP = 70;
         
         const floorLayouts = {
             4: {
-                // West Wing - North side (facing west/city) - top row
-                '401': [0, 0, WL, H],      // Corner suite
-                '403': [WL+4, 0, W, H],    // After stair gap
-                '407': [WL+W+8+30, 0, W, H],  // Skip stair
+                '401': [0, 0, WL, H],
+                '403': [WL+4, 0, W, H],
+                '407': [WL+W+8+30, 0, W, H],
                 '409': [WL+W*2+12+30, 0, W, H],
                 '411': [WL+W*3+16+30, 0, W, H],
                 '413': [WL+W*4+20+30, 0, W, H],
                 '415': [WL+W*5+24+30, 0, W, H],
                 '417': [WL+W*6+28+30, 0, W, H],
                 '419': [WL+W*7+32+30, 0, W, H],
-                '421': [WL+W*8+36+30, 0, WL, H], // Corner suite
-                
-                // West Wing - South side (facing east/park) - bottom of west wing
+                '421': [WL+W*8+36+30, 0, WL, H],
                 '402': [0, H+20, W, H],
                 '404': [W+4, H+20, W, H],
                 '406': [W*2+8+30, H+20, W, H],
@@ -347,35 +542,26 @@
                 '410': [W*4+16+30, H+20, W, H],
                 '412': [W*5+20+30, H+20, W, H],
                 '414': [W*6+24+30, H+20, W, H],
-                
-                // East Wing - North side (facing north/square)
                 '423': [WL+W*8+36+30+WL+10, 0, W, H],
                 '425': [WL+W*8+36+30+WL+W+14, 0, W, H],
                 '427': [WL+W*8+36+30+WL+W*2+18, 0, W, H],
-                
-                // East Wing - South side (starts the vertical drop)
                 '426': [WL+W*8+36+30+WL+10, H+20, W, H],
                 '428': [WL+W*8+36+30+WL+10, H*2+24, W, H],
                 '430': [WL+W*8+36+30+WL+10, H*3+28, W, H],
                 '432': [WL+W*8+36+30+WL+10, H*4+32, W, H],
-                '434': [WL+W*8+36+30+WL+10, H*5+36, W, H], // Corner
-                
-                // Southeast extension - South row (facing east/park)
+                '434': [WL+W*8+36+30+WL+10, H*5+36, W, H],
                 '436': [WL+W*8+36+30+WL+W+14, H*5+36, W, H],
                 '438': [WL+W*8+36+30+WL+W*2+18, H*5+36, W, H],
                 '440': [WL+W*8+36+30+WL+W*3+22, H*5+36, W, H],
                 '442': [WL+W*8+36+30+WL+W*4+26, H*5+36, W, H],
                 '444': [WL+W*8+36+30+WL+W*5+30, H*5+36, W, H],
-                '446': [WL+W*8+36+30+WL+W*6+34, H*5+36, WP, H], // Presidential
-                
-                // Southeast extension - North row (facing west/city)
+                '446': [WL+W*8+36+30+WL+W*6+34, H*5+36, WP, H],
                 '443': [WL+W*8+36+30+WL+W*3+22, H*4+32, WL, H],
                 '445': [WL+W*8+36+30+WL+W*4+26+12, H*4+32, W, H],
-                '447': [WL+W*8+36+30+WL+W*5+30+12, H*4+32, WL, H], // Corner suite
+                '447': [WL+W*8+36+30+WL+W*5+30+12, H*4+32, WL, H],
             }
         };
         
-        // Generate floors 5 and 6 from floor 4 template
         [5, 6].forEach(floor => {
             floorLayouts[floor] = {};
             Object.entries(floorLayouts[4]).forEach(([room, coords]) => {
@@ -386,6 +572,8 @@
         
         let currentFloor = 4;
         let selectedRoom = null;
+        let activeFilters = new Set();
+        let filterPanelOpen = false;
         
         function getRoomClass(roomNum) {
             const room = roomData[roomNum];
@@ -395,63 +583,72 @@
             return '';
         }
         
+        function roomMatchesFilters(roomNum) {
+            if (activeFilters.size === 0) return null; // No filters = no highlighting
+            const room = roomData[roomNum];
+            if (!room) return false;
+            
+            for (const filter of activeFilters) {
+                let matches = false;
+                switch(filter) {
+                    case 'city': matches = room['City/Park'] === 'City'; break;
+                    case 'park': matches = room['City/Park'] === 'Park'; break;
+                    case 'square': matches = !!room['View of Square']; break;
+                    case 'corner': matches = !!room['Corner']; break;
+                    case 'windowseat': matches = room['Window Seat'] === 'Yes'; break;
+                    case 'tub': matches = !!room['Tub']; break;
+                    case 'sofabed': matches = !!room['Sofa Bed']; break;
+                    case 'adjoining': matches = !!room['Adjoining']; break;
+                    case 'elevator': matches = !!room['Elevator']; break;
+                    case 'ice': matches = !!room['Ice']; break;
+                    case 'stairs': matches = !!room['Stairs']; break;
+                    case 'suite': matches = room['Room Category']?.includes('Suite') && !room['Room Category']?.includes('Presidential'); break;
+                    case 'presidential': matches = room['Room Category']?.includes('Presidential'); break;
+                    case 'twoqueens': matches = room['Room Type Name']?.includes('Queen'); break;
+                    case 'ada': matches = !!room['ADA']; break;
+                }
+                if (matches) return true;
+            }
+            return false;
+        }
+        
+        function getMatchingRoomCount() {
+            const floorRooms = Object.keys(roomData).filter(r => r.startsWith(currentFloor));
+            return floorRooms.filter(r => roomMatchesFilters(r)).length;
+        }
+        
         function renderRoomList() {
             const container = document.getElementById('room-list');
             const floorRooms = Object.keys(roomData).filter(r => r.startsWith(currentFloor));
             
-            // Group by wing
             const westNorth = floorRooms.filter(r => ['01','03','07','09','11','13','15','17','19','21'].some(s => r.endsWith(s)) && parseInt(r) < currentFloor * 100 + 30);
             const westSouth = floorRooms.filter(r => ['02','04','06','08','10','12','14'].some(s => r.endsWith(s)) && parseInt(r) < currentFloor * 100 + 20);
             const eastWing = floorRooms.filter(r => parseInt(r) >= currentFloor * 100 + 23 && parseInt(r) <= currentFloor * 100 + 35);
             const southEast = floorRooms.filter(r => parseInt(r) >= currentFloor * 100 + 36);
             
-            let html = '<h3>West Wing — City View</h3>';
-            westNorth.forEach(r => {
-                const room = roomData[r];
-                const cls = getRoomClass(r);
-                const sel = selectedRoom === r ? ' selected' : '';
-                html += `<div class="room-item ${cls}${sel}" data-room="${r}">
-                    <span class="room-num">${r}</span>
-                    <span class="room-type">${room?.['Room Type Name'] || ''}</span>
-                </div>`;
-            });
+            function renderGroup(title, rooms) {
+                let html = `<h3>${title}</h3>`;
+                rooms.forEach(r => {
+                    const room = roomData[r];
+                    const cls = getRoomClass(r);
+                    const sel = selectedRoom === r ? ' selected' : '';
+                    const filterMatch = roomMatchesFilters(r);
+                    const filterClass = filterMatch === null ? '' : (filterMatch ? ' highlighted' : ' dimmed');
+                    html += `<div class="room-item ${cls}${sel}${filterClass}" data-room="${r}">
+                        <span class="room-num">${r}</span>
+                        <span class="room-type">${room?.['Room Type Name'] || ''}</span>
+                    </div>`;
+                });
+                return html;
+            }
             
-            html += '<h3>West Wing — Park View</h3>';
-            westSouth.forEach(r => {
-                const room = roomData[r];
-                const cls = getRoomClass(r);
-                const sel = selectedRoom === r ? ' selected' : '';
-                html += `<div class="room-item ${cls}${sel}" data-room="${r}">
-                    <span class="room-num">${r}</span>
-                    <span class="room-type">${room?.['Room Type Name'] || ''}</span>
-                </div>`;
-            });
-            
-            html += '<h3>East Wing</h3>';
-            eastWing.forEach(r => {
-                const room = roomData[r];
-                const cls = getRoomClass(r);
-                const sel = selectedRoom === r ? ' selected' : '';
-                html += `<div class="room-item ${cls}${sel}" data-room="${r}">
-                    <span class="room-num">${r}</span>
-                    <span class="room-type">${room?.['Room Type Name'] || ''}</span>
-                </div>`;
-            });
-            
-            html += '<h3>Southeast Wing</h3>';
-            southEast.forEach(r => {
-                const room = roomData[r];
-                const cls = getRoomClass(r);
-                const sel = selectedRoom === r ? ' selected' : '';
-                html += `<div class="room-item ${cls}${sel}" data-room="${r}">
-                    <span class="room-num">${r}</span>
-                    <span class="room-type">${room?.['Room Type Name'] || ''}</span>
-                </div>`;
-            });
+            let html = renderGroup('West Wing — City View', westNorth);
+            html += renderGroup('West Wing — Park View', westSouth);
+            html += renderGroup('East Wing', eastWing);
+            html += renderGroup('Southeast Wing', southEast);
             
             container.innerHTML = html;
             
-            // Add click handlers
             container.querySelectorAll('.room-item').forEach(el => {
                 el.addEventListener('click', () => selectRoom(el.dataset.room));
             });
@@ -461,7 +658,6 @@
             const layout = floorLayouts[currentFloor];
             if (!layout) return;
             
-            // Calculate bounds
             let maxX = 0, maxY = 0;
             Object.values(layout).forEach(([x, y, w, h]) => {
                 maxX = Math.max(maxX, x + w);
@@ -473,24 +669,22 @@
             const svgH = maxY + padding * 2;
             
             let svg = `<svg class="floor-svg" viewBox="0 0 ${svgW} ${svgH}" width="${svgW}" height="${svgH}">`;
-            
-            // Draw corridor lines
             svg += `<path class="corridor" d="M ${padding + 30} ${padding + H + 10} L ${padding + 380} ${padding + H + 10}"/>`;
             svg += `<path class="corridor" d="M ${padding + 420} ${padding + H + 10} L ${padding + 420} ${padding + H * 5 + 30}"/>`;
             svg += `<path class="corridor" d="M ${padding + 430} ${padding + H * 4 + 36} L ${padding + 580} ${padding + H * 4 + 36}"/>`;
             
-            // Draw rooms
             Object.entries(layout).forEach(([roomNum, [x, y, w, h]]) => {
                 const cls = getRoomClass(roomNum);
                 const sel = selectedRoom === roomNum ? ' selected' : '';
-                svg += `<rect class="room-box ${cls}${sel}" data-room="${roomNum}" x="${x + padding}" y="${y + padding}" width="${w}" height="${h}" rx="3"/>`;
-                svg += `<text class="room-label" x="${x + padding + w/2}" y="${y + padding + h/2 + 4}">${roomNum}</text>`;
+                const filterMatch = roomMatchesFilters(roomNum);
+                const filterClass = filterMatch === null ? '' : (filterMatch ? ' highlighted' : ' dimmed');
+                svg += `<rect class="room-box ${cls}${sel}${filterClass}" data-room="${roomNum}" x="${x + padding}" y="${y + padding}" width="${w}" height="${h}" rx="3"/>`;
+                svg += `<text class="room-label${filterClass}" x="${x + padding + w/2}" y="${y + padding + h/2 + 4}">${roomNum}</text>`;
             });
             
             svg += '</svg>';
             document.getElementById('floor-plan').innerHTML = svg;
             
-            // Add click handlers
             document.querySelectorAll('.room-box').forEach(el => {
                 el.addEventListener('click', () => selectRoom(el.dataset.room));
             });
@@ -552,6 +746,55 @@
             renderFloorPlan();
         }
         
+        function toggleFilter() {
+            filterPanelOpen = !filterPanelOpen;
+            document.getElementById('filter-panel').classList.toggle('open', filterPanelOpen);
+            if (filterPanelOpen) {
+                document.getElementById('filter-tab').style.display = 'none';
+            } else {
+                document.getElementById('filter-tab').style.display = 'block';
+            }
+        }
+        
+        function updateFilterCount() {
+            const countEl = document.getElementById('filter-count');
+            if (activeFilters.size === 0) {
+                countEl.innerHTML = '';
+            } else {
+                const count = getMatchingRoomCount();
+                const total = Object.keys(roomData).filter(r => r.startsWith(currentFloor)).length;
+                countEl.innerHTML = `<strong>${count}</strong> of ${total} rooms match`;
+            }
+            
+            // Update tab indicator
+            document.getElementById('filter-tab').classList.toggle('has-filters', activeFilters.size > 0);
+        }
+        
+        function clearFilters() {
+            activeFilters.clear();
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            updateFilterCount();
+            renderRoomList();
+            renderFloorPlan();
+        }
+        
+        // Filter button handlers
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.dataset.filter;
+                if (activeFilters.has(filter)) {
+                    activeFilters.delete(filter);
+                    btn.classList.remove('active');
+                } else {
+                    activeFilters.add(filter);
+                    btn.classList.add('active');
+                }
+                updateFilterCount();
+                renderRoomList();
+                renderFloorPlan();
+            });
+        });
+        
         // Floor toggle
         document.querySelectorAll('.floor-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -560,6 +803,7 @@
                 currentFloor = parseInt(btn.dataset.floor);
                 selectedRoom = null;
                 closeDetails();
+                updateFilterCount();
                 renderRoomList();
                 renderFloorPlan();
             });
