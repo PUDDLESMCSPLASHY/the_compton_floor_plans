@@ -728,8 +728,8 @@
             const vertCorrEndY = padding + TH + WH*7 + CORR + SP*6;
             svg += `<line x1="${vertCorrX}" y1="${vertCorrStartY}" x2="${vertCorrX}" y2="${vertCorrEndY}" stroke="#c9a227" stroke-width="1.5"/>`;
             
-            // Horizontal corridor line (between 443-447 row and 440-446 row)
-            const horzCorr2Y = padding + TH + WH*2 + CORR + SP*2 + TH + CORR/2;
+            // Horizontal corridor line (between 443-447 row and 436-446 row) - shifted down with clump + centered in gap
+            const horzCorr2Y = padding + TH + WH*2 + CORR + SP*2 + TW + TH + CORR/2;
             const horzCorr2StartX = padding + TW2+TW*5+SP*6+TW+SP + WW + CORR;
             const horzCorr2EndX = horzCorr2StartX + WW + TW2 + TW + TW3 + SP*3;
             svg += `<line x1="${horzCorr2StartX}" y1="${horzCorr2Y}" x2="${horzCorr2EndX}" y2="${horzCorr2Y}" stroke="#c9a227" stroke-width="1.5"/>`;
@@ -744,13 +744,14 @@
             // Dave Peel Park - East side  
             svg += `<text class="landmark-label" x="${svgW + 55}" y="${svgH/2 + 20}" text-anchor="middle" transform="rotate(90, ${svgW + 55}, ${svgH/2 + 20})">Dave Peel Park →</text>`;
             
-            // Elevator indicator (at corner between 427 and 443)
+            // Elevator indicator (in blank space between 427 and 443, bottom-left corner but not in hallway)
             const room427 = floorLayouts[currentFloor][currentFloor + '27'];
-            const elevX = room427 ? room427[0] + padding + WW + 4 : 500;
-            const elevY = room427 ? room427[1] + padding : 150;
-            svg += `<rect x="${elevX}" y="${elevY}" width="28" height="28" fill="#e2e8f0" stroke="#718096" stroke-width="1" rx="3"/>`;
-            svg += `<text x="${elevX + 14}" y="${elevY + 12}" text-anchor="middle" font-size="7" fill="#4a5568">ELEV</text>`;
-            svg += `<text x="${elevX + 14}" y="${elevY + 22}" text-anchor="middle" font-size="10" fill="#4a5568">↕</text>`;
+            const room443 = floorLayouts[currentFloor][currentFloor + '43'];
+            const elevX = room427 ? room427[0] + padding + WW + 8 : 500;
+            const elevY = room443 ? room443[1] + padding + TH - 38 : 150;
+            svg += `<rect x="${elevX}" y="${elevY}" width="32" height="32" fill="#e2e8f0" stroke="#718096" stroke-width="1" rx="3"/>`;
+            svg += `<text x="${elevX + 16}" y="${elevY + 14}" text-anchor="middle" font-size="8" fill="#4a5568">ELEV</text>`;
+            svg += `<text x="${elevX + 16}" y="${elevY + 26}" text-anchor="middle" font-size="11" fill="#4a5568">↕</text>`;
             
             Object.entries(layout).forEach(([roomNum, [x, y, w, h]]) => {
                 const cls = getRoomClass(roomNum);
