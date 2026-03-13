@@ -536,62 +536,63 @@
         const WP = 70;
         
         // Z-shaped layout based on actual floor plan
-        const RW = 44; // room width
+        const RW = 44; // room width (size 1)
+        const RW2 = 55; // room width size 2 (1.25x) - 401, 421, 443
+        const RW3 = 88; // room width size 3 (2x) - 447, 446
         const RH = 32; // room height
-        const CORR = 12; // corridor gap
+        const CORR = RH; // corridor gap = room height
         const STAIR = RW + 4; // stair gap = size of one room
         const padding = 20;
+        const SP = 4; // spacing between rooms
         
         const floorLayouts = {
             4: {
                 // TOP ROW - North side: 401, 403, [gap], 407, 409, 411, 413, 415, 417, 419, 421
-                '401': [0, 0, RW, RH],
-                '403': [RW+4, 0, RW, RH],
+                '401': [0, 0, RW2, RH],  // Size 2
+                '403': [RW2+SP, 0, RW, RH],
                 // [STAIR GAP = room width]
-                '407': [RW*2+4+STAIR, 0, RW, RH],
-                '409': [RW*3+8+STAIR, 0, RW, RH],
-                '411': [RW*4+12+STAIR, 0, RW, RH],
-                '413': [RW*5+16+STAIR, 0, RW, RH],
-                '415': [RW*6+20+STAIR, 0, RW, RH],
-                '417': [RW*7+24+STAIR, 0, RW, RH],
-                '419': [RW*8+28+STAIR, 0, RW, RH],
-                '421': [RW*9+32+STAIR, 0, RW, RH],
+                '407': [RW2+RW+SP+STAIR, 0, RW, RH],
+                '409': [RW2+RW*2+SP*2+STAIR, 0, RW, RH],
+                '411': [RW2+RW*3+SP*3+STAIR, 0, RW, RH],
+                '413': [RW2+RW*4+SP*4+STAIR, 0, RW, RH],
+                '415': [RW2+RW*5+SP*5+STAIR, 0, RW, RH],
+                '417': [RW2+RW*6+SP*6+STAIR, 0, RW, RH],
+                '419': [RW2+RW*7+SP*7+STAIR, 0, RW, RH],
+                '421': [RW2+RW*8+SP*8+STAIR, 0, RW2, RH],  // Size 2
                 
-                // TOP ROW - South side: 402, 404, 406, 408, 410, 412, 414 (no gap between 404-406)
-                '402': [0, RH+CORR, RW, RH],                 // Under 401
-                '404': [RW+4, RH+CORR, RW, RH],              // Under 403
-                '406': [RW*2+8, RH+CORR, RW, RH],            // Under gap (no gap in even row)
-                '408': [RW*3+12, RH+CORR, RW, RH],
-                '410': [RW*4+16, RH+CORR, RW, RH],
-                '412': [RW*5+20, RH+CORR, RW, RH],
-                '414': [RW*6+24, RH+CORR, RW, RH],
-                // [BOH gap here - 415-421 have no rooms below]
+                // TOP ROW - South side: 402, 404, 406, 408, 410, 412, 414 (no gap)
+                '402': [0, RH+CORR, RW2, RH],  // Match 401 width
+                '404': [RW2+SP, RH+CORR, RW, RH],
+                '406': [RW2+RW+SP*2, RH+CORR, RW, RH],
+                '408': [RW2+RW*2+SP*3, RH+CORR, RW, RH],
+                '410': [RW2+RW*3+SP*4, RH+CORR, RW, RH],
+                '412': [RW2+RW*4+SP*5, RH+CORR, RW, RH],
+                '414': [RW2+RW*5+SP*6, RH+CORR, RW, RH],
                 
                 // 423 directly under 421
-                '423': [RW*9+32+STAIR, RH+CORR, RW, RH],
-                '425': [RW*9+32+STAIR, RH*2+CORR*2, RW, RH],
-                '427': [RW*9+32+STAIR, RH*3+CORR*3, RW, RH],
+                '423': [RW2+RW*8+SP*8+STAIR, RH+CORR, RW, RH],
+                '425': [RW2+RW*8+SP*8+STAIR, RH*2+CORR*2, RW, RH],
+                '427': [RW2+RW*8+SP*8+STAIR, RH*3+CORR*3, RW, RH],
                 
-                // 426: top-left touches bottom-right of 414, across from 427
-                '426': [RW*7+28, RH*2+CORR, RW, RH],
-                '428': [RW*7+28, RH*3+CORR+4, RW, RH],
-                '430': [RW*7+28, RH*4+CORR+8, RW, RH],
-                '432': [RW*7+28, RH*5+CORR+12, RW, RH],
-                '434': [RW*7+28, RH*6+CORR+16, RW, RH],
+                // 426: top-left touches bottom-right of 414
+                '426': [RW2+RW*6+SP*7, RH*2+CORR, RW, RH],
+                '428': [RW2+RW*6+SP*7, RH*3+CORR+SP, RW, RH],
+                '430': [RW2+RW*6+SP*7, RH*4+CORR+SP*2, RW, RH],
+                '432': [RW2+RW*6+SP*7, RH*5+CORR+SP*3, RW, RH],
+                '434': [RW2+RW*6+SP*7, RH*6+CORR+SP*4, RW, RH],
                 
                 // 443: top-left touches bottom-right of 427
-                // 445 to immediate right of 443, 447 to immediate right of 445
-                '443': [RW*10+36+STAIR, RH*3+CORR*3, RW, RH],
-                '445': [RW*11+40+STAIR, RH*3+CORR*3, RW, RH],
-                '447': [RW*12+44+STAIR, RH*3+CORR*3, RW, RH],
+                '443': [RW2+RW*9+SP*9+STAIR, RH*3+CORR*3, RW2, RH],  // Size 2
+                '445': [RW2+RW*9+RW2+SP*10+STAIR, RH*3+CORR*3, RW, RH],
+                '447': [RW2+RW*10+RW2+SP*11+STAIR, RH*3+CORR*3, RW3, RH],  // Size 3
                 
-                // 446 directly across from 447, same size
-                '446': [RW*12+44+STAIR, RH*4+CORR*4, RW, RH],
-                '444': [RW*11+40+STAIR, RH*4+CORR*4, RW, RH],
-                '442': [RW*10+36+STAIR, RH*4+CORR*4, RW, RH],
-                '440': [RW*9+32+STAIR, RH*4+CORR*4, RW, RH],
-                '438': [RW*8+28+STAIR, RH*4+CORR*4, RW, RH],
-                '436': [RW*7+28, RH*7+CORR+20, RW, RH],
+                // 446 directly across from 447
+                '446': [RW2+RW*10+RW2+SP*11+STAIR, RH*4+CORR*4, RW3, RH],  // Size 3
+                '444': [RW2+RW*9+RW2+SP*10+STAIR, RH*4+CORR*4, RW, RH],
+                '442': [RW2+RW*9+SP*9+STAIR, RH*4+CORR*4, RW, RH],
+                '440': [RW2+RW*8+SP*8+STAIR, RH*4+CORR*4, RW, RH],
+                '438': [RW2+RW*7+SP*7+STAIR, RH*4+CORR*4, RW, RH],
+                '436': [RW2+RW*6+SP*7, RH*7+CORR+SP*5, RW, RH],
             }
         };
         
@@ -712,8 +713,9 @@
             svg += `<text x="12" y="3" text-anchor="middle" font-size="8" fill="#a0aec0">E</text>`;
             svg += `</g>`;
             
-            // Corridor line between top row rooms (thin solid line)
-            svg += `<line x1="${padding}" y1="${padding + RH + CORR/2}" x2="${padding + RW*7+36+STAIR}" y2="${padding + RH + CORR/2}" stroke="#c9a227" stroke-width="2"/>`;
+            // Corridor line between top row rooms (thin solid line, centered in corridor)
+            const corrY = padding + RH + CORR/2;
+            svg += `<line x1="${padding}" y1="${corrY}" x2="${padding + RW2+RW*5+SP*6 + RW}" y2="${corrY}" stroke="#c9a227" stroke-width="1.5"/>`;
             
             // Landmark labels
             // City Square - NW corner near x21 rooms
