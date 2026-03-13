@@ -535,42 +535,62 @@
         const WL = 56;
         const WP = 70;
         
+        // Z-shaped layout based on actual floor plan
+        // Grid: each cell = 48x36 pixels
+        const G = 48; // grid width
+        const GH = 36; // grid height
+        const GAP = 8; // corridor gap
+        
         const floorLayouts = {
             4: {
-                '401': [0, 0, WL, H],
-                '403': [WL+4, 0, W, H],
-                '407': [WL+W+8+30, 0, W, H],
-                '409': [WL+W*2+12+30, 0, W, H],
-                '411': [WL+W*3+16+30, 0, W, H],
-                '413': [WL+W*4+20+30, 0, W, H],
-                '415': [WL+W*5+24+30, 0, W, H],
-                '417': [WL+W*6+28+30, 0, W, H],
-                '419': [WL+W*7+32+30, 0, W, H],
-                '421': [WL+W*8+36+30, 0, WL, H],
-                '402': [0, H+20, W, H],
-                '404': [W+4, H+20, W, H],
-                '406': [W*2+8+30, H+20, W, H],
-                '408': [W*3+12+30, H+20, W, H],
-                '410': [W*4+16+30, H+20, W, H],
-                '412': [W*5+20+30, H+20, W, H],
-                '414': [W*6+24+30, H+20, W, H],
-                '423': [WL+W*8+36+30+WL+10, 0, W, H],
-                '425': [WL+W*8+36+30+WL+W+14, 0, W, H],
-                '427': [WL+W*8+36+30+WL+W*2+18, 0, W, H],
-                '426': [WL+W*8+36+30+WL+10, H+20, W, H],
-                '428': [WL+W*8+36+30+WL+10, H*2+24, W, H],
-                '430': [WL+W*8+36+30+WL+10, H*3+28, W, H],
-                '432': [WL+W*8+36+30+WL+10, H*4+32, W, H],
-                '434': [WL+W*8+36+30+WL+10, H*5+36, W, H],
-                '436': [WL+W*8+36+30+WL+W+14, H*5+36, W, H],
-                '438': [WL+W*8+36+30+WL+W*2+18, H*5+36, W, H],
-                '440': [WL+W*8+36+30+WL+W*3+22, H*5+36, W, H],
-                '442': [WL+W*8+36+30+WL+W*4+26, H*5+36, W, H],
-                '444': [WL+W*8+36+30+WL+W*5+30, H*5+36, W, H],
-                '446': [WL+W*8+36+30+WL+W*6+34, H*5+36, WP, H],
-                '443': [WL+W*8+36+30+WL+W*3+22, H*4+32, WL, H],
-                '445': [WL+W*8+36+30+WL+W*4+26+12, H*4+32, W, H],
-                '447': [WL+W*8+36+30+WL+W*5+30+12, H*4+32, WL, H],
+                // TOP ROW - North side (odd rooms, city/promenade view) - left to right
+                '401': [0, 0, G+12, GH],                    // Corner suite (wider)
+                '403': [G+16, 0, G, GH],
+                // [stair gap here]
+                '407': [G*2+24+40, 0, G, GH],
+                '409': [G*3+28+40, 0, G, GH],
+                '411': [G*4+32+40, 0, G, GH],
+                '413': [G*5+36+40, 0, G, GH],
+                // [BOH gap spans width of ~2 rooms]
+                '415': [G*6+40+40+60, 0, G, GH],
+                '417': [G*7+44+40+60, 0, G, GH],
+                '419': [G*8+48+40+60, 0, G, GH],
+                '421': [G*9+52+40+60, 0, G+12, GH],         // Corner suite at NE
+                
+                // TOP ROW - South side (even rooms, park view) - left to right, stops at BOH
+                '402': [0, GH+GAP, G, GH],
+                '404': [G+4, GH+GAP, G, GH],
+                '406': [G*2+8+40, GH+GAP, G, GH],
+                '408': [G*3+12+40, GH+GAP, G, GH],
+                '410': [G*4+16+40, GH+GAP, G, GH],
+                '412': [G*5+20+40, GH+GAP, G, GH],
+                '414': [G*6+24+40, GH+GAP, G, GH],
+                // [BOH gap here - no rooms 416, 418, 420]
+                
+                // VERTICAL SECTION - East side of corridor (going down from 421)
+                '423': [G*9+52+40+60, GH+GAP, G, GH],
+                '425': [G*9+52+40+60, GH*2+GAP*2, G, GH],
+                '427': [G*9+52+40+60, GH*3+GAP*3, G, GH],
+                
+                // VERTICAL SECTION - West side of corridor (426 across from 427, going down to 434)
+                '426': [G*9+52+40+60-G-GAP, GH*3+GAP*3, G, GH],
+                '428': [G*9+52+40+60-G-GAP, GH*4+GAP*4, G, GH],
+                '430': [G*9+52+40+60-G-GAP, GH*5+GAP*5, G, GH],
+                '432': [G*9+52+40+60-G-GAP, GH*6+GAP*6, G, GH],
+                '434': [G*9+52+40+60-G-GAP, GH*7+GAP*7, G, GH],
+                
+                // BOTTOM ROW - North side (443, 445, 447 going right from elevator corner)
+                '443': [G*9+52+40+60+G+GAP, GH*3+GAP*3, G, GH],
+                '445': [G*9+52+40+60+G+GAP, GH*4+GAP*4, G, GH],
+                '447': [G*9+52+40+60+G+GAP, GH*5+GAP*5, G+12, GH],  // Corner suite
+                
+                // BOTTOM ROW - South side (446 across from 447, then left to 436)
+                '446': [G*9+52+40+60+G*2+GAP*2, GH*5+GAP*5, G+24, GH],  // Presidential (wider)
+                '444': [G*9+52+40+60+G*2+GAP*2, GH*6+GAP*6, G, GH],
+                '442': [G*9+52+40+60+G+GAP, GH*6+GAP*6, G, GH],
+                '440': [G*9+52+40+60, GH*6+GAP*6, G, GH],
+                '438': [G*9+52+40+60-G-4, GH*6+GAP*6, G, GH],
+                '436': [G*9+52+40+60-G*2-8, GH*6+GAP*6, G, GH],
             }
         };
         
@@ -681,22 +701,35 @@
             const svgW = maxX + padding * 2;
             const svgH = maxY + padding * 2;
             
-            let svg = `<svg class="floor-svg" viewBox="-60 -50 ${svgW + 120} ${svgH + 80}" width="${svgW + 120}" height="${svgH + 80}">`;
+            let svg = `<svg class="floor-svg" viewBox="-80 -70 ${svgW + 160} ${svgH + 120}" width="${svgW + 160}" height="${svgH + 120}">`;
+            
+            // Compass in top-left corner
+            svg += `<g transform="translate(20, 20)">`;
+            svg += `<circle cx="0" cy="0" r="22" fill="white" stroke="#c9a227" stroke-width="1.5"/>`;
+            svg += `<text x="0" y="-8" text-anchor="middle" font-size="10" fill="#1a365d" font-weight="600">N</text>`;
+            svg += `<text x="0" y="14" text-anchor="middle" font-size="8" fill="#a0aec0">S</text>`;
+            svg += `<text x="-12" y="3" text-anchor="middle" font-size="8" fill="#a0aec0">W</text>`;
+            svg += `<text x="12" y="3" text-anchor="middle" font-size="8" fill="#a0aec0">E</text>`;
+            svg += `<path d="M0,-18 L3,-6 L0,-8 L-3,-6 Z" fill="#1a365d"/>`;
+            svg += `</g>`;
             
             // Landmark labels
             // City Square - NW corner near x21 rooms
-            svg += `<text class="landmark-label" x="420" y="-25" text-anchor="middle">↑ City Square</text>`;
+            svg += `<text class="landmark-label" x="${svgW/2 + 100}" y="-40" text-anchor="middle">↑ City Square</text>`;
             
             // Promenade - West side
-            svg += `<text class="landmark-label" x="-45" y="${padding + H + 20}" text-anchor="middle" transform="rotate(-90, -45, ${padding + H + 20})">← Promenade</text>`;
+            svg += `<text class="landmark-label" x="-55" y="${svgH/3}" text-anchor="middle" transform="rotate(-90, -55, ${svgH/3})">← Promenade</text>`;
             
-            // Dave Peel Park - East side
-            svg += `<text class="landmark-label" x="${svgW + 45}" y="${padding + H * 3 + 30}" text-anchor="middle" transform="rotate(90, ${svgW + 45}, ${padding + H * 3 + 30})">Dave Peel Park →</text>`;
+            // Dave Peel Park - East side  
+            svg += `<text class="landmark-label" x="${svgW + 55}" y="${svgH/2}" text-anchor="middle" transform="rotate(90, ${svgW + 55}, ${svgH/2})">Dave Peel Park →</text>`;
             
-            // Corridors
-            svg += `<path class="corridor" d="M ${padding + 30} ${padding + H + 10} L ${padding + 380} ${padding + H + 10}"/>`;
-            svg += `<path class="corridor" d="M ${padding + 420} ${padding + H + 10} L ${padding + 420} ${padding + H * 5 + 30}"/>`;
-            svg += `<path class="corridor" d="M ${padding + 430} ${padding + H * 4 + 36} L ${padding + 580} ${padding + H * 4 + 36}"/>`;
+            // Elevator indicator (at corner between 427 and 443)
+            const room427 = floorLayouts[currentFloor][currentFloor + '27'];
+            const elevX = room427 ? room427[0] + padding + G + 4 : 500;
+            const elevY = room427 ? room427[1] + padding : 150;
+            svg += `<rect x="${elevX}" y="${elevY}" width="28" height="28" fill="#e2e8f0" stroke="#718096" stroke-width="1" rx="3"/>`;
+            svg += `<text x="${elevX + 14}" y="${elevY + 12}" text-anchor="middle" font-size="7" fill="#4a5568">ELEV</text>`;
+            svg += `<text x="${elevX + 14}" y="${elevY + 22}" text-anchor="middle" font-size="10" fill="#4a5568">↕</text>`;
             
             Object.entries(layout).forEach(([roomNum, [x, y, w, h]]) => {
                 const cls = getRoomClass(roomNum);
