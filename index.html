@@ -585,20 +585,19 @@
                 '432': [TW2+TW*5+SP*6+TW+SP, TH+WH*5+CORR+SP*5, WW, WH],
                 '434': [TW2+TW*5+SP*6+TW+SP, TH+WH*6+CORR+SP*6, WW, WH],
                 
-                // 436 to the RIGHT of 432/434, height = combined width of 432+434
-                '436': [TW2+TW*5+SP*6+TW+SP+WW+SP, TH+WH*5+CORR+SP*5, TW, WH*2+SP],
-                
                 // 443 (Size 2 tall): top-left touches bottom-right of 427
                 '443': [TW2+TW*5+SP*6+TW+SP+WW+CORR+WW+SP, TH+WH*2+CORR+SP*2, TW2, TH],
                 '445': [TW2+TW*5+SP*6+TW+SP+WW+CORR+WW+TW2+SP*2, TH+WH*2+CORR+SP*2, TW, TH],
                 '447': [TW2+TW*5+SP*6+TW+SP+WW+CORR+WW+TW2+TW+SP*3, TH+WH*2+CORR+SP*2, TW3, TH],
                 
-                // 446 across from 447, plus 444, 442, 440, 438 (TALL rooms)
-                '446': [TW2+TW*5+SP*6+TW+SP+WW+CORR+WW+TW2+TW+SP*3, TH+WH*2+CORR+SP*2+TH+CORR, TW3, TH],
-                '444': [TW2+TW*5+SP*6+TW+SP+WW+CORR+WW+TW2+SP*2, TH+WH*2+CORR+SP*2+TH+CORR, TW, TH],
-                '442': [TW2+TW*5+SP*6+TW+SP+WW+CORR+WW+SP, TH+WH*2+CORR+SP*2+TH+CORR, TW, TH],
-                '440': [TW2+TW*5+SP*6+TW+SP+WW+CORR, TH+WH*2+CORR+SP*2+TH+CORR, TW, TH],
-                '438': [TW2+TW*5+SP*6+TW+SP+WW+CORR-TW-SP, TH+WH*2+CORR+SP*2+TH+CORR, TW, TH],
+                // Bottom row: 436, 438, 440, 442, 444, 446 going left to right
+                // 436 has hallway gap from right side of 432/434
+                '436': [TW2+TW*5+SP*6+TW+SP+WW+CORR, TH+WH*2+CORR+SP*2+TH+CORR, TW, TH],
+                '438': [TW2+TW*5+SP*6+TW+SP+WW+CORR+TW+SP, TH+WH*2+CORR+SP*2+TH+CORR, TW, TH],
+                '440': [TW2+TW*5+SP*6+TW+SP+WW+CORR+TW*2+SP*2, TH+WH*2+CORR+SP*2+TH+CORR, TW, TH],
+                '442': [TW2+TW*5+SP*6+TW+SP+WW+CORR+TW*3+SP*3, TH+WH*2+CORR+SP*2+TH+CORR, TW, TH],
+                '444': [TW2+TW*5+SP*6+TW+SP+WW+CORR+TW*4+SP*4, TH+WH*2+CORR+SP*2+TH+CORR, TW, TH],
+                '446': [TW2+TW*5+SP*6+TW+SP+WW+CORR+TW*5+SP*5, TH+WH*2+CORR+SP*2+TH+CORR, TW3, TH],
             }
         };
         
