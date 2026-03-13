@@ -810,6 +810,13 @@
             });
         });
         
+        // Close filter panel when clicking on floor plan area
+        document.querySelector('.floor-plan-container').addEventListener('click', (e) => {
+            if (filterPanelOpen && !e.target.closest('.filter-panel')) {
+                toggleFilter();
+            }
+        });
+        
         // Initial render
         renderRoomList();
         renderFloorPlan();
