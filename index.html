@@ -740,9 +740,9 @@
             if (floor3Excluded.includes(roomSuffix)) return; // skip these rooms
             const newRoom = '3' + roomSuffix;
             const newCoords = [...coords];
-            // 338 is same width as 321 (TW3)
+            // 338 is 0.8x width of 321
             if (roomSuffix === '38') {
-                newCoords[2] = TW3;
+                newCoords[2] = TW3 * 0.8; // 56
             }
             floorLayouts[3][newRoom] = newCoords;
         });
