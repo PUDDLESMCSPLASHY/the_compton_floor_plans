@@ -661,14 +661,18 @@
         
         function renderRoomList() {
             const container = document.getElementById('room-list');
-            const floorRooms = Object.keys(roomData).filter(r => r.startsWith(currentFloor));
+            const f = currentFloor; // e.g., '4', '5', '6'
             
-            const westNorth = floorRooms.filter(r => ['01','03','07','09','11','13','15','17','19','21'].some(s => r.endsWith(s)) && parseInt(r) < currentFloor * 100 + 30);
-            const westSouth = floorRooms.filter(r => ['02','04','06','08','10','12','14'].some(s => r.endsWith(s)) && parseInt(r) < currentFloor * 100 + 20);
-            const eastWing = floorRooms.filter(r => parseInt(r) >= currentFloor * 100 + 23 && parseInt(r) <= currentFloor * 100 + 35);
-            const southEast = floorRooms.filter(r => parseInt(r) >= currentFloor * 100 + 36);
+            // Room groupings by wing and view
+            const westPromenade = [f+'01', f+'03', f+'07', f+'09', f+'11', f+'13', f+'15', f+'17', f+'19'].filter(r => roomData[r]);
+            const westPark = [f+'02', f+'04', f+'06', f+'08', f+'10', f+'12', f+'14'].filter(r => roomData[r]);
+            const westCity = [f+'21', f+'23', f+'25', f+'27'].filter(r => roomData[r]);
+            const eastSouth = [f+'26', f+'28', f+'30', f+'32', f+'34'].filter(r => roomData[r]);
+            const eastCity = [f+'43', f+'45', f+'47'].filter(r => roomData[r]);
+            const eastPark = [f+'36', f+'38', f+'40', f+'42', f+'44', f+'46'].filter(r => roomData[r]);
             
             function renderGroup(title, rooms) {
+                if (rooms.length === 0) return '';
                 let html = `<h3>${title}</h3>`;
                 rooms.forEach(r => {
                     const room = roomData[r];
@@ -684,10 +688,12 @@
                 return html;
             }
             
-            let html = renderGroup('West Wing — City View', westNorth);
-            html += renderGroup('West Wing — Park View', westSouth);
-            html += renderGroup('East Wing', eastWing);
-            html += renderGroup('Southeast Wing', southEast);
+            let html = renderGroup('West Wing — Promenade View', westPromenade);
+            html += renderGroup('West Wing — Park View', westPark);
+            html += renderGroup('West Wing — City View', westCity);
+            html += renderGroup('East Wing — South View', eastSouth);
+            html += renderGroup('East Wing — City View', eastCity);
+            html += renderGroup('East Wing — Park View', eastPark);
             
             container.innerHTML = html;
             
