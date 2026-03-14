@@ -874,11 +874,11 @@
             // Dave Peel Park - bottom (east)  
             svg += `<text class="landmark-label" x="${svgW/2 + 100}" y="${svgH + 35}" text-anchor="middle">↓ Dave Peel Park</text>`;
             
-            // Elevator indicator (in blank space between 427 and 443, bottom-left corner but not in hallway)
-            const room427 = floorLayouts[currentFloor][currentFloor + '27'];
-            const room443 = floorLayouts[currentFloor][currentFloor + '43'];
-            const elevX = room427 ? room427[0] + padding + WW + 8 : 500;
-            const elevY = room443 ? room443[1] + padding + TH - 38 : 150;
+            // Elevator indicator - positioned 1.25x width of 436 away and above room 436
+            const room436 = floorLayouts[currentFloor][currentFloor + '36'];
+            const elevOffset = TW * 1.25; // 1.25x the width of a standard room
+            const elevX = room436 ? room436[0] + padding - elevOffset - 32 : 500;
+            const elevY = room436 ? room436[1] + padding - elevOffset : 150;
             svg += `<rect x="${elevX}" y="${elevY}" width="32" height="32" fill="#e2e8f0" stroke="#718096" stroke-width="1" rx="3"/>`;
             svg += `<text x="${elevX + 16}" y="${elevY + 14}" text-anchor="middle" font-size="8" fill="#4a5568">ELEV</text>`;
             svg += `<text x="${elevX + 16}" y="${elevY + 26}" text-anchor="middle" font-size="11" fill="#4a5568">↕</text>`;
