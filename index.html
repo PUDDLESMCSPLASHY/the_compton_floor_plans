@@ -869,15 +869,18 @@
             svg += `<text x="12" y="3" text-anchor="middle" font-size="8" fill="#a0aec0">N</text>`;
             svg += `</g>`;
             
-            // Corridor line between top row rooms (thin solid line, centered in corridor)
-            const corrY = padding + TH + CORR/2;
-            svg += `<line x1="${padding}" y1="${corrY}" x2="${padding + TW2+TW*5+SP*6 + TW}" y2="${corrY}" stroke="#c9a227" stroke-width="1.5"/>`;
-            
-            // Vertical corridor line (between 426-434 column and 423-427 column)
-            const vertCorrX = padding + TW2+TW*5+SP*6+TW+SP + WW + CORR/2;
-            const vertCorrStartY = padding + TH + CORR;
-            const vertCorrEndY = padding + TH + WH*7 + CORR + SP*6;
+            // Vertical corridor line - between rooms 419 and 421, extending down to bottom of 436
+            const room419 = floorLayouts[4]['419'];
+            const room421 = floorLayouts[4]['421'];
+            const room436 = floorLayouts[4]['436'];
+            const vertCorrX = padding + room419[0] + room419[2] + (room421[0] - room419[0] - room419[2]) / 2;
+            const vertCorrStartY = padding + TH + CORR/2;
+            const vertCorrEndY = padding + room436[1] + room436[3]; // bottom of 436
             svg += `<line x1="${vertCorrX}" y1="${vertCorrStartY}" x2="${vertCorrX}" y2="${vertCorrEndY}" stroke="#c9a227" stroke-width="1.5"/>`;
+            
+            // Corridor line between top row rooms - extends to meet vertical line
+            const corrY = padding + TH + CORR/2;
+            svg += `<line x1="${padding}" y1="${corrY}" x2="${vertCorrX}" y2="${corrY}" stroke="#c9a227" stroke-width="1.5"/>`;
             
             // Horizontal corridor line (between 443-447 row and 436-446 row) - shifted down with clump + centered in gap
             const horzCorr2Y = padding + TH + WH*2 + CORR + SP*2 + TW + TH + CORR/2;
