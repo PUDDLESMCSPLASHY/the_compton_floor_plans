@@ -745,7 +745,6 @@
         
         // Floor 3 - same as floor 4 but missing SE rooms and 338 is wider
         floorLayouts[3] = {};
-        const floor3Excluded = ['43', '45', '47', '40', '42', '44', '46']; // rooms that don't exist on floor 3
         Object.entries(floorLayouts[4]).forEach(([room, coords]) => {
             const roomSuffix = room.slice(1);
             if (floor3Excluded.includes(roomSuffix)) return; // skip these rooms
