@@ -904,18 +904,18 @@
             svg += `<text x="${elevX + 16}" y="${elevY + 14}" text-anchor="middle" font-size="8" fill="#4a5568">ELEV</text>`;
             svg += `<text x="${elevX + 16}" y="${elevY + 26}" text-anchor="middle" font-size="11" fill="#4a5568">↕</text>`;
             
-            // SW Stairwell - between rooms 403 and 407
+            // SW Stairwell - between rooms 403 and 407, bottom aligned with 403
             const room403 = floorLayouts[4]['403'];
             const room407 = floorLayouts[4]['407'];
             const swStairX = room403[0] + padding + TW + (room407[0] - room403[0] - TW) / 2 - 16;
-            const swStairY = room403[1] + padding + TH / 2 - 16;
+            const swStairY = room403[1] + padding + TH - 32; // bottom aligns with bottom of 403
             svg += `<rect x="${swStairX}" y="${swStairY}" width="32" height="32" fill="#fef3c7" stroke="#d97706" stroke-width="1" rx="3"/>`;
             svg += `<text x="${swStairX + 16}" y="${swStairY + 12}" text-anchor="middle" font-size="6" fill="#92400e">SW</text>`;
             svg += `<text x="${swStairX + 16}" y="${swStairY + 21}" text-anchor="middle" font-size="6" fill="#92400e">STAIR</text>`;
             
-            // NE Stairwell - to the left of room 443
+            // NE Stairwell - to the left of room 443, bottom aligned with 443
             const neStairX = room443[0] + padding - 36;
-            const neStairY = room443[1] + padding + TH / 2 - 16;
+            const neStairY = room443[1] + padding + TH - 32; // bottom aligns with bottom of 443
             svg += `<rect x="${neStairX}" y="${neStairY}" width="32" height="32" fill="#fef3c7" stroke="#d97706" stroke-width="1" rx="3"/>`;
             svg += `<text x="${neStairX + 16}" y="${neStairY + 12}" text-anchor="middle" font-size="6" fill="#92400e">NE</text>`;
             svg += `<text x="${neStairX + 16}" y="${neStairY + 21}" text-anchor="middle" font-size="6" fill="#92400e">STAIR</text>`;
