@@ -426,6 +426,123 @@
         .legend-box.standard { background: #f7f5f2; border-color: #c9a227; }
         .legend-box.suite { background: #e6f3ff; border-color: #3182ce; }
         .legend-box.presidential { background: #faf5ff; border-color: #805ad5; }
+        
+        /* Mobile Toggle for Room List */
+        .mobile-room-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #c9a227;
+            color: white;
+            border: none;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 200;
+        }
+        
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.5rem; }
+            .header { padding: 15px 10px 10px; }
+            
+            .floor-toggle {
+                gap: 5px;
+                padding: 10px;
+            }
+            .floor-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .main {
+                flex-direction: column;
+                height: auto;
+                min-height: calc(100vh - 130px);
+            }
+            
+            /* Room list becomes drawer on mobile */
+            .room-list {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 85%;
+                max-width: 320px;
+                height: 100vh;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 150;
+                box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+            }
+            .room-list.open {
+                transform: translateX(0);
+            }
+            
+            /* Overlay when drawer is open */
+            .room-list-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.4);
+                z-index: 140;
+            }
+            .room-list-overlay.visible { display: block; }
+            
+            .floor-plan-container {
+                padding: 15px;
+                overflow: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .mobile-room-toggle { display: flex; align-items: center; justify-content: center; }
+            
+            /* Room details - full width bottom sheet on mobile */
+            .room-details {
+                left: 10px;
+                right: 10px;
+                bottom: 10px;
+                width: auto;
+                max-height: 50vh;
+                overflow-y: auto;
+            }
+            
+            /* Filter panel adjustments */
+            .filter-panel {
+                width: 280px;
+            }
+            .filter-tab {
+                right: 10px;
+                top: 60px;
+            }
+            
+            /* Larger touch targets */
+            .room-item {
+                padding: 12px 10px;
+            }
+            .filter-btn {
+                padding: 10px 14px;
+            }
+            
+            .legend {
+                flex-wrap: wrap;
+                gap: 10px;
+                padding: 8px 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 { font-size: 1.3rem; letter-spacing: 0.05em; }
+            .floor-btn { padding: 6px 12px; font-size: 0.85rem; }
+            .room-details { padding: 15px; }
+            .detail-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -441,7 +558,9 @@
     </div>
     
     <div class="main">
+        <div class="room-list-overlay" id="room-list-overlay"></div>
         <div class="room-list" id="room-list"></div>
+        <button class="mobile-room-toggle" id="mobile-room-toggle" onclick="toggleMobileRoomList()">☰</button>
         <div class="floor-plan-container">
             <div class="floor-plan" id="floor-plan"></div>
         </div>
@@ -774,7 +893,13 @@
             document.getElementById('floor-plan').innerHTML = svg;
             
             document.querySelectorAll('.room-box').forEach(el => {
-                el.addEventListener('click', () => selectRoom(el.dataset.room));
+                el.addEventListener('click', () => {
+                    selectRoom(el.dataset.room);
+                    // Close mobile drawer after selection
+                    if (window.innerWidth <= 768 && mobileRoomListOpen) {
+                        toggleMobileRoomList();
+                    }
+                });
             });
         }
         
@@ -844,6 +969,26 @@
             }
         }
         
+        // Mobile room list drawer
+        let mobileRoomListOpen = false;
+        function toggleMobileRoomList() {
+            mobileRoomListOpen = !mobileRoomListOpen;
+            document.getElementById('room-list').classList.toggle('open', mobileRoomListOpen);
+            document.getElementById('room-list-overlay').classList.toggle('visible', mobileRoomListOpen);
+            document.getElementById('mobile-room-toggle').textContent = mobileRoomListOpen ? '✕' : '☰';
+        }
+        
+        // Close mobile room list when clicking overlay
+        document.getElementById('room-list-overlay').addEventListener('click', toggleMobileRoomList);
+        
+        // Close mobile room list when selecting a room
+        function selectRoomMobile(roomNum) {
+            selectRoom(roomNum);
+            if (window.innerWidth <= 768 && mobileRoomListOpen) {
+                toggleMobileRoomList();
+            }
+        }
+        
         function updateFilterCount() {
             const countEl = document.getElementById('filter-count');
             if (activeFilters.size === 0) {
@@ -901,6 +1046,17 @@
         document.querySelector('.floor-plan-container').addEventListener('click', (e) => {
             if (filterPanelOpen && !e.target.closest('.filter-panel')) {
                 toggleFilter();
+            }
+        });
+        
+        // Close room details when clicking outside
+        document.addEventListener('click', (e) => {
+            const detailsPanel = document.getElementById('room-details');
+            if (detailsPanel.classList.contains('visible') && 
+                !e.target.closest('.room-details') && 
+                !e.target.closest('.room-box') &&
+                !e.target.closest('.room-item')) {
+                closeDetails();
             }
         });
         
