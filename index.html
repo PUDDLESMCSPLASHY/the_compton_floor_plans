@@ -814,7 +814,13 @@
             container.innerHTML = html;
             
             container.querySelectorAll('.room-item').forEach(el => {
-                el.addEventListener('click', () => selectRoom(el.dataset.room));
+                el.addEventListener('click', () => {
+                    selectRoom(el.dataset.room);
+                    // Auto-close mobile drawer after selecting a room
+                    if (window.innerWidth <= 768 && mobileRoomListOpen) {
+                        toggleMobileRoomList();
+                    }
+                });
             });
         }
         
