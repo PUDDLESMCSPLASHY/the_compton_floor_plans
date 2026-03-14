@@ -848,8 +848,9 @@
             const layout = floorLayouts[currentFloor];
             if (!layout) return;
             
+            // Use floor 4 layout for consistent SVG sizing across all floors
             let maxX = 0, maxY = 0;
-            Object.values(layout).forEach(([x, y, w, h]) => {
+            Object.values(floorLayouts[4]).forEach(([x, y, w, h]) => {
                 maxX = Math.max(maxX, x + w);
                 maxY = Math.max(maxY, y + h);
             });
@@ -894,11 +895,11 @@
             // Dave Peel Park - bottom (east)  
             svg += `<text class="landmark-label" x="${svgW/2 + 100}" y="${svgH + 35}" text-anchor="middle">↓ Dave Peel Park</text>`;
             
-            // Elevator indicator - left aligned with 427, bottom aligned with 443
-            const room427 = floorLayouts[currentFloor][currentFloor + '27'];
-            const room443 = floorLayouts[currentFloor][currentFloor + '43'];
-            const elevX = room427 ? room427[0] + padding : 500; // left side aligns with 427's left
-            const elevY = room443 ? room443[1] + padding + TH - 32 : 150; // bottom aligns with 443's bottom
+            // Elevator indicator - use floor 4 positions for consistency across floors
+            const room427 = floorLayouts[4]['427'];
+            const room443 = floorLayouts[4]['443'];
+            const elevX = room427[0] + padding; // left side aligns with 427's left
+            const elevY = room443[1] + padding + TH - 32; // bottom aligns with 443's bottom
             svg += `<rect x="${elevX}" y="${elevY}" width="32" height="32" fill="#e2e8f0" stroke="#718096" stroke-width="1" rx="3"/>`;
             svg += `<text x="${elevX + 16}" y="${elevY + 14}" text-anchor="middle" font-size="8" fill="#4a5568">ELEV</text>`;
             svg += `<text x="${elevX + 16}" y="${elevY + 26}" text-anchor="middle" font-size="11" fill="#4a5568">↕</text>`;
