@@ -179,6 +179,18 @@
         .room-box.presidential + .room-label { fill: white; }
         .room-ada-icon { pointer-events: none; }
         .room-ada-icon.dimmed { opacity: 0.2; }
+        .fitness-center {
+            fill: #e2e8f0;
+            stroke: #718096;
+            stroke-width: 1.5;
+        }
+        .fitness-label {
+            font-family: 'Georgia', serif;
+            font-size: 10px;
+            fill: #4a5568;
+            font-weight: 600;
+            pointer-events: none;
+        }
         
         .corridor {
             fill: none;
@@ -1006,6 +1018,19 @@
                     svg += `<text class="room-ada-icon${filterClass}" x="${x + padding + w/2}" y="${y + padding + h/2 + 14}" text-anchor="middle" font-size="9">${icons.join(' ')}</text>`;
                 }
             });
+            
+            // Fitness Center on Floor 2 (where 217/219 would be)
+            if (currentFloor === 2) {
+                const room417pos = floorLayouts[4]['417'];
+                const room419pos = floorLayouts[4]['419'];
+                const fcX = room417pos[0] + padding;
+                const fcY = room417pos[1] + padding;
+                const fcW = (room419pos[0] + room419pos[2]) - room417pos[0]; // spans both rooms
+                const fcH = room417pos[3];
+                svg += `<rect class="fitness-center" x="${fcX}" y="${fcY}" width="${fcW}" height="${fcH}" rx="3"/>`;
+                svg += `<text class="fitness-label" x="${fcX + fcW/2}" y="${fcY + fcH/2 - 4}" text-anchor="middle">FITNESS</text>`;
+                svg += `<text class="fitness-label" x="${fcX + fcW/2}" y="${fcY + fcH/2 + 10}" text-anchor="middle">CENTER</text>`;
+            }
             
             svg += '</svg>';
             document.getElementById('floor-plan').innerHTML = svg;
