@@ -753,9 +753,9 @@
                 '414': [TW2+TW*5+SP*6, TH+CORR, TW, TH],
                 
                 // VERTICAL (WIDE rooms): 423, 425, 427 - under 421
-                '423': [TW2+TW*5+SP*6+TW+SP+WW+CORR, TH+CORR, WW, WH],
-                '425': [TW2+TW*5+SP*6+TW+SP+WW+CORR, TH+WH+CORR+SP, WW, WH],
-                '427': [TW2+TW*5+SP*6+TW+SP+WW+CORR, TH+WH*2+CORR+SP*2, WW, WH],
+                '423': [TW2+TW*5+SP*6+TW+SP+WW+CORR, TH+CORR-SP, WW, WH],
+                '425': [TW2+TW*5+SP*6+TW+SP+WW+CORR, TH+WH+CORR, WW, WH],
+                '427': [TW2+TW*5+SP*6+TW+SP+WW+CORR, TH+WH*2+CORR+SP, WW, WH],
                 
                 // VERTICAL rooms: 426, 428, 430, 432, 434 - 426 ACROSS from 427 (1.3x wider, 0.75x tall)
                 '426': [TW2+TW*5+SP*6+TW+SP, TH+WH*2+CORR+SP*2+TW, WW2, WH2],
@@ -787,6 +787,12 @@
                 floorLayouts[floor][newRoom] = [...coords];
             });
         });
+        
+        // Add rooms 539 and 639 (Premium King) - to the left of 543/643
+        const room443pos = floorLayouts[4]['443'];
+        const room539pos = [room443pos[0] - SP - TW, room443pos[1], TW, TH];
+        floorLayouts[5]['539'] = room539pos;
+        floorLayouts[6]['639'] = [...room539pos];
         
         // Floor 3 - same as floor 4 but missing SE rooms and 338 is wider
         floorLayouts[3] = {};
@@ -992,12 +998,21 @@
             svg += `<text x="${swStairX + 16}" y="${swStairY + 12}" text-anchor="middle" font-size="6" fill="#92400e">SW</text>`;
             svg += `<text x="${swStairX + 16}" y="${swStairY + 21}" text-anchor="middle" font-size="6" fill="#92400e">STAIR</text>`;
             
-            // NE Stairwell - to the left of room 443, bottom aligned with 443
-            const neStairX = room443[0] + padding - 36;
-            const neStairY = room443[1] + padding + TH - 32; // bottom aligns with bottom of 443
+            // NE Stairwell - right next to the elevator (with SP gap)
+            const neStairX = elevX + 32 + SP;
+            const neStairY = elevY; // same vertical position as elevator
             svg += `<rect x="${neStairX}" y="${neStairY}" width="32" height="32" fill="#fef3c7" stroke="#d97706" stroke-width="1" rx="3"/>`;
             svg += `<text x="${neStairX + 16}" y="${neStairY + 12}" text-anchor="middle" font-size="6" fill="#92400e">NE</text>`;
             svg += `<text x="${neStairX + 16}" y="${neStairY + 21}" text-anchor="middle" font-size="6" fill="#92400e">STAIR</text>`;
+            
+            // Ice/Water station - between 414 and 426
+            const room414 = floorLayouts[4]['414'];
+            const room426 = floorLayouts[4]['426'];
+            const iceX = room426[0] + WW2 - 32 + padding; // right side aligns with right side of 426
+            const iceY = room414[1] + padding; // top aligns with top of 414
+            svg += `<rect x="${iceX}" y="${iceY}" width="32" height="32" fill="#e0f2fe" stroke="#0284c7" stroke-width="1" rx="3"/>`;
+            svg += `<text x="${iceX + 16}" y="${iceY + 14}" text-anchor="middle" font-size="7" font-weight="600" fill="#0369a1">ICE</text>`;
+            svg += `<text x="${iceX + 16}" y="${iceY + 24}" text-anchor="middle" font-size="7" font-weight="600" fill="#0369a1">H2O</text>`;
             
             Object.entries(layout).forEach(([roomNum, [x, y, w, h]]) => {
                 const cls = getRoomClass(roomNum);
