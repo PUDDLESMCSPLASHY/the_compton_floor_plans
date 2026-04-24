@@ -423,6 +423,7 @@
             font-weight: 500;
         }
         .feature-tag.ada { background: #c6f6d5; color: #276749; }
+        .feature-tag.balcony { background: #dcfce7; color: #166534; font-weight: 600; }
         .room-notes {
             margin-top: 10px;
             padding: 8px;
@@ -479,6 +480,224 @@
             z-index: 200;
         }
         
+        /* Room Types view */
+        .view-divider {
+            width: 1px;
+            background: #e2d9c8;
+            align-self: stretch;
+            margin: 0 4px;
+        }
+        .floor-btn.types-btn {
+            background: white;
+            border-color: #0F162A;
+            color: #0F162A;
+        }
+        .floor-btn.types-btn:hover { background: #f5f5f5; }
+        .floor-btn.types-btn.active { background: #0F162A; color: white; }
+        .room-types-view {
+            display: none;
+            padding: 25px 30px;
+            overflow-y: auto;
+            width: 100%;
+            background: #faf9f7;
+        }
+        body.types-mode .main { display: none; }
+        body.types-mode .legend { display: none; }
+        body.types-mode .room-types-view { display: block; }
+        body.types-mode .floor-toggle .floor-btn:not(.types-btn) { opacity: 0.5; }
+        .types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 18px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .type-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.15s, box-shadow 0.15s;
+            border: 1px solid #e2d9c8;
+        }
+        .type-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+            border-color: #c9a227;
+        }
+        .type-card-cover {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: #e2d9c8 center/cover no-repeat;
+        }
+        .type-card-body {
+            padding: 14px 16px;
+        }
+        .type-card-name {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: #0F162A;
+            margin-bottom: 4px;
+        }
+        .type-card-meta {
+            font-size: 0.85rem;
+            color: #718096;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .type-card-count {
+            background: #faf5eb;
+            color: #8b6914;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Photo gallery modal */
+        .gallery-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 22, 42, 0.92);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+        .gallery-overlay.open { display: flex; }
+        .gallery-content {
+            max-width: 1100px;
+            width: 100%;
+            max-height: calc(100vh - 60px);
+            display: flex;
+            flex-direction: column;
+            background: #0F162A;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        .gallery-header {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            font-family: 'Georgia', serif;
+        }
+        .gallery-title {
+            font-size: 1.2rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+        }
+        .gallery-subtitle {
+            font-size: 0.85rem;
+            color: #a0aec0;
+            margin-top: 2px;
+        }
+        .gallery-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 4px;
+        }
+        .gallery-close:hover { color: #c9a227; }
+        .gallery-main {
+            position: relative;
+            flex: 1;
+            min-height: 0;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gallery-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .gallery-nav:hover { background: rgba(201, 162, 39, 0.8); }
+        .gallery-nav.prev { left: 16px; }
+        .gallery-nav.next { right: 16px; }
+        .gallery-thumbs {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            overflow-x: auto;
+            background: #1a2139;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .gallery-thumb {
+            flex: 0 0 auto;
+            width: 80px;
+            height: 60px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.15s;
+            border: 2px solid transparent;
+        }
+        .gallery-thumb:hover { opacity: 0.85; }
+        .gallery-thumb.active {
+            opacity: 1;
+            border-color: #c9a227;
+        }
+        .gallery-counter {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Camera button in room details */
+        .room-details-camera {
+            background: #c9a227;
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-right: 8px;
+            transition: background 0.15s;
+        }
+        .room-details-camera:hover { background: #b8911f; }
+        .room-details-camera[disabled] {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+        .room-details-header-right {
+            display: flex;
+            align-items: center;
+        }
+
         /* Mobile Responsive Styles */
         @media (max-width: 768px) {
             .header h1 { font-size: 1.5rem; }
@@ -588,6 +807,8 @@
         <button class="floor-btn active" data-floor="4">Fourth Floor</button>
         <button class="floor-btn" data-floor="5">Fifth Floor</button>
         <button class="floor-btn" data-floor="6">Sixth Floor</button>
+        <div class="view-divider"></div>
+        <button class="floor-btn types-btn" id="types-btn" onclick="showRoomTypesView()">📷 Room Types</button>
     </div>
     
     <div class="main">
@@ -682,6 +903,7 @@
         <div class="legend-item"><div class="legend-box presidential"></div> Presidential</div>
         <div class="legend-item" style="margin-left: 20px;"><span style="font-size: 1.1rem;">🔊</span> Accessible Hearing</div>
         <div class="legend-item"><span style="font-size: 1.1rem;">♿</span> Accessible Bathroom</div>
+        <div class="legend-item"><span style="font-size: 1.1rem;">🌿</span> Balcony</div>
     </div>
     
     <div class="room-details" id="room-details">
@@ -692,20 +914,209 @@
                 <div class="room-details-category" id="detail-category"></div>
                 <div class="room-details-count" id="detail-count" style="font-size: 0.8rem; color: #718096; margin-top: 4px;"></div>
             </div>
-            <button class="room-details-close" onclick="closeDetails()">×</button>
+            <div class="room-details-header-right">
+                <button class="room-details-camera" id="detail-camera-btn" onclick="openGalleryForSelectedRoom()" title="View photos of this room type">📷</button>
+                <button class="room-details-close" onclick="closeDetails()">×</button>
+            </div>
         </div>
         <div class="detail-grid" id="detail-grid"></div>
         <div class="feature-tags" id="detail-features"></div>
         <div class="room-notes" id="detail-notes" style="display:none;"></div>
     </div>
 
+    <!-- Room Types view -->
+    <div class="room-types-view" id="room-types-view">
+        <div class="types-grid" id="types-grid"></div>
+    </div>
+
+    <!-- Photo gallery modal -->
+    <div class="gallery-overlay" id="gallery-overlay" onclick="handleGalleryBackdropClick(event)">
+        <div class="gallery-content" onclick="event.stopPropagation()">
+            <div class="gallery-header">
+                <div>
+                    <div class="gallery-title" id="gallery-title"></div>
+                    <div class="gallery-subtitle" id="gallery-subtitle"></div>
+                </div>
+                <button class="gallery-close" onclick="closeGallery()">×</button>
+            </div>
+            <div class="gallery-main">
+                <button class="gallery-nav prev" onclick="galleryPrev()">‹</button>
+                <img class="gallery-image" id="gallery-image" alt="">
+                <button class="gallery-nav next" onclick="galleryNext()">›</button>
+                <div class="gallery-counter" id="gallery-counter"></div>
+            </div>
+            <div class="gallery-thumbs" id="gallery-thumbs"></div>
+        </div>
+    </div>
+
     <script>
-        const roomData = {"401": {"Room Number": "401", "Code": "SSK", "Room Category": "Studio Suites", "SF": "429", "Room Type Name": "Studio Suite King", "View Direction": "West/South", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": "2", "Window Seat": "No"}, "402": {"Room Number": "402", "Code": "PQQC", "Room Category": "Premium Rooms", "SF": "387", "Room Type Name": "Premium Two Queen Corner", "View Direction": "East/South", "Corner": "Corner", "City/Park": "Park", "Window Seat": "No"}, "403": {"Room Number": "403", "Code": "PK", "Room Category": "Premium Rooms", "SF": "332", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "404": {"Room Number": "404", "Code": "DQQAB", "Room Category": "Deluxe Rooms", "SF": "371", "Room Type Name": "Deluxe Two Queen Accessible Bathroom", "View Direction": "East", "ADA": "Yes", "ADA Bathroom": "Seat", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "406": {"Room Number": "406", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "359", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "407": {"Room Number": "407", "Code": "PK", "Room Category": "Premium Rooms", "SF": "332", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "408": {"Room Number": "408", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "363", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "409": {"Room Number": "409", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "410": {"Room Number": "410", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "363", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "411": {"Room Number": "411", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "412": {"Room Number": "412", "Code": "PK", "Room Category": "Premium Rooms", "SF": "306", "Room Type Name": "Premium King", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "413": {"Room Number": "413", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "414": {"Room Number": "414", "Code": "PK", "Room Category": "Premium Rooms", "SF": "312", "Room Type Name": "Premium King", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "415": {"Room Number": "415", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "417": {"Room Number": "417", "Code": "PK", "Room Category": "Premium Rooms", "SF": "328", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "419": {"Room Number": "419", "Code": "PK", "Room Category": "Premium Rooms", "SF": "320", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "421": {"Room Number": "421", "Code": "SPK", "Room Category": "Premium Studio Suites", "SF": "651", "Room Type Name": "Premium Studio Suite King", "Adjoining": "Yes", "View Direction": "West/North", "Ice": "Ice", "Corner": "Corner", "City/Park": "City", "View of Square": "Yes", "1/2 Sinks": "2", "Window Seat": "Yes", "Sofa Bed": "Yes", "Notes": "Adjoining with 423", "Tub": "Yes"}, "423": {"Room Number": "423", "Code": "PK", "Room Category": "Premium Rooms", "SF": "305", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "North", "Ice": "Ice", "City/Park": "City", "View of Square": "Yes", "Window Seat": "Yes", "Notes": "Adjoining with 421"}, "425": {"Room Number": "425", "Code": "PK", "Room Category": "Premium Rooms", "SF": "305", "Room Type Name": "Premium King", "View Direction": "North", "City/Park": "City", "View of Square": "Yes", "Window Seat": "Yes"}, "426": {"Room Number": "426", "Code": "PK", "Room Category": "Premium Rooms", "SF": "309", "Room Type Name": "Premium King", "View Direction": "South", "City/Park": "Park", "Window Seat": "No"}, "427": {"Room Number": "427", "Code": "PK", "Room Category": "Premium Rooms", "SF": "310", "Room Type Name": "Premium King", "View Direction": "North", "Last Sell": "Last Sell", "City/Park": "City", "View of Square": "Yes", "Window Seat": "Yes", "Notes": "Partial view"}, "428": {"Room Number": "428", "Code": "PK", "Room Category": "Premium Rooms", "SF": "306", "Room Type Name": "Premium King", "View Direction": "South", "City/Park": "Park", "Window Seat": "No"}, "430": {"Room Number": "430", "Code": "DKAH", "Room Category": "Deluxe Rooms", "SF": "323", "Room Type Name": "Deluxe King Accessible Hearing", "Adjoining": "Yes", "View Direction": "South", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "No", "Notes": "Adjoining with 432"}, "432": {"Room Number": "432", "Code": "DKAH", "Room Category": "Deluxe Rooms", "SF": "325", "Room Type Name": "Deluxe King Accessible Hearing", "Adjoining": "Yes", "View Direction": "South", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Adjoining with 430"}, "434": {"Room Number": "434", "Code": "DKAH", "Room Category": "Deluxe Rooms", "SF": "340", "Room Type Name": "Deluxe King Accessible Hearing", "View Direction": "East/South", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Corner": "Corner", "City/Park": "Park", "Window Seat": "No"}, "436": {"Room Number": "436", "Code": "PK", "Room Category": "Premium Rooms", "SF": "330", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes"}, "438": {"Room Number": "438", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes"}, "440": {"Room Number": "440", "Code": "PK", "Room Category": "Premium Rooms", "SF": "317", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes"}, "442": {"Room Number": "442", "Code": "PK", "Room Category": "Premium Rooms", "SF": "316", "Room Type Name": "Premium King", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes"}, "443": {"Room Number": "443", "Code": "SSK", "Room Category": "Studio Suites", "SF": "459", "Room Type Name": "Studio Suite King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "1/2 Sinks": "2", "Tub": "Yes", "Window Seat": "Yes"}, "444": {"Room Number": "444", "Code": "PK", "Room Category": "Premium Rooms", "SF": "356", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Adjoining with 446"}, "445": {"Room Number": "445", "Code": "PK", "Room Category": "Premium Rooms", "SF": "317", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "446": {"Room Number": "446", "Code": "PRESAB", "Room Category": "Presidential Suites", "SF": "739", "Room Type Name": "Presidential Suite King Accessible Bathroom", "Adjoining": "Yes", "View Direction": "East/North", "ADA": "Yes", "ADA Bathroom": "Roll in Shower", "Stairs": "Stairs", "Corner": "Corner", "City/Park": "Park", "1/2 Sinks": "2", "Window Seat": "No", "Notes": "Adjoining with 444", "Tub": "Yes"}, "447": {"Room Number": "447", "Code": "SPK", "Room Category": "Premium Studio Suites", "SF": "548", "Room Type Name": "Premium Studio Suite King", "View Direction": "West/North", "Corner": "Corner", "City/Park": "City", "View of Square": "Yes", "1/2 Sinks": "2", "Tub": "Yes", "Window Seat": "Yes", "Sofa Bed": "Yes"}, "501": {"Room Number": "501", "Code": "SSK", "Room Category": "Studio Suites", "SF": "429", "Room Type Name": "Studio Suite King", "View Direction": "West/South", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": "2", "Window Seat": "No"}, "502": {"Room Number": "502", "Code": "PQQC", "Room Category": "Premium Rooms", "SF": "387", "Room Type Name": "Premium Two Queen Corner", "View Direction": "East/South", "Corner": "Corner", "City/Park": "Park", "Window Seat": "No"}, "503": {"Room Number": "503", "Code": "PK", "Room Category": "Premium Rooms", "SF": "332", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "504": {"Room Number": "504", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "371", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "506": {"Room Number": "506", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "359", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "507": {"Room Number": "507", "Code": "PK", "Room Category": "Premium Rooms", "SF": "332", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "508": {"Room Number": "508", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "363", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "509": {"Room Number": "509", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "510": {"Room Number": "510", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "363", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "511": {"Room Number": "511", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "512": {"Room Number": "512", "Code": "PK", "Room Category": "Premium Rooms", "SF": "306", "Room Type Name": "Premium King", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "513": {"Room Number": "513", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "514": {"Room Number": "514", "Code": "PK", "Room Category": "Premium Rooms", "SF": "312", "Room Type Name": "Premium King", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "515": {"Room Number": "515", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "517": {"Room Number": "517", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "519": {"Room Number": "519", "Code": "PK", "Room Category": "Premium Rooms", "SF": "320", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "521": {"Room Number": "521", "Code": "SPK", "Room Category": "Premium Studio Suites", "SF": "651", "Room Type Name": "Premium Studio Suite King", "Adjoining": "Yes", "View Direction": "West/North", "Ice": "Ice", "Corner": "Corner", "City/Park": "City", "View of Square": "Yes", "1/2 Sinks": "2", "Tub": "Yes", "Window Seat": "No", "Sofa Bed": "Yes", "Notes": "Adjoining to 523"}, "523": {"Room Number": "523", "Code": "PK", "Room Category": "Premium Rooms", "SF": "305", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "North", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes", "Notes": "Adjoining to 521"}, "525": {"Room Number": "525", "Code": "PK", "Room Category": "Premium Rooms", "SF": "305", "Room Type Name": "Premium King", "View Direction": "North", "City/Park": "City", "View of Square": "Yes", "Window Seat": "Yes"}, "526": {"Room Number": "526", "Code": "PK", "Room Category": "Premium Rooms", "SF": "309", "Room Type Name": "Premium King", "View Direction": "South", "City/Park": "Park", "Window Seat": "No", "Notes": "1 window only"}, "527": {"Room Number": "527", "Code": "PK", "Room Category": "Premium Rooms", "SF": "310", "Room Type Name": "Premium King", "View Direction": "North", "City/Park": "City", "Window Seat": "Yes", "Notes": "1 window only"}, "528": {"Room Number": "528", "Code": "PK", "Room Category": "Premium Rooms", "SF": "306", "Room Type Name": "Premium King", "View Direction": "South", "City/Park": "Park", "Window Seat": "No"}, "530": {"Room Number": "530", "Code": "PK", "Room Category": "Premium Rooms", "SF": "323", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "South", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "No", "Notes": "Adjoining with 532"}, "532": {"Room Number": "532", "Code": "PK", "Room Category": "Premium Rooms", "SF": "325", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "South", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Adjoining with 530"}, "534": {"Room Number": "534", "Code": "PKC", "Room Category": "Premium Rooms", "SF": "340", "Room Type Name": "Premium King Corner", "View Direction": "East/South", "Corner": "Corner", "City/Park": "Park", "Window Seat": "No"}, "536": {"Room Number": "536", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes"}, "538": {"Room Number": "538", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes"}, "539": {"Room Number": "539", "Code": "PK", "Room Category": "Premium Rooms", "SF": "394", "Room Type Name": "Premium King", "View Direction": "West", "Elevator": "Elevator", "City/Park": "City", "Window Seat": "Yes", "Notes": "Larger than other Premium King rooms"}, "540": {"Room Number": "540", "Code": "PK", "Room Category": "Premium Rooms", "SF": "317", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes"}, "542": {"Room Number": "542", "Code": "PK", "Room Category": "Premium Rooms", "SF": "316", "Room Type Name": "Premium King", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes"}, "543": {"Room Number": "543", "Code": "PK", "Room Category": "Premium Rooms", "SF": "339", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "No", "Notes": "Larger Room"}, "544": {"Room Number": "544", "Code": "DKAB", "Room Category": "Deluxe Rooms", "SF": "358", "Room Type Name": "Deluxe King Accessible Bathroom", "Adjoining": "Yes", "View Direction": "East", "ADA": "Yes", "ADA Bathroom": "Seat", "City/Park": "Park", "Window Seat": "No", "Notes": "Adjoining with 546"}, "545": {"Room Number": "545", "Code": "PK", "Room Category": "Premium Rooms", "SF": "317", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "546": {"Room Number": "546", "Code": "PRESAH", "Room Category": "Presidential Suites", "SF": "743", "Room Type Name": "Presidential Suite King Accessible Hearing", "Adjoining": "Yes", "View Direction": "East/North", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Corner": "Corner", "City/Park": "Park", "1/2 Sinks": "2", "Window Seat": "No", "Notes": "Missing flasher in main living, Powder room, Adjoining with 544"}, "547": {"Room Number": "547", "Code": "SPK", "Room Category": "Premium Studio Suites", "SF": "548", "Room Type Name": "Premium Studio Suite King", "View Direction": "West/North", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": "2", "Tub": "Yes", "Window Seat": "Yes", "Sofa Bed": "Yes"}, "601": {"Room Number": "601", "Code": "SSK", "Room Category": "Studio Suites", "SF": "429", "Room Type Name": "Studio Suite King", "View Direction": "West/South", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": "2", "Window Seat": "No"}, "602": {"Room Number": "602", "Code": "PQQC", "Room Category": "Premium Rooms", "SF": "387", "Room Type Name": "Premium Two Queen Corner", "View Direction": "East/South", "Corner": "Corner", "City/Park": "Park", "Window Seat": "No"}, "603": {"Room Number": "603", "Code": "PK", "Room Category": "Premium Rooms", "SF": "332", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "604": {"Room Number": "604", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "371", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "606": {"Room Number": "606", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "359", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "607": {"Room Number": "607", "Code": "PK", "Room Category": "Premium Rooms", "SF": "332", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "608": {"Room Number": "608", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "363", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "609": {"Room Number": "609", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "610": {"Room Number": "610", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "363", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "611": {"Room Number": "611", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "612": {"Room Number": "612", "Code": "PK", "Room Category": "Premium Rooms", "SF": "306", "Room Type Name": "Premium King", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "613": {"Room Number": "613", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "614": {"Room Number": "614", "Code": "PK", "Room Category": "Premium Rooms", "SF": "312", "Room Type Name": "Premium King", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "615": {"Room Number": "615", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "617": {"Room Number": "617", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "619": {"Room Number": "619", "Code": "PK", "Room Category": "Premium Rooms", "SF": "320", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "621": {"Room Number": "621", "Code": "SPK", "Room Category": "Premium Studio Suites", "SF": "651", "Room Type Name": "Premium Studio Suite King", "Adjoining": "Yes", "View Direction": "West/North", "Ice": "Ice", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": "2", "Tub": "Yes", "Window Seat": "Yes", "Sofa Bed": "Yes", "Notes": "Adjoining with 623"}, "623": {"Room Number": "623", "Code": "PK", "Room Category": "Premium Rooms", "SF": "305", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "North", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes", "Notes": "Adjoining with 621"}, "625": {"Room Number": "625", "Code": "PK", "Room Category": "Premium Rooms", "SF": "305", "Room Type Name": "Premium King", "View Direction": "North", "City/Park": "City", "Window Seat": "Yes"}, "626": {"Room Number": "626", "Code": "PK", "Room Category": "Premium Rooms", "SF": "309", "Room Type Name": "Premium King", "View Direction": "South", "City/Park": "Park", "Window Seat": "No"}, "627": {"Room Number": "627", "Code": "PK", "Room Category": "Premium Rooms", "SF": "310", "Room Type Name": "Premium King", "View Direction": "North", "City/Park": "City", "Window Seat": "Yes"}, "628": {"Room Number": "628", "Code": "PK", "Room Category": "Premium Rooms", "SF": "306", "Room Type Name": "Premium King", "View Direction": "South", "City/Park": "Park", "Window Seat": "No"}, "630": {"Room Number": "630", "Code": "PK", "Room Category": "Premium Rooms", "SF": "323", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "South", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "No", "Notes": "Adjoining with 632"}, "632": {"Room Number": "632", "Code": "PK", "Room Category": "Premium Rooms", "SF": "325", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "South", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Adjoining with 630"}, "634": {"Room Number": "634", "Code": "PKC", "Room Category": "Premium Rooms", "SF": "340", "Room Type Name": "Premium King Corner", "View Direction": "East/South", "Corner": "Corner", "City/Park": "Park", "Window Seat": "No"}, "636": {"Room Number": "636", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes"}, "638": {"Room Number": "638", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes"}, "639": {"Room Number": "639", "Code": "PK", "Room Category": "Premium Rooms", "SF": "394", "Room Type Name": "Premium King", "View Direction": "West", "Elevator": "Elevator", "City/Park": "City", "Window Seat": "Yes", "Notes": "Larger King"}, "640": {"Room Number": "640", "Code": "PK", "Room Category": "Premium Rooms", "SF": "317", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes"}, "642": {"Room Number": "642", "Code": "PK", "Room Category": "Premium Rooms", "SF": "316", "Room Type Name": "Premium King", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes"}, "643": {"Room Number": "643", "Code": "PK", "Room Category": "Premium Rooms", "SF": "339", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "No", "Notes": "Larger King"}, "644": {"Room Number": "644", "Code": "PK", "Room Category": "Premium Rooms", "SF": "356", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Adjoining with 646"}, "645": {"Room Number": "645", "Code": "PK", "Room Category": "Premium Rooms", "SF": "317", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "646": {"Room Number": "646", "Code": "PRES", "Room Category": "Presidential Suites", "SF": "743", "Room Type Name": "Presidential Suite King", "Adjoining": "Yes", "View Direction": "East/North", "Corner": "Corner", "City/Park": "Park", "1/2 Sinks": "2", "Window Seat": "No", "Notes": "Adjoining with 644, Powder Room"}, "647": {"Room Number": "647", "Code": "SPK", "Room Category": "Premium Studio Suites", "SF": "548", "Room Type Name": "Premium Studio Suite King", "View Direction": "West/North", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": "2", "Tub": "Yes", "Window Seat": "Yes", "Sofa Bed": "Yes"}, "201": {"Room Number": "201", "Code": "SSKAB", "Room Category": "Studio Suites", "Room Type Name": "Studio Suite King Accessible Bathroom", "View Direction": "West/South", "ADA": "Yes", "ADA Bathroom": "Roll in Shower", "Balcony": "Yes", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": 2, "Window Seat": "No"}, "202": {"Room Number": "202", "Code": "DKAH", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King Accessible Hearing", "View Direction": "East/South", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Corner": "Corner", "City/Park": "Park", "Window Seat": "Yes"}, "203": {"Room Number": "203", "Code": "DKAH", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King Accessible Hearing", "View Direction": "West", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Stairs": "Stairs", "Balcony": "Yes", "City/Park": "City", "Window Seat": "No"}, "204": {"Room Number": "204", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Rooftop view"}, "206": {"Room Number": "206", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Rooftop view"}, "207": {"Room Number": "207", "Code": "PKB", "Room Category": "Premium Rooms", "Room Type Name": "Premium King Balcony", "View Direction": "West", "Stairs": "Stairs", "Balcony": "Yes", "City/Park": "City", "Window Seat": "No"}, "208": {"Room Number": "208", "Code": "DKAB", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King Accessible Bathroom", "View Direction": "East", "Last Sell": "Last Sell", "ADA": "Yes", "ADA Bathroom": "Roll in Shower", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "209": {"Room Number": "209", "Code": "PKB", "Room Category": "Premium Rooms", "Room Type Name": "Premium King Balcony", "View Direction": "West", "Balcony": "Yes", "City/Park": "City", "Window Seat": "No"}, "211": {"Room Number": "211", "Code": "PKB", "Room Category": "Premium Rooms", "Room Type Name": "Premium King Balcony", "View Direction": "West", "Balcony": "Yes", "City/Park": "City", "Window Seat": "No"}, "213": {"Room Number": "213", "Code": "PKB", "Room Category": "Premium Rooms", "Room Type Name": "Premium King Balcony", "View Direction": "West", "Ice": "Ice", "Balcony": "Yes", "City/Park": "City", "Window Seat": "No"}, "215": {"Room Number": "215", "Code": "DKAB", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King Accessible Bathroom", "View Direction": "West", "ADA": "Yes", "ADA Bathroom": "Seat", "Ice": "Ice", "Balcony": "Yes", "City/Park": "City", "Window Seat": "No", "Notes": "Next to Fitness Center"}};
+        const roomData = {"401": {"Room Number": "401", "Code": "SSK", "Room Category": "Studio Suites", "SF": "429", "Room Type Name": "Studio Suite King", "View Direction": "West/South", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": "2", "Window Seat": "No"}, "402": {"Room Number": "402", "Code": "PQQC", "Room Category": "Premium Rooms", "SF": "387", "Room Type Name": "Premium Two Queen Corner", "View Direction": "East/South", "Corner": "Corner", "City/Park": "Park", "Window Seat": "No"}, "403": {"Room Number": "403", "Code": "PK", "Room Category": "Premium Rooms", "SF": "332", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "404": {"Room Number": "404", "Code": "DQQAB", "Room Category": "Deluxe Rooms", "SF": "371", "Room Type Name": "Deluxe Two Queen Accessible Bathroom", "View Direction": "East", "ADA": "Yes", "ADA Bathroom": "Seat", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "406": {"Room Number": "406", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "359", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "407": {"Room Number": "407", "Code": "PK", "Room Category": "Premium Rooms", "SF": "332", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "408": {"Room Number": "408", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "363", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "409": {"Room Number": "409", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "410": {"Room Number": "410", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "363", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "411": {"Room Number": "411", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "412": {"Room Number": "412", "Code": "PK", "Room Category": "Premium Rooms", "SF": "306", "Room Type Name": "Premium King", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "413": {"Room Number": "413", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "414": {"Room Number": "414", "Code": "PK", "Room Category": "Premium Rooms", "SF": "312", "Room Type Name": "Premium King", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "415": {"Room Number": "415", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "417": {"Room Number": "417", "Code": "PK", "Room Category": "Premium Rooms", "SF": "328", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "419": {"Room Number": "419", "Code": "PK", "Room Category": "Premium Rooms", "SF": "320", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "421": {"Room Number": "421", "Code": "SPK", "Room Category": "Premium Studio Suites", "SF": "651", "Room Type Name": "Premium Studio Suite King", "Adjoining": "Yes", "View Direction": "West/North", "Ice": "Ice", "Corner": "Corner", "City/Park": "City", "View of Square": "Yes", "1/2 Sinks": "2", "Window Seat": "Yes", "Sofa Bed": "Yes", "Notes": "Adjoining with 423", "Tub": "Yes"}, "423": {"Room Number": "423", "Code": "PK", "Room Category": "Premium Rooms", "SF": "305", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "North", "Ice": "Ice", "City/Park": "City", "View of Square": "Yes", "Window Seat": "Yes", "Notes": "Adjoining with 421"}, "425": {"Room Number": "425", "Code": "PK", "Room Category": "Premium Rooms", "SF": "305", "Room Type Name": "Premium King", "View Direction": "North", "City/Park": "City", "View of Square": "Yes", "Window Seat": "Yes"}, "426": {"Room Number": "426", "Code": "PK", "Room Category": "Premium Rooms", "SF": "309", "Room Type Name": "Premium King", "View Direction": "South", "City/Park": "Park", "Window Seat": "No"}, "427": {"Room Number": "427", "Code": "PK", "Room Category": "Premium Rooms", "SF": "310", "Room Type Name": "Premium King", "View Direction": "North", "Last Sell": "Last Sell", "City/Park": "City", "View of Square": "Yes", "Window Seat": "Yes", "Notes": "Partial view"}, "428": {"Room Number": "428", "Code": "PK", "Room Category": "Premium Rooms", "SF": "306", "Room Type Name": "Premium King", "View Direction": "South", "City/Park": "Park", "Window Seat": "No"}, "430": {"Room Number": "430", "Code": "DKAH", "Room Category": "Deluxe Rooms", "SF": "323", "Room Type Name": "Deluxe King Accessible Hearing", "Adjoining": "Yes", "View Direction": "South", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "No", "Notes": "Adjoining with 432"}, "432": {"Room Number": "432", "Code": "DKAH", "Room Category": "Deluxe Rooms", "SF": "325", "Room Type Name": "Deluxe King Accessible Hearing", "Adjoining": "Yes", "View Direction": "South", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Adjoining with 430"}, "434": {"Room Number": "434", "Code": "PKC", "Room Category": "Premium Rooms", "SF": "340", "Room Type Name": "Premium King Corner", "View Direction": "East/South", "Corner": "Corner", "City/Park": "Park", "Window Seat": "No"}, "436": {"Room Number": "436", "Code": "PK", "Room Category": "Premium Rooms", "SF": "330", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes"}, "438": {"Room Number": "438", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes"}, "440": {"Room Number": "440", "Code": "PK", "Room Category": "Premium Rooms", "SF": "317", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes"}, "442": {"Room Number": "442", "Code": "PK", "Room Category": "Premium Rooms", "SF": "316", "Room Type Name": "Premium King", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes"}, "443": {"Room Number": "443", "Code": "SSK", "Room Category": "Studio Suites", "SF": "459", "Room Type Name": "Studio Suite King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "1/2 Sinks": "2", "Tub": "Yes", "Window Seat": "Yes"}, "444": {"Room Number": "444", "Code": "PK", "Room Category": "Premium Rooms", "SF": "356", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Adjoining with 446"}, "445": {"Room Number": "445", "Code": "PK", "Room Category": "Premium Rooms", "SF": "317", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "446": {"Room Number": "446", "Code": "PRESAB", "Room Category": "Presidential Suites", "SF": "739", "Room Type Name": "Presidential Suite King Accessible Bathroom", "Adjoining": "Yes", "View Direction": "East/North", "ADA": "Yes", "ADA Bathroom": "Roll in Shower", "Stairs": "Stairs", "Corner": "Corner", "City/Park": "Park", "1/2 Sinks": "2", "Window Seat": "No", "Notes": "Adjoining with 444", "Tub": "Yes"}, "447": {"Room Number": "447", "Code": "SPK", "Room Category": "Premium Studio Suites", "SF": "548", "Room Type Name": "Premium Studio Suite King", "View Direction": "West/North", "Corner": "Corner", "City/Park": "City", "View of Square": "Yes", "1/2 Sinks": "2", "Tub": "Yes", "Window Seat": "Yes", "Sofa Bed": "Yes"}, "501": {"Room Number": "501", "Code": "SSK", "Room Category": "Studio Suites", "SF": "429", "Room Type Name": "Studio Suite King", "View Direction": "West/South", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": "2", "Window Seat": "No"}, "502": {"Room Number": "502", "Code": "PQQC", "Room Category": "Premium Rooms", "SF": "387", "Room Type Name": "Premium Two Queen Corner", "View Direction": "East/South", "Corner": "Corner", "City/Park": "Park", "Window Seat": "No"}, "503": {"Room Number": "503", "Code": "PK", "Room Category": "Premium Rooms", "SF": "332", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "504": {"Room Number": "504", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "371", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "506": {"Room Number": "506", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "359", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "507": {"Room Number": "507", "Code": "PK", "Room Category": "Premium Rooms", "SF": "332", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "508": {"Room Number": "508", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "363", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "509": {"Room Number": "509", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "510": {"Room Number": "510", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "363", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "511": {"Room Number": "511", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "512": {"Room Number": "512", "Code": "PK", "Room Category": "Premium Rooms", "SF": "306", "Room Type Name": "Premium King", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "513": {"Room Number": "513", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "514": {"Room Number": "514", "Code": "PK", "Room Category": "Premium Rooms", "SF": "312", "Room Type Name": "Premium King", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "515": {"Room Number": "515", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "517": {"Room Number": "517", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "519": {"Room Number": "519", "Code": "PK", "Room Category": "Premium Rooms", "SF": "320", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "521": {"Room Number": "521", "Code": "SPK", "Room Category": "Premium Studio Suites", "SF": "651", "Room Type Name": "Premium Studio Suite King", "Adjoining": "Yes", "View Direction": "West/North", "Ice": "Ice", "Corner": "Corner", "City/Park": "City", "View of Square": "Yes", "1/2 Sinks": "2", "Tub": "Yes", "Window Seat": "No", "Sofa Bed": "Yes", "Notes": "Adjoining to 523"}, "523": {"Room Number": "523", "Code": "PK", "Room Category": "Premium Rooms", "SF": "305", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "North", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes", "Notes": "Adjoining to 521"}, "525": {"Room Number": "525", "Code": "PK", "Room Category": "Premium Rooms", "SF": "305", "Room Type Name": "Premium King", "View Direction": "North", "City/Park": "City", "View of Square": "Yes", "Window Seat": "Yes"}, "526": {"Room Number": "526", "Code": "PK", "Room Category": "Premium Rooms", "SF": "309", "Room Type Name": "Premium King", "View Direction": "South", "City/Park": "Park", "Window Seat": "No", "Notes": "1 window only"}, "527": {"Room Number": "527", "Code": "PK", "Room Category": "Premium Rooms", "SF": "310", "Room Type Name": "Premium King", "View Direction": "North", "City/Park": "City", "Window Seat": "Yes", "Notes": "1 window only"}, "528": {"Room Number": "528", "Code": "PK", "Room Category": "Premium Rooms", "SF": "306", "Room Type Name": "Premium King", "View Direction": "South", "City/Park": "Park", "Window Seat": "No"}, "530": {"Room Number": "530", "Code": "PK", "Room Category": "Premium Rooms", "SF": "323", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "South", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "No", "Notes": "Adjoining with 532"}, "532": {"Room Number": "532", "Code": "PK", "Room Category": "Premium Rooms", "SF": "325", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "South", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Adjoining with 530"}, "534": {"Room Number": "534", "Code": "PKC", "Room Category": "Premium Rooms", "SF": "340", "Room Type Name": "Premium King Corner", "View Direction": "East/South", "Corner": "Corner", "City/Park": "Park", "Window Seat": "No"}, "536": {"Room Number": "536", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes"}, "538": {"Room Number": "538", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes"}, "539": {"Room Number": "539", "Code": "PK", "Room Category": "Premium Rooms", "SF": "394", "Room Type Name": "Premium King", "View Direction": "West", "Elevator": "Elevator", "City/Park": "City", "Window Seat": "Yes", "Notes": "Larger than other Premium King rooms"}, "540": {"Room Number": "540", "Code": "PK", "Room Category": "Premium Rooms", "SF": "317", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes"}, "542": {"Room Number": "542", "Code": "PK", "Room Category": "Premium Rooms", "SF": "316", "Room Type Name": "Premium King", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes"}, "543": {"Room Number": "543", "Code": "PK", "Room Category": "Premium Rooms", "SF": "339", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "No", "Notes": "Larger Room"}, "544": {"Room Number": "544", "Code": "DKAB", "Room Category": "Deluxe Rooms", "SF": "358", "Room Type Name": "Deluxe King Accessible Bathroom", "Adjoining": "Yes", "View Direction": "East", "ADA": "Yes", "ADA Bathroom": "Seat", "City/Park": "Park", "Window Seat": "No", "Notes": "Adjoining with 546"}, "545": {"Room Number": "545", "Code": "PK", "Room Category": "Premium Rooms", "SF": "317", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "546": {"Room Number": "546", "Code": "PRESAH", "Room Category": "Presidential Suites", "SF": "743", "Room Type Name": "Presidential Suite King Accessible Hearing", "Adjoining": "Yes", "View Direction": "East/North", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Corner": "Corner", "City/Park": "Park", "1/2 Sinks": "2", "Window Seat": "No", "Notes": "Missing flasher in main living, Powder room, Adjoining with 544"}, "547": {"Room Number": "547", "Code": "SPK", "Room Category": "Premium Studio Suites", "SF": "548", "Room Type Name": "Premium Studio Suite King", "View Direction": "West/North", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": "2", "Tub": "Yes", "Window Seat": "Yes", "Sofa Bed": "Yes"}, "601": {"Room Number": "601", "Code": "SSK", "Room Category": "Studio Suites", "SF": "429", "Room Type Name": "Studio Suite King", "View Direction": "West/South", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": "2", "Window Seat": "No"}, "602": {"Room Number": "602", "Code": "PQQC", "Room Category": "Premium Rooms", "SF": "387", "Room Type Name": "Premium Two Queen Corner", "View Direction": "East/South", "Corner": "Corner", "City/Park": "Park", "Window Seat": "No"}, "603": {"Room Number": "603", "Code": "PK", "Room Category": "Premium Rooms", "SF": "332", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "604": {"Room Number": "604", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "371", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "606": {"Room Number": "606", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "359", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "607": {"Room Number": "607", "Code": "PK", "Room Category": "Premium Rooms", "SF": "332", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "608": {"Room Number": "608", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "363", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "609": {"Room Number": "609", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "610": {"Room Number": "610", "Code": "DQQ", "Room Category": "Deluxe Rooms", "SF": "363", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "611": {"Room Number": "611", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "612": {"Room Number": "612", "Code": "PK", "Room Category": "Premium Rooms", "SF": "306", "Room Type Name": "Premium King", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "613": {"Room Number": "613", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes"}, "614": {"Room Number": "614", "Code": "PK", "Room Category": "Premium Rooms", "SF": "312", "Room Type Name": "Premium King", "View Direction": "East", "City/Park": "Park", "Window Seat": "No"}, "615": {"Room Number": "615", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "617": {"Room Number": "617", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "619": {"Room Number": "619", "Code": "PK", "Room Category": "Premium Rooms", "SF": "320", "Room Type Name": "Premium King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes"}, "621": {"Room Number": "621", "Code": "SPK", "Room Category": "Premium Studio Suites", "SF": "651", "Room Type Name": "Premium Studio Suite King", "Adjoining": "Yes", "View Direction": "West/North", "Ice": "Ice", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": "2", "Tub": "Yes", "Window Seat": "Yes", "Sofa Bed": "Yes", "Notes": "Adjoining with 623"}, "623": {"Room Number": "623", "Code": "PK", "Room Category": "Premium Rooms", "SF": "305", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "North", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes", "Notes": "Adjoining with 621"}, "625": {"Room Number": "625", "Code": "PK", "Room Category": "Premium Rooms", "SF": "305", "Room Type Name": "Premium King", "View Direction": "North", "City/Park": "City", "Window Seat": "Yes"}, "626": {"Room Number": "626", "Code": "PK", "Room Category": "Premium Rooms", "SF": "309", "Room Type Name": "Premium King", "View Direction": "South", "City/Park": "Park", "Window Seat": "No"}, "627": {"Room Number": "627", "Code": "PK", "Room Category": "Premium Rooms", "SF": "310", "Room Type Name": "Premium King", "View Direction": "North", "City/Park": "City", "Window Seat": "Yes"}, "628": {"Room Number": "628", "Code": "PK", "Room Category": "Premium Rooms", "SF": "306", "Room Type Name": "Premium King", "View Direction": "South", "City/Park": "Park", "Window Seat": "No"}, "630": {"Room Number": "630", "Code": "PK", "Room Category": "Premium Rooms", "SF": "323", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "South", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "No", "Notes": "Adjoining with 632"}, "632": {"Room Number": "632", "Code": "PK", "Room Category": "Premium Rooms", "SF": "325", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "South", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Adjoining with 630"}, "634": {"Room Number": "634", "Code": "PKC", "Room Category": "Premium Rooms", "SF": "340", "Room Type Name": "Premium King Corner", "View Direction": "East/South", "Corner": "Corner", "City/Park": "Park", "Window Seat": "No"}, "636": {"Room Number": "636", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes"}, "638": {"Room Number": "638", "Code": "PK", "Room Category": "Premium Rooms", "SF": "329", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "City/Park": "Park", "Window Seat": "Yes"}, "639": {"Room Number": "639", "Code": "PK", "Room Category": "Premium Rooms", "SF": "394", "Room Type Name": "Premium King", "View Direction": "West", "Elevator": "Elevator", "City/Park": "City", "Window Seat": "Yes", "Notes": "Larger King"}, "640": {"Room Number": "640", "Code": "PK", "Room Category": "Premium Rooms", "SF": "317", "Room Type Name": "Premium King", "View Direction": "East", "Elevator": "Elevator", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes"}, "642": {"Room Number": "642", "Code": "PK", "Room Category": "Premium Rooms", "SF": "316", "Room Type Name": "Premium King", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes"}, "643": {"Room Number": "643", "Code": "PK", "Room Category": "Premium Rooms", "SF": "339", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "No", "Notes": "Larger King"}, "644": {"Room Number": "644", "Code": "PK", "Room Category": "Premium Rooms", "SF": "356", "Room Type Name": "Premium King", "Adjoining": "Yes", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Adjoining with 646"}, "645": {"Room Number": "645", "Code": "PK", "Room Category": "Premium Rooms", "SF": "317", "Room Type Name": "Premium King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes"}, "646": {"Room Number": "646", "Code": "PRES", "Room Category": "Presidential Suites", "SF": "743", "Room Type Name": "Presidential Suite King", "Adjoining": "Yes", "View Direction": "East/North", "Corner": "Corner", "City/Park": "Park", "1/2 Sinks": "2", "Window Seat": "No", "Notes": "Adjoining with 644, Powder Room"}, "647": {"Room Number": "647", "Code": "SPK", "Room Category": "Premium Studio Suites", "SF": "548", "Room Type Name": "Premium Studio Suite King", "View Direction": "West/North", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": "2", "Tub": "Yes", "Window Seat": "Yes", "Sofa Bed": "Yes"}, "201": {"Room Number": "201", "Code": "SSKAB", "Room Category": "Studio Suites", "Room Type Name": "Studio Suite King Accessible Bathroom", "View Direction": "West/South", "ADA": "Yes", "ADA Bathroom": "Roll in Shower", "Balcony": "Yes", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": 2, "Window Seat": "No"}, "202": {"Room Number": "202", "Code": "DKAH", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King Accessible Hearing", "View Direction": "East/South", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Corner": "Corner", "City/Park": "Park", "Window Seat": "Yes"}, "203": {"Room Number": "203", "Code": "DKAH", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King Accessible Hearing", "View Direction": "West", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Stairs": "Stairs", "Balcony": "Yes", "City/Park": "City", "Window Seat": "No"}, "204": {"Room Number": "204", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Rooftop view"}, "206": {"Room Number": "206", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Rooftop view"}, "207": {"Room Number": "207", "Code": "PKB", "Room Category": "Premium Rooms", "Room Type Name": "Premium King Balcony", "View Direction": "West", "Stairs": "Stairs", "Balcony": "Yes", "City/Park": "City", "Window Seat": "No"}, "208": {"Room Number": "208", "Code": "DKAB", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King Accessible Bathroom", "View Direction": "East", "Last Sell": "Last Sell", "ADA": "Yes", "ADA Bathroom": "Roll in Shower", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No"}, "209": {"Room Number": "209", "Code": "PKB", "Room Category": "Premium Rooms", "Room Type Name": "Premium King Balcony", "View Direction": "West", "Balcony": "Yes", "City/Park": "City", "Window Seat": "No"}, "211": {"Room Number": "211", "Code": "PKB", "Room Category": "Premium Rooms", "Room Type Name": "Premium King Balcony", "View Direction": "West", "Balcony": "Yes", "City/Park": "City", "Window Seat": "No"}, "213": {"Room Number": "213", "Code": "PKB", "Room Category": "Premium Rooms", "Room Type Name": "Premium King Balcony", "View Direction": "West", "Ice": "Ice", "Balcony": "Yes", "City/Park": "City", "Window Seat": "No"}, "215": {"Room Number": "215", "Code": "DKAB", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King Accessible Bathroom", "View Direction": "West", "ADA": "Yes", "ADA Bathroom": "Seat", "Ice": "Ice", "Balcony": "Yes", "City/Park": "City", "Window Seat": "No", "Notes": "Next to Fitness Center"}};
         
         // Floor 3 room data (actual data - different room types than floors 4-6)
         const floor3Excluded = ['43', '45', '47', '40', '42', '44', '46'];
         const floor3Data = {"301": {"Room Number": "301", "Code": "SSKAH", "Room Category": "Studio Suites", "Room Type Name": "Studio Suite King Accessible Hearing", "View Direction": "West/South", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": 2, "Window Seat": "No", "SF": "429", "Tub": "Yes"}, "302": {"Room Number": "302", "Code": "DQQAH", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe Two Queen Accessible Hearing", "View Direction": "East/South", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Corner": "Corner", "City/Park": "Park", "Window Seat": "No", "SF": "387"}, "303": {"Room Number": "303", "Code": "DKAH", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King Accessible Hearing", "View Direction": "West", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes", "SF": "332"}, "304": {"Room Number": "304", "Code": "DQQ", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No", "SF": "371"}, "306": {"Room Number": "306", "Code": "DQQ", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No", "SF": "359"}, "307": {"Room Number": "307", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "West", "Stairs": "Stairs", "City/Park": "City", "Window Seat": "Yes", "SF": "332"}, "308": {"Room Number": "308", "Code": "DQQ", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Last Sell": "Last Sell", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No", "SF": "363"}, "309": {"Room Number": "309", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes", "SF": "329"}, "310": {"Room Number": "310", "Code": "DQQ", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe Two Queen", "View Direction": "East", "Last Sell": "Last Sell", "City/Park": "Park", "Window Seat": "No", "SF": "363"}, "311": {"Room Number": "311", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes", "SF": "329"}, "312": {"Room Number": "312", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "East", "Last Sell": "Last Sell", "City/Park": "Park", "Window Seat": "No", "SF": "306"}, "313": {"Room Number": "313", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "West", "City/Park": "City", "Window Seat": "Yes", "SF": "329"}, "314": {"Room Number": "314", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "East", "Last Sell": "Last Sell", "City/Park": "Park", "Window Seat": "No", "SF": "312"}, "315": {"Room Number": "315", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes", "SF": "329"}, "317": {"Room Number": "317", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes", "SF": "328"}, "319": {"Room Number": "319", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "West", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes", "Notes": "Partial view/Low lighting", "SF": "320"}, "321": {"Room Number": "321", "Code": "SPKAH", "Room Category": "Premium Studio Suites", "Room Type Name": "Premium Studio Suite King Accessible Hearing", "Adjoining": "Yes", "View Direction": "West/North", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Ice": "Ice", "Corner": "Corner", "City/Park": "City", "1/2 Sinks": 2, "Tub": "Yes", "Window Seat": "Yes", "Sofa Bed": "Yes", "Notes": "Adjoining with 323", "SF": "652"}, "323": {"Room Number": "323", "Code": "DKAH", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King Accessible Hearing", "Adjoining": "Yes", "View Direction": "North", "Last Sell": "Last Sell", "ADA": "Yes", "ADA Hearing": "ADA Hearing", "Ice": "Ice", "City/Park": "City", "Window Seat": "Yes", "Notes": "Adjoining with 321", "SF": "305"}, "325": {"Room Number": "325", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "North", "Last Sell": "Last Sell", "City/Park": "City", "Window Seat": "Yes", "SF": "305"}, "326": {"Room Number": "326", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "South", "Last Sell": "Last Sell", "City/Park": "Park", "Window Seat": "No", "SF": "308"}, "327": {"Room Number": "327", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "North", "Last Sell": "Last Sell", "City/Park": "City", "Window Seat": "Yes", "SF": "310"}, "328": {"Room Number": "328", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "South", "Last Sell": "Last Sell", "City/Park": "Park", "Window Seat": "No", "SF": "306"}, "330": {"Room Number": "330", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "Adjoining": "Yes", "View Direction": "South", "Last Sell": "Last Sell", "Elevator": "Elevator", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "No", "Notes": "Adjoining with 332", "SF": "323"}, "332": {"Room Number": "332", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "Adjoining": "Yes", "View Direction": "South", "Last Sell": "Last Sell", "Elevator": "Elevator", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes", "Notes": "Adjoining with 330", "SF": "325"}, "334": {"Room Number": "334", "Code": "PKC", "Room Category": "Premium Rooms", "Room Type Name": "Premium King Corner", "View Direction": "East/South", "Corner": "Corner", "City/Park": "Park", "Window Seat": "No", "SF": "340"}, "336": {"Room Number": "336", "Code": "DK", "Room Category": "Deluxe Rooms", "Room Type Name": "Deluxe King", "View Direction": "East", "Elevator": "Elevator", "Stairs": "Stairs", "City/Park": "Park", "Window Seat": "Yes", "SF": "329"}, "338": {"Room Number": "338", "Code": "SSKAB", "Room Category": "Studio Suites", "Room Type Name": "Studio Suite King Accessible Bathroom", "View Direction": "East", "ADA": "Yes", "ADA Bathroom": "Seat", "Elevator": "Elevator", "Stairs": "Stairs", "City/Park": "Park", "1/2 Sinks": 2, "Tub": "Yes", "Window Seat": "No", "SF": "557"}};
         Object.assign(roomData, floor3Data);
+
+        // Room type photo manifest
+        const ROOM_TYPES = [
+            {
+                key: 'DK', name: 'Deluxe King', folder: 'DK',
+                codes: ['DK','DKAB','DKAH'],
+                photos: ['_67A3131-DK.jpg','_67A3164DK2.jpg','544 DK ADA_6381.jpg'],
+                description: 'Our classic king room — approachable, comfortable, and flexible.'
+            },
+            {
+                key: 'DQQ', name: 'Deluxe Two Queen', folder: 'DQQ',
+                codes: ['DQQ','DQQAB','DQQAH'],
+                photos: ['610 DQQ_IMG_6225.jpg','610 DQQ_IMG_6235.jpg','610 DQQ_IMG_6302.jpg'],
+                description: 'Two queen beds — ideal for friends or family traveling together.'
+            },
+            {
+                key: 'PK', name: 'Premium King', folder: 'PK',
+                codes: ['PK'],
+                photos: ['_67A3131-PK2.jpg','_67A3164-PK.jpg'],
+                description: 'Upgraded king with premium finishes.'
+            },
+            {
+                key: 'PKB', name: 'Premium King Balcony', folder: 'PKB',
+                codes: ['PKB'],
+                photos: ['209 PK Balcony_IMG_6093.jpg','209 PK Balcony_IMG_6105.jpg','209 PK Balcony_IMG_6141.jpg'],
+                description: 'Premium king with a private balcony. Second floor only.'
+            },
+            {
+                key: 'PKC', name: 'Premium King Corner', folder: 'PCK',
+                codes: ['PKC'],
+                photos: ['534 P Corner King_67A2640-2.jpg','534 P Corner King_67A2646-2.jpg'],
+                description: 'Corner-exposure premium king with extra windows and light.'
+            },
+            {
+                key: 'PQQ', name: 'Premium Two Queen Corner', folder: 'PQQ',
+                codes: ['PQQ','PQQC'],
+                photos: ['602 PQQ Corner_IMG_5575.jpg','602 PQQ Corner_67A2311-2.jpg','602 PQQ Corner_67A2332-2.jpg'],
+                description: 'Corner two-queen room with park views and generous windows.'
+            },
+            {
+                key: 'SSK', name: 'Studio Suite King', folder: 'SSK',
+                codes: ['SSK','SSKAB','SSKAH'],
+                photos: ['201 Studio Suite_67A2812.jpg','601 Studio Suite_IMG_5393.jpg','601 Studio Suite_IMG_5456-2.jpg','601 Studio Suite_IMG_5479.jpg','601 Studio Suite Bath_IMG_5540.jpg','601 Studio Suite Bath_IMG_6532.jpg','338 Studio Suite ADA_IMG_6317.jpg','338 Studio Suite ADA_IMG_6363.jpg'],
+                description: 'Studio suite with expanded living area and elevated amenities.'
+            },
+            {
+                key: 'SPK', name: 'Premium Studio Suite King', folder: 'SPK',
+                codes: ['SPK','SPKAH'],
+                photos: ['621 One Bedroom Suite_67A2146.jpg','621 One Bedroom Suite_67A2170.jpg','621 One Bedroom Suite_67A2199m.jpg','621 One Bedroom Suite_67A2228.jpg','621_One Bedroom Suite_IMG_5226.jpg'],
+                description: 'One bedroom suite layout with corner windows and a sofa bed.'
+            },
+            {
+                key: 'PRES', name: 'Presidential Suite', folder: 'Presidential',
+                codes: ['PRES','PRESAB','PRESAH'],
+                photos: ['646 Presidential_67A2059.jpg','646 Presidential_IMG_4870.jpg','646 Presidential_IMG_4895.jpg','646 Presidential_IMG_4972.jpg','646 Presidential_IMG_5020.jpg','646 PresidentialIMG_4822m.jpg','646 Presidential Bathroom.jpg','446 Presidential ADA_67A2109.jpg','446 Presidential ADA_IMG_5111-2.jpg','446 Presidential ADA_IMG_5166-2.jpg','446 Presidential Bath ADA_IMG_5069.jpg'],
+                description: 'Top-tier suite with corner views, powder room, and the most space in the hotel.'
+            },
+        ];
+        function photoUrl(folder, file) {
+            return 'photos/' + encodeURIComponent(folder) + '/' + encodeURIComponent(file);
+        }
+        function getRoomType(roomNum) {
+            const room = roomData[roomNum];
+            if (!room) return null;
+            const code = room['Code'];
+            return ROOM_TYPES.find(t => t.codes.includes(code)) || null;
+        }
+        function countRoomsOfType(type) {
+            return Object.values(roomData).filter(r => type.codes.includes(r['Code'])).length;
+        }
+
+        // Gallery state
+        let galleryPhotos = [];
+        let galleryIndex = 0;
+
+        function showRoomTypesView() {
+            if (document.body.classList.contains('types-mode')) {
+                showFloorView();
+                return;
+            }
+            document.body.classList.add('types-mode');
+            document.getElementById('types-btn').classList.add('active');
+            renderRoomTypesView();
+        }
+        function showFloorView() {
+            document.body.classList.remove('types-mode');
+            document.getElementById('types-btn').classList.remove('active');
+        }
+        function renderRoomTypesView() {
+            const grid = document.getElementById('types-grid');
+            grid.innerHTML = ROOM_TYPES.map(t => {
+                const count = countRoomsOfType(t);
+                const cover = t.photos.length ? photoUrl(t.folder, t.photos[0]) : '';
+                return `
+                    <div class="type-card" onclick="openGallery('${t.key}')">
+                        <div class="type-card-cover" style="background-image: url('${cover}');"></div>
+                        <div class="type-card-body">
+                            <div class="type-card-name">${t.name}</div>
+                            <div class="type-card-meta">
+                                <span>${t.photos.length} photo${t.photos.length === 1 ? '' : 's'}</span>
+                                <span class="type-card-count">${count} room${count === 1 ? '' : 's'}</span>
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        function openGallery(typeKey) {
+            const type = ROOM_TYPES.find(t => t.key === typeKey);
+            if (!type || !type.photos.length) return;
+            galleryPhotos = type.photos.map(p => photoUrl(type.folder, p));
+            galleryIndex = 0;
+            document.getElementById('gallery-title').textContent = type.name;
+            document.getElementById('gallery-subtitle').textContent = type.description || '';
+            renderGalleryImage();
+            renderGalleryThumbs();
+            document.getElementById('gallery-overlay').classList.add('open');
+        }
+        function openGalleryForSelectedRoom() {
+            if (!selectedRoom) return;
+            const type = getRoomType(selectedRoom);
+            if (type) openGallery(type.key);
+        }
+        function closeGallery() {
+            document.getElementById('gallery-overlay').classList.remove('open');
+        }
+        function handleGalleryBackdropClick(e) {
+            if (e.target.id === 'gallery-overlay') closeGallery();
+        }
+        function renderGalleryImage() {
+            const img = document.getElementById('gallery-image');
+            img.src = galleryPhotos[galleryIndex];
+            document.getElementById('gallery-counter').textContent = `${galleryIndex + 1} / ${galleryPhotos.length}`;
+            document.querySelectorAll('.gallery-thumb').forEach((el, i) => {
+                el.classList.toggle('active', i === galleryIndex);
+            });
+        }
+        function renderGalleryThumbs() {
+            const wrap = document.getElementById('gallery-thumbs');
+            wrap.innerHTML = galleryPhotos.map((url, i) =>
+                `<div class="gallery-thumb${i === galleryIndex ? ' active' : ''}" style="background-image: url('${url}');" onclick="galleryJumpTo(${i})"></div>`
+            ).join('');
+        }
+        function galleryJumpTo(i) {
+            galleryIndex = i;
+            renderGalleryImage();
+        }
+        function galleryPrev() {
+            galleryIndex = (galleryIndex - 1 + galleryPhotos.length) % galleryPhotos.length;
+            renderGalleryImage();
+        }
+        function galleryNext() {
+            galleryIndex = (galleryIndex + 1) % galleryPhotos.length;
+            renderGalleryImage();
+        }
+        document.addEventListener('keydown', e => {
+            if (!document.getElementById('gallery-overlay').classList.contains('open')) return;
+            if (e.key === 'Escape') closeGallery();
+            else if (e.key === 'ArrowLeft') galleryPrev();
+            else if (e.key === 'ArrowRight') galleryNext();
+        });
 
         // Floor layout positions
         const W = 44, H = 32;
@@ -1022,12 +1433,15 @@
                 const room = roomData[roomNum];
                 const hasHearing = room?.['ADA Hearing'];
                 const hasBathroom = room?.['ADA Bathroom'];
+                const hasBalcony = room?.['Balcony'];
+                const hasBottomIcons = hasHearing || hasBathroom || hasBalcony;
                 svg += `<rect class="room-box ${cls}${sel}${filterClass}" data-room="${roomNum}" x="${x + padding}" y="${y + padding}" width="${w}" height="${h}" rx="3"/>`;
-                svg += `<text class="room-label${filterClass}" x="${x + padding + w/2}" y="${y + padding + h/2 + (hasHearing || hasBathroom ? -2 : 4)}">${roomNum}</text>`;
-                if (hasHearing || hasBathroom) {
+                svg += `<text class="room-label${filterClass}" x="${x + padding + w/2}" y="${y + padding + h/2 + (hasBottomIcons ? -2 : 4)}">${roomNum}</text>`;
+                if (hasBottomIcons) {
                     const icons = [];
                     if (hasHearing) icons.push('🔊');
                     if (hasBathroom) icons.push('♿');
+                    if (hasBalcony) icons.push('🌿');
                     svg += `<text class="room-ada-icon${filterClass}" x="${x + padding + w/2}" y="${y + padding + h/2 + 14}" text-anchor="middle" font-size="9">${icons.join(' ')}</text>`;
                 }
             });
@@ -1132,6 +1546,7 @@
             
             let features = [];
             if (room['Corner']) features.push('Corner');
+            if (room['Balcony']) features.push({ text: '🌿 Balcony', balcony: true });
             if (room['Ice']) features.push('Near Ice');
             if (room['Elevator']) features.push('Near Elevator');
             if (room['Stairs']) features.push('Near Stairs');
@@ -1142,7 +1557,10 @@
             if (room['ADA']) features.push({ text: 'ADA', ada: true });
             
             document.getElementById('detail-features').innerHTML = features.map(f => {
-                if (typeof f === 'object') return `<span class="feature-tag ada">${f.text}</span>`;
+                if (typeof f === 'object') {
+                    const cls = f.balcony ? 'feature-tag balcony' : 'feature-tag ada';
+                    return `<span class="${cls}">${f.text}</span>`;
+                }
                 return `<span class="feature-tag">${f}</span>`;
             }).join('');
             
@@ -1153,7 +1571,17 @@
             } else {
                 notesEl.style.display = 'none';
             }
-            
+
+            const cameraBtn = document.getElementById('detail-camera-btn');
+            const type = getRoomType(roomNum);
+            if (type && type.photos.length) {
+                cameraBtn.disabled = false;
+                cameraBtn.title = `View ${type.name} photos`;
+            } else {
+                cameraBtn.disabled = true;
+                cameraBtn.title = 'No photos available';
+            }
+
             document.getElementById('room-details').classList.add('visible');
         }
         
@@ -1235,7 +1663,9 @@
         
         // Floor toggle
         document.querySelectorAll('.floor-btn').forEach(btn => {
+            if (btn.classList.contains('types-btn')) return;
             btn.addEventListener('click', () => {
+                showFloorView();
                 document.querySelectorAll('.floor-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentFloor = parseInt(btn.dataset.floor);
