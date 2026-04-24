@@ -489,11 +489,11 @@
         }
         .floor-btn.types-btn {
             background: white;
-            border-color: #0F162A;
+            border-color: #c9a227;
             color: #0F162A;
         }
-        .floor-btn.types-btn:hover { background: #f5f5f5; }
-        .floor-btn.types-btn.active { background: #0F162A; color: white; }
+        .floor-btn.types-btn:hover { background: #faf5eb; }
+        .floor-btn.types-btn.active { background: #c9a227; color: white; }
         .room-types-view {
             display: none;
             padding: 25px 30px;
@@ -504,7 +504,10 @@
         body.types-mode .main { display: none; }
         body.types-mode .legend { display: none; }
         body.types-mode .room-types-view { display: block; }
-        body.types-mode .floor-toggle .floor-btn:not(.types-btn) { opacity: 0.5; }
+        body.types-mode .floor-toggle .floor-btn:not(.types-btn).active {
+            background: white;
+            color: #0F162A;
+        }
         .types-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -998,7 +1001,7 @@
             {
                 key: 'SSK', name: 'Studio Suite King', folder: 'SSK',
                 codes: ['SSK','SSKAB','SSKAH'],
-                photos: ['201 Studio Suite_67A2812.jpg','601 Studio Suite_IMG_5393.jpg','601 Studio Suite_IMG_5456-2.jpg','601 Studio Suite_IMG_5479.jpg','601 Studio Suite Bath_IMG_5540.jpg','601 Studio Suite Bath_IMG_6532.jpg','338 Studio Suite ADA_IMG_6317.jpg','338 Studio Suite ADA_IMG_6363.jpg'],
+                photos: ['601 Studio Suite_IMG_5393.jpg','201 Studio Suite_67A2812.jpg','601 Studio Suite_IMG_5456-2.jpg','601 Studio Suite_IMG_5479.jpg','601 Studio Suite Bath_IMG_5540.jpg','601 Studio Suite Bath_IMG_6532.jpg','338 Studio Suite ADA_IMG_6317.jpg','338 Studio Suite ADA_IMG_6363.jpg'],
                 description: 'Studio suite with expanded living area and elevated amenities.'
             },
             {
