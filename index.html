@@ -1289,13 +1289,18 @@
             floorLayouts[3][newRoom] = newCoords;
         });
         
-        // Floor 2 - just west wing rooms (201-215)
+        // Floor 2 - just west wing rooms (201-215). Shifted LEFT by 70px from
+        // their floor 4 positions to make room for the elevator + NE stair
+        // shafts, which physically pass through the building between the Gym
+        // and the Dogwood Ballroom on this floor.
+        const FLOOR2_WEST_SHIFT = -70;
         const floor2Rooms = ['01', '02', '03', '04', '06', '07', '08', '09', '11', '13', '15'];
         floorLayouts[2] = {};
         Object.entries(floorLayouts[4]).forEach(([room, coords]) => {
             const roomSuffix = room.slice(1);
             if (floor2Rooms.includes(roomSuffix)) {
-                floorLayouts[2]['2' + roomSuffix] = [...coords];
+                const [x, y, w, h] = coords;
+                floorLayouts[2]['2' + roomSuffix] = [x + FLOOR2_WEST_SHIFT, y, w, h];
             }
         });
 
@@ -1326,10 +1331,10 @@
                 { id: "FRONT_PORCH", label: "Front Porch", x: 570, y: 290, w: 130, h: 60 }
             ],
             2: [
-                { id: "GYM", label: "Gym", x: 320, y: 0, w: 60, h: 130 },
+                { id: "GYM", label: "Gym", x: 250, y: 0, w: 60, h: 130 },
                 { id: "ATRIUM", label: "Atrium (open below)", x: 400, y: 126, w: 150, h: 128 },
-                { id: "BANQUET_KITCHEN", label: "Banquet Kitchen", x: 280, y: 270, w: 90, h: 70 },
-                { id: "STORAGE", label: "Storage", x: 280, y: 350, w: 90, h: 110 }
+                { id: "BANQUET_KITCHEN", label: "Banquet Kitchen", x: 210, y: 270, w: 90, h: 70 },
+                { id: "STORAGE", label: "Storage", x: 210, y: 350, w: 90, h: 110 }
             ]
         };
 
@@ -1517,11 +1522,13 @@
             svg += `<text class="landmark-label" x="${svgW + 55}" y="${svgH/4}" text-anchor="middle" transform="rotate(90, ${svgW + 55}, ${svgH/4})">↑ City Square</text>`;
             svg += `<text class="landmark-label" x="${svgW/2 + 100}" y="${svgH + 35}" text-anchor="middle">↓ Dave Peel Park</text>`;
 
-            // SW Stairwell — comes down to Floor 2 as well as the guest floors
+            // SW Stairwell — comes down to Floor 2 as well as the guest floors.
+            // On Floor 2 it shifts with the west wing.
             if (currentFloor >= 2) {
                 const room403_sw = floorLayouts[4]['403'];
                 const room407_sw = floorLayouts[4]['407'];
-                const swStairX = room403_sw[0] + padding + TW + (room407_sw[0] - room403_sw[0] - TW) / 2 - 16;
+                const swShift = currentFloor === 2 ? FLOOR2_WEST_SHIFT : 0;
+                const swStairX = room403_sw[0] + padding + TW + (room407_sw[0] - room403_sw[0] - TW) / 2 - 16 + swShift;
                 const swStairY = room403_sw[1] + padding + TH - 32;
                 svg += `<rect x="${swStairX}" y="${swStairY}" width="32" height="32" fill="#fef3c7" stroke="#d97706" stroke-width="1" rx="3"/>`;
                 svg += `<text x="${swStairX + 16}" y="${swStairY + 12}" text-anchor="middle" font-size="6" fill="#92400e">SW</text>`;
@@ -1581,13 +1588,14 @@
                 }
             });
             
-            // Fitness Center on Floor 2 (where 217/219 would be)
+            // Fitness Center on Floor 2 (where 217/219 would be — shifted left
+            // along with the rest of the west wing).
             if (currentFloor === 2) {
                 const room417pos = floorLayouts[4]['417'];
                 const room419pos = floorLayouts[4]['419'];
-                const fcX = room417pos[0] + padding;
+                const fcX = room417pos[0] + padding + FLOOR2_WEST_SHIFT;
                 const fcY = room417pos[1] + padding;
-                const fcW = (room419pos[0] + room419pos[2]) - room417pos[0]; // spans both rooms
+                const fcW = (room419pos[0] + room419pos[2]) - room417pos[0];
                 const fcH = room417pos[3];
                 svg += `<rect class="fitness-center" x="${fcX}" y="${fcY}" width="${fcW}" height="${fcH}" rx="3"/>`;
                 svg += `<text class="fitness-label" x="${fcX + fcW/2}" y="${fcY + fcH/2 - 4}" text-anchor="middle">FITNESS</text>`;
@@ -1627,8 +1635,11 @@
             // Elevator + NE Stair — physical position varies per floor.
             // Guest floors (3-6): between rooms 427 and 443 in the east wing.
             // Floor 2: behind Dogwood's top-left, aligned with Gym's right edge.
+            // On Floor 2: elevator left edge meets Gym's right edge (Gym's right
+            // is at x=310 after the west-wing shift). Top is just below Dogwood's
+            // top edge (y=270 + a hair).
             const elevPositions = {
-                2: { elevX: 380 + padding, elevY: 280 + padding },
+                2: { elevX: 310 + padding, elevY: 280 + padding },
                 3: null, 4: null, 5: null, 6: null
             };
             for (const f of [3, 4, 5, 6]) {
