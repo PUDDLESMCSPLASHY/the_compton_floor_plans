@@ -1321,12 +1321,15 @@
         // Reference spaces — visible context, not clickable, no booking.
         const referenceSpaces = {
             1: [
-                // Atrium (the actual lobby/atrium room) sits at the same x,y as
-                // the floor 2 Atrium opening, since they're vertically aligned.
+                // Atrium sits at the same x,y as the floor 2 Atrium opening
+                // (they're vertically aligned). Lobby occupies the footprint
+                // where Ozark Room is on Floor 2.
                 { id: "ATRIUM", label: "Atrium", x: 490, y: 125, w: 110, h: 135 },
+                { id: "LOBBY", label: "Lobby", x: 605, y: 110, w: 95, h: 160 },
                 { id: "EXEC_OFFICES", label: "Executive Offices", x: 50, y: 220, w: 130, h: 90 },
                 { id: "EMPLOYEE_BREAK", label: "Employee Break", x: 200, y: 220, w: 110, h: 60 },
-                { id: "FRONT_DESK", label: "Front Desk", x: 460, y: 290, w: 100, h: 60 },
+                // Front Desk is a tall rectangle in the room 440 footprint.
+                { id: "FRONT_DESK", label: "Front Desk", x: 510, y: 395, w: 35, h: 105 },
                 { id: "FRONT_PORCH", label: "Front Porch", x: 570, y: 290, w: 130, h: 60 }
             ],
             2: [
@@ -1346,9 +1349,10 @@
                 // PDR sits at the back (right) of Sestina. Sestina drawn first, PDR on top.
                 SESTINA:    [180, 20,  320, 110],
                 PDR:        [430, 25,  70,  100],
-                FIELD_NOTES:[550, 20,  120, 70],
-                // The Gallery sits in the footprint of rooms 432, 434, and 436
-                // (combined bounding box from the guest-floor layouts).
+                // Field Notes covers Sunroom + half of Eddy on floor 2 — runs
+                // from the Atrium's left edge (x=490) out to the right wall.
+                FIELD_NOTES:[490, 0,   210, 110],
+                // The Gallery sits in the footprint of rooms 432, 434, and 436.
                 GALLERY:    [290, 395, 175, 110]
             },
             2: {
