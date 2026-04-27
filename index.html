@@ -1325,7 +1325,7 @@
                 // (they're vertically aligned). Lobby occupies the footprint
                 // where Ozark Room is on Floor 2.
                 { id: "ATRIUM", label: "Atrium", x: 490, y: 125, w: 110, h: 135 },
-                { id: "LOBBY", label: "Lobby", x: 605, y: 110, w: 95, h: 160 },
+                { id: "LOBBY", label: "Lobby", x: 605, y: 110, w: 95, h: 390 },
                 // Front Desk is a tall rectangle in the room 440 footprint.
                 { id: "FRONT_DESK", label: "Front Desk", x: 510, y: 395, w: 35, h: 105 },
                 // Front Porch sits below the building so its label aligns with
@@ -1348,10 +1348,11 @@
             1: {
                 // Sestina covers rooms 207-215 + the Gym footprint (top row).
                 // PDR sits embedded in Sestina at the 207+209 combined footprint.
-                SESTINA:    [120, 0,   280, 105],
-                PDR:        [120, 0,   80,  105],
+                // Heights match Field Notes (110) for a clean top-row line.
+                SESTINA:    [120, 0,   280, 110],
+                PDR:        [120, 0,   80,  110],
                 // Field Notes covers Sunroom + half of Eddy on floor 2 — runs
-                // from the Atrium's left edge (x=490) out to the right wall.
+                // from Sestina's right edge (with 5px gap) out to the right wall.
                 FIELD_NOTES:[405, 0,   295, 110],
                 // The Gallery sits in the footprint of rooms 432, 434, and 436.
                 GALLERY:    [290, 395, 175, 110]
