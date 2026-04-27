@@ -1328,12 +1328,12 @@
                 { id: "FRONT_PORCH", label: "Front Porch", x: 570, y: 290, w: 130, h: 60 }
             ],
             2: [
-                // Gym is rendered separately as the Fitness Center (using floor 4
-                // room 417/419 coords). Banquet Kitchen and Storage sit south of
-                // the elevator/stair shafts. Atrium is the open lobby below.
-                { id: "ATRIUM", label: "Atrium (open below)", x: 320, y: 130, w: 80, h: 120 },
-                { id: "BANQUET_KITCHEN", label: "Banquet Kitchen", x: 320, y: 260, w: 90, h: 70 },
-                { id: "STORAGE", label: "Storage", x: 320, y: 340, w: 90, h: 110 }
+                // Gym is rendered separately as the Fitness Center. Atrium nestles
+                // inside the "C" formed by Eddy (top), Ozark (right) and Dogwood
+                // (bottom). Banquet Kitchen sits under the elevator/NE stair, in
+                // the footprint of where rooms 436 and 438 are on guest floors.
+                { id: "ATRIUM", label: "Atrium (open below)", x: 420, y: 125, w: 140, h: 135 },
+                { id: "BANQUET_KITCHEN", label: "Banquet Kitchen", x: 430, y: 395, w: 75, h: 105 }
             ]
         };
 
@@ -1349,15 +1349,14 @@
             },
             2: {
                 // East-side event spaces. Eddy stretches from the Gym's right
-                // edge (x=400) all the way to Sunroom (the elevator/NE stair
-                // shafts sit lower down at y≈353 so they don't conflict with
-                // the upper event spaces).
+                // edge (x=400) to Sunroom. Dogwood extends down to align its
+                // bottom with rooms 436/438 on the guest floors (y=500).
                 EDDY:       [400, 0,   225, 110],
                 SUNROOM:    [625, 0,   75,  110],
                 OZARK:      [570, 110, 130, 160],
-                DOGWOOD:    [510, 270, 190, 200],
-                DOGWOOD_A:  [510, 297, 95,  173],
-                DOGWOOD_B:  [605, 297, 95,  173]
+                DOGWOOD:    [510, 270, 190, 230],
+                DOGWOOD_A:  [510, 297, 95,  203],
+                DOGWOOD_B:  [605, 297, 95,  203]
             }
         };
 
