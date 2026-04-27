@@ -1312,7 +1312,7 @@
                 sf: 2748,
                 capacity: 98,
                 features: ["Patio"],
-                notes: "Full restaurant. Booking includes the PDR at the back."
+                notes: "Tuscan steakhouse with wood-burning grill. Booking includes the PDR at the back."
             },
             "PDR": {
                 name: "Private Dining Room",
@@ -1331,11 +1331,41 @@
                 banquet: 50,
                 features: ["Dimmable lights", "Privacy blinds", "Plug-in sound system", "Interior + exterior entrance", "Attaches to Front Porch"]
             },
-            "FIELD_NOTES": { name: "Field Notes", floor: 1 },
-            "EDDY": { name: "The Eddy", floor: 2, notes: "Buyout always includes the Sunroom." },
-            "SUNROOM": { name: "Sunroom", floor: 2, parent: "EDDY", notes: "Bookable standalone or as part of The Eddy." },
-            "OZARK": { name: "Ozark Room", floor: 2 },
-            "DOGWOOD": { name: "Dogwood Ballroom", floor: 2, notes: "Combined Dogwood A + Dogwood B." },
+            "FIELD_NOTES": {
+                name: "Field Notes",
+                floor: 1,
+                notes: "Community café on The Bentonville Square. 6 am–8 pm daily, Happy Hour 3–5 pm."
+            },
+            "EDDY": {
+                name: "The Eddy",
+                floor: 2,
+                sf: 1259,
+                capacity: 100,
+                features: ["Overlooks Bentonville Square"],
+                notes: "Cocktail bar with hand-crafted cocktails. Buyout always includes the Sunroom."
+            },
+            "SUNROOM": {
+                name: "Sunroom",
+                floor: 2,
+                parent: "EDDY",
+                sf: 434,
+                capacity: 20,
+                notes: "Bookable standalone or as part of The Eddy."
+            },
+            "OZARK": {
+                name: "Ozark Room",
+                floor: 2,
+                sf: 806,
+                capacity: 54
+            },
+            "DOGWOOD": {
+                name: "Dogwood Ballroom",
+                floor: 2,
+                sf: 3869,
+                capacity: 525,
+                features: ["Floor-to-ceiling windows", "Built-in audio/visual", "Divisible into A + B"],
+                notes: "Combined Dogwood A + Dogwood B. Natural light and built-in AV."
+            },
             "DOGWOOD_A": { name: "Dogwood A", floor: 2, parent: "DOGWOOD" },
             "DOGWOOD_B": { name: "Dogwood B", floor: 2, parent: "DOGWOOD" }
         };
