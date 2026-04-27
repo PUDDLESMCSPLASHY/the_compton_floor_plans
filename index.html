@@ -1343,10 +1343,12 @@
                 GALLERY:    [200, 300, 220, 80]
             },
             2: {
-                // Eddy + Sunroom — side by side. No outer parent rect; siblings visually unified.
-                EDDY:       [380, 0,   150, 110],
-                SUNROOM:    [530, 0,   100, 110],
-                OZARK:      [400, 140, 220, 100],
+                // Eddy spans from Gym's right edge to Sunroom's left edge.
+                // Sunroom right edge aligns with Dogwood/Ozark right edge.
+                EDDY:       [380, 0,   220, 110],
+                SUNROOM:    [600, 0,   100, 110],
+                // Ozark connects Sunroom (top) to Dogwood (bottom), right-aligned, taller than wide.
+                OZARK:      [570, 110, 130, 160],
                 // Dogwood Ballroom — outer parent with a 27px label strip at top, A/B fill below
                 DOGWOOD:    [380, 270, 320, 200],
                 DOGWOOD_A:  [380, 297, 160, 173],
