@@ -1346,9 +1346,10 @@
         // Floor 4 coord system is used so SVG sizing is consistent.
         const eventSpaceLayouts = {
             1: {
-                // PDR sits at the back (right) of Sestina. Sestina drawn first, PDR on top.
-                SESTINA:    [180, 20,  320, 110],
-                PDR:        [430, 25,  70,  100],
+                // Sestina covers rooms 207-215 + the Gym footprint (top row).
+                // PDR sits embedded in Sestina at the 207+209 combined footprint.
+                SESTINA:    [120, 0,   280, 105],
+                PDR:        [120, 0,   80,  105],
                 // Field Notes covers Sunroom + half of Eddy on floor 2 — runs
                 // from the Atrium's left edge (x=490) out to the right wall.
                 FIELD_NOTES:[490, 0,   210, 110],
