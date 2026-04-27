@@ -1319,16 +1319,16 @@
         // Reference spaces — visible context, not clickable, no booking.
         const referenceSpaces = {
             1: [
-                { id: "EXEC_OFFICES", label: "Executive Offices", x: 90, y: 200, w: 220, h: 80 },
-                { id: "EMPLOYEE_BREAK", label: "Employee Break", x: 320, y: 230, w: 100, h: 50 },
-                { id: "LOBBY", label: "Lobby / Atrium", x: 470, y: 80, w: 160, h: 130 },
-                { id: "FRONT_DESK", label: "Front Desk", x: 380, y: 220, w: 80, h: 60 },
-                { id: "FRONT_PORCH", label: "Front Porch", x: 470, y: 220, w: 160, h: 60 }
+                { id: "EXEC_OFFICES", label: "Executive Offices", x: 50, y: 220, w: 130, h: 90 },
+                { id: "EMPLOYEE_BREAK", label: "Employee Break", x: 200, y: 220, w: 110, h: 60 },
+                { id: "LOBBY", label: "Lobby / Atrium", x: 540, y: 110, w: 150, h: 140 },
+                { id: "FRONT_DESK", label: "Front Desk", x: 460, y: 290, w: 100, h: 60 },
+                { id: "FRONT_PORCH", label: "Front Porch", x: 570, y: 290, w: 130, h: 60 }
             ],
             2: [
-                { id: "GYM", label: "Gym", x: 235, y: 0, w: 90, h: 130 },
-                { id: "BANQUET_KITCHEN", label: "Banquet Kitchen", x: 240, y: 245, w: 80, h: 80 },
-                { id: "STORAGE", label: "Storage", x: 235, y: 340, w: 100, h: 110 }
+                { id: "GYM", label: "Gym", x: 320, y: 0, w: 60, h: 130 },
+                { id: "BANQUET_KITCHEN", label: "Banquet Kitchen", x: 280, y: 270, w: 90, h: 70 },
+                { id: "STORAGE", label: "Storage", x: 280, y: 350, w: 90, h: 110 }
             ]
         };
 
@@ -1337,20 +1337,20 @@
         const eventSpaceLayouts = {
             1: {
                 // PDR sits at the back (right) of Sestina. Sestina drawn first, PDR on top.
-                SESTINA:    [50,  20, 350, 110],
-                PDR:        [320, 25, 75,  100],
-                FIELD_NOTES:[490, 20, 90,  60],
-                GALLERY:    [50,  300, 240, 80]
+                SESTINA:    [180, 20,  320, 110],
+                PDR:        [430, 25,  70,  100],
+                FIELD_NOTES:[550, 20,  120, 70],
+                GALLERY:    [200, 300, 220, 80]
             },
             2: {
                 // Eddy + Sunroom — side by side. No outer parent rect; siblings visually unified.
-                EDDY:       [350, 0,   140, 110],
-                SUNROOM:    [490, 0,   90,  110],
-                OZARK:      [380, 140, 200, 100],
-                // Dogwood Ballroom — outer parent with a 25px label strip at top, A/B fill below
-                DOGWOOD:    [380, 270, 350, 200],
-                DOGWOOD_A:  [380, 297, 175, 173],
-                DOGWOOD_B:  [555, 297, 175, 173]
+                EDDY:       [380, 0,   150, 110],
+                SUNROOM:    [530, 0,   100, 110],
+                OZARK:      [400, 140, 220, 100],
+                // Dogwood Ballroom — outer parent with a 27px label strip at top, A/B fill below
+                DOGWOOD:    [380, 270, 320, 200],
+                DOGWOOD_A:  [380, 297, 160, 173],
+                DOGWOOD_B:  [540, 297, 160, 173]
             }
         };
 
@@ -1509,68 +1509,67 @@
             svg += `<text x="12" y="3" text-anchor="middle" font-size="8" fill="#a0aec0">N</text>`;
             svg += `</g>`;
             
-            // Vertical corridor line - between rooms 419 and 421, extending down to bottom of 436
-            const room419 = floorLayouts[4]['419'];
-            const room421 = floorLayouts[4]['421'];
-            const room436 = floorLayouts[4]['436'];
-            const vertCorrX = padding + room419[0] + room419[2] + (room421[0] - room419[0] - room419[2]) / 2;
-            const vertCorrStartY = padding + TH + CORR/2;
-            const vertCorrEndY = padding + room436[1] + room436[3]; // bottom of 436
-            svg += `<line x1="${vertCorrX}" y1="${vertCorrStartY}" x2="${vertCorrX}" y2="${vertCorrEndY}" stroke="#c9a227" stroke-width="1.5"/>`;
-            
-            // Corridor line between top row rooms - extends to meet vertical line
-            const corrY = padding + TH + CORR/2;
-            svg += `<line x1="${padding}" y1="${corrY}" x2="${vertCorrX}" y2="${corrY}" stroke="#c9a227" stroke-width="1.5"/>`;
-            
-            // Horizontal corridor line (between 443-447 row and 436-446 row) - shifted down with clump + centered in gap
-            const horzCorr2Y = padding + TH + WH*2 + CORR + SP*2 + TW + TH + CORR/2;
-            const horzCorr2StartX = padding + TW2+TW*5+SP*6+TW+SP + WW + CORR;
-            const horzCorr2EndX = horzCorr2StartX + WW + TW2 + TW + TW3 + SP*3;
-            svg += `<line x1="${horzCorr2StartX}" y1="${horzCorr2Y}" x2="${horzCorr2EndX}" y2="${horzCorr2Y}" stroke="#c9a227" stroke-width="1.5"/>`;
-            
-            // Landmark labels
-            // A Street Promenade - top (west)
+            // Landmark labels — building geography (relevant on every floor)
             svg += `<text class="landmark-label" x="${svgW/2}" y="-5" text-anchor="middle">↑ A Street Promenade</text>`;
-            
-            // City Square - right side (north)
             svg += `<text class="landmark-label" x="${svgW + 55}" y="${svgH/4}" text-anchor="middle" transform="rotate(90, ${svgW + 55}, ${svgH/4})">↑ City Square</text>`;
-            
-            // Dave Peel Park - bottom (east)  
             svg += `<text class="landmark-label" x="${svgW/2 + 100}" y="${svgH + 35}" text-anchor="middle">↓ Dave Peel Park</text>`;
-            
-            // Elevator indicator - use floor 4 positions for consistency across floors
-            const room427 = floorLayouts[4]['427'];
-            const room443 = floorLayouts[4]['443'];
-            const elevX = room427[0] + padding; // left side aligns with 427's left
-            const elevY = room443[1] + padding + TH - 32; // bottom aligns with 443's bottom
-            svg += `<rect x="${elevX}" y="${elevY}" width="32" height="32" fill="#e2e8f0" stroke="#718096" stroke-width="1" rx="3"/>`;
-            svg += `<text x="${elevX + 16}" y="${elevY + 14}" text-anchor="middle" font-size="8" fill="#4a5568">ELEV</text>`;
-            svg += `<text x="${elevX + 16}" y="${elevY + 26}" text-anchor="middle" font-size="11" fill="#4a5568">↕</text>`;
-            
-            // SW Stairwell - between rooms 403 and 407, bottom aligned with 403
-            const room403 = floorLayouts[4]['403'];
-            const room407 = floorLayouts[4]['407'];
-            const swStairX = room403[0] + padding + TW + (room407[0] - room403[0] - TW) / 2 - 16;
-            const swStairY = room403[1] + padding + TH - 32; // bottom aligns with bottom of 403
-            svg += `<rect x="${swStairX}" y="${swStairY}" width="32" height="32" fill="#fef3c7" stroke="#d97706" stroke-width="1" rx="3"/>`;
-            svg += `<text x="${swStairX + 16}" y="${swStairY + 12}" text-anchor="middle" font-size="6" fill="#92400e">SW</text>`;
-            svg += `<text x="${swStairX + 16}" y="${swStairY + 21}" text-anchor="middle" font-size="6" fill="#92400e">STAIR</text>`;
-            
-            // NE Stairwell - right next to the elevator (with SP gap)
-            const neStairX = elevX + 32 + SP;
-            const neStairY = elevY; // same vertical position as elevator
-            svg += `<rect x="${neStairX}" y="${neStairY}" width="32" height="32" fill="#fef3c7" stroke="#d97706" stroke-width="1" rx="3"/>`;
-            svg += `<text x="${neStairX + 16}" y="${neStairY + 12}" text-anchor="middle" font-size="6" fill="#92400e">NE</text>`;
-            svg += `<text x="${neStairX + 16}" y="${neStairY + 21}" text-anchor="middle" font-size="6" fill="#92400e">STAIR</text>`;
-            
-            // Ice/Water station - between 414 and 426
-            const room414 = floorLayouts[4]['414'];
-            const room426 = floorLayouts[4]['426'];
-            const iceX = room426[0] + WW2 - 32 + padding; // right side aligns with right side of 426
-            const iceY = room414[1] + padding; // top aligns with top of 414
-            svg += `<rect x="${iceX}" y="${iceY}" width="32" height="32" fill="#e0f2fe" stroke="#0284c7" stroke-width="1" rx="3"/>`;
-            svg += `<text x="${iceX + 16}" y="${iceY + 14}" text-anchor="middle" font-size="7" font-weight="600" fill="#0369a1">ICE</text>`;
-            svg += `<text x="${iceX + 16}" y="${iceY + 24}" text-anchor="middle" font-size="7" font-weight="600" fill="#0369a1">H2O</text>`;
+
+            // Guest-floor infrastructure — corridors, elevator, stairs, ice/water
+            // Only applies to floors 3-6 which share the typical guest-room layout.
+            if (currentFloor >= 3) {
+                // Vertical corridor line - between rooms 419 and 421, extending down to bottom of 436
+                const room419 = floorLayouts[4]['419'];
+                const room421 = floorLayouts[4]['421'];
+                const room436 = floorLayouts[4]['436'];
+                const vertCorrX = padding + room419[0] + room419[2] + (room421[0] - room419[0] - room419[2]) / 2;
+                const vertCorrStartY = padding + TH + CORR/2;
+                const vertCorrEndY = padding + room436[1] + room436[3];
+                svg += `<line x1="${vertCorrX}" y1="${vertCorrStartY}" x2="${vertCorrX}" y2="${vertCorrEndY}" stroke="#c9a227" stroke-width="1.5"/>`;
+
+                // Top row corridor
+                const corrY = padding + TH + CORR/2;
+                svg += `<line x1="${padding}" y1="${corrY}" x2="${vertCorrX}" y2="${corrY}" stroke="#c9a227" stroke-width="1.5"/>`;
+
+                // Bottom row corridor
+                const horzCorr2Y = padding + TH + WH*2 + CORR + SP*2 + TW + TH + CORR/2;
+                const horzCorr2StartX = padding + TW2+TW*5+SP*6+TW+SP + WW + CORR;
+                const horzCorr2EndX = horzCorr2StartX + WW + TW2 + TW + TW3 + SP*3;
+                svg += `<line x1="${horzCorr2StartX}" y1="${horzCorr2Y}" x2="${horzCorr2EndX}" y2="${horzCorr2Y}" stroke="#c9a227" stroke-width="1.5"/>`;
+
+                // Elevator
+                const room427 = floorLayouts[4]['427'];
+                const room443 = floorLayouts[4]['443'];
+                const elevX = room427[0] + padding;
+                const elevY = room443[1] + padding + TH - 32;
+                svg += `<rect x="${elevX}" y="${elevY}" width="32" height="32" fill="#e2e8f0" stroke="#718096" stroke-width="1" rx="3"/>`;
+                svg += `<text x="${elevX + 16}" y="${elevY + 14}" text-anchor="middle" font-size="8" fill="#4a5568">ELEV</text>`;
+                svg += `<text x="${elevX + 16}" y="${elevY + 26}" text-anchor="middle" font-size="11" fill="#4a5568">↕</text>`;
+
+                // SW Stairwell
+                const room403 = floorLayouts[4]['403'];
+                const room407 = floorLayouts[4]['407'];
+                const swStairX = room403[0] + padding + TW + (room407[0] - room403[0] - TW) / 2 - 16;
+                const swStairY = room403[1] + padding + TH - 32;
+                svg += `<rect x="${swStairX}" y="${swStairY}" width="32" height="32" fill="#fef3c7" stroke="#d97706" stroke-width="1" rx="3"/>`;
+                svg += `<text x="${swStairX + 16}" y="${swStairY + 12}" text-anchor="middle" font-size="6" fill="#92400e">SW</text>`;
+                svg += `<text x="${swStairX + 16}" y="${swStairY + 21}" text-anchor="middle" font-size="6" fill="#92400e">STAIR</text>`;
+
+                // NE Stairwell
+                const neStairX = elevX + 32 + SP;
+                const neStairY = elevY;
+                svg += `<rect x="${neStairX}" y="${neStairY}" width="32" height="32" fill="#fef3c7" stroke="#d97706" stroke-width="1" rx="3"/>`;
+                svg += `<text x="${neStairX + 16}" y="${neStairY + 12}" text-anchor="middle" font-size="6" fill="#92400e">NE</text>`;
+                svg += `<text x="${neStairX + 16}" y="${neStairY + 21}" text-anchor="middle" font-size="6" fill="#92400e">STAIR</text>`;
+
+                // Ice/Water station
+                const room414 = floorLayouts[4]['414'];
+                const room426 = floorLayouts[4]['426'];
+                const iceX = room426[0] + WW2 - 32 + padding;
+                const iceY = room414[1] + padding;
+                svg += `<rect x="${iceX}" y="${iceY}" width="32" height="32" fill="#e0f2fe" stroke="#0284c7" stroke-width="1" rx="3"/>`;
+                svg += `<text x="${iceX + 16}" y="${iceY + 14}" text-anchor="middle" font-size="7" font-weight="600" fill="#0369a1">ICE</text>`;
+                svg += `<text x="${iceX + 16}" y="${iceY + 24}" text-anchor="middle" font-size="7" font-weight="600" fill="#0369a1">H2O</text>`;
+            }
             
             Object.entries(layout).forEach(([roomNum, [x, y, w, h]]) => {
                 const cls = getRoomClass(roomNum);
