@@ -1550,23 +1550,7 @@
                 const horzCorr2EndX = horzCorr2StartX + WW + TW2 + TW + TW3 + SP*3;
                 svg += `<line x1="${horzCorr2StartX}" y1="${horzCorr2Y}" x2="${horzCorr2EndX}" y2="${horzCorr2Y}" stroke="#c9a227" stroke-width="1.5"/>`;
 
-                // Elevator
-                const room427 = floorLayouts[4]['427'];
-                const room443 = floorLayouts[4]['443'];
-                const elevX = room427[0] + padding;
-                const elevY = room443[1] + padding + TH - 32;
-                svg += `<rect x="${elevX}" y="${elevY}" width="32" height="32" fill="#e2e8f0" stroke="#718096" stroke-width="1" rx="3"/>`;
-                svg += `<text x="${elevX + 16}" y="${elevY + 14}" text-anchor="middle" font-size="8" fill="#4a5568">ELEV</text>`;
-                svg += `<text x="${elevX + 16}" y="${elevY + 26}" text-anchor="middle" font-size="11" fill="#4a5568">↕</text>`;
-
-                // NE Stairwell
-                const neStairX = elevX + 32 + SP;
-                const neStairY = elevY;
-                svg += `<rect x="${neStairX}" y="${neStairY}" width="32" height="32" fill="#fef3c7" stroke="#d97706" stroke-width="1" rx="3"/>`;
-                svg += `<text x="${neStairX + 16}" y="${neStairY + 12}" text-anchor="middle" font-size="6" fill="#92400e">NE</text>`;
-                svg += `<text x="${neStairX + 16}" y="${neStairY + 21}" text-anchor="middle" font-size="6" fill="#92400e">STAIR</text>`;
-
-                // Ice/Water station
+                // Ice/Water station — guest floors only
                 const room414 = floorLayouts[4]['414'];
                 const room426 = floorLayouts[4]['426'];
                 const iceX = room426[0] + WW2 - 32 + padding;
@@ -1639,6 +1623,34 @@
                 const labelY = hasOverlappingChild ? (y + padding + 16) : (y + padding + h/2 - 2);
                 svg += `<text class="event-label" x="${x + padding + w/2}" y="${labelY}">${data.name}</text>`;
             });
+
+            // Elevator + NE Stair — physical position varies per floor.
+            // Guest floors (3-6): between rooms 427 and 443 in the east wing.
+            // Floor 2: behind Dogwood's top-left, aligned with Gym's right edge.
+            const elevPositions = {
+                2: { elevX: 380 + padding, elevY: 280 + padding },
+                3: null, 4: null, 5: null, 6: null
+            };
+            for (const f of [3, 4, 5, 6]) {
+                const room427 = floorLayouts[4]['427'];
+                const room443 = floorLayouts[4]['443'];
+                elevPositions[f] = {
+                    elevX: room427[0] + padding,
+                    elevY: room443[1] + padding + TH - 32
+                };
+            }
+            const ePos = elevPositions[currentFloor];
+            if (ePos) {
+                const { elevX, elevY } = ePos;
+                svg += `<rect x="${elevX}" y="${elevY}" width="32" height="32" fill="#e2e8f0" stroke="#718096" stroke-width="1" rx="3"/>`;
+                svg += `<text x="${elevX + 16}" y="${elevY + 14}" text-anchor="middle" font-size="8" fill="#4a5568">ELEV</text>`;
+                svg += `<text x="${elevX + 16}" y="${elevY + 26}" text-anchor="middle" font-size="11" fill="#4a5568">↕</text>`;
+                const neStairX = elevX + 32 + SP;
+                const neStairY = elevY;
+                svg += `<rect x="${neStairX}" y="${neStairY}" width="32" height="32" fill="#fef3c7" stroke="#d97706" stroke-width="1" rx="3"/>`;
+                svg += `<text x="${neStairX + 16}" y="${neStairY + 12}" text-anchor="middle" font-size="6" fill="#92400e">NE</text>`;
+                svg += `<text x="${neStairX + 16}" y="${neStairY + 21}" text-anchor="middle" font-size="6" fill="#92400e">STAIR</text>`;
+            }
 
             svg += '</svg>';
             document.getElementById('floor-plan').innerHTML = svg;
