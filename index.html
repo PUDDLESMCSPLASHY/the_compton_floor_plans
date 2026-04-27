@@ -189,6 +189,72 @@
             font-weight: 600;
             pointer-events: none;
         }
+
+        /* Event spaces — bookable function rooms */
+        .event-space {
+            fill: #f0ece2;
+            stroke: #c9a227;
+            stroke-width: 1.5;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .event-space:hover { fill: #e8e0c8; stroke-width: 2; }
+        .event-space.selected {
+            fill: #c9a227;
+            stroke: #0F162A;
+            stroke-width: 2.5;
+        }
+        .event-space-child {
+            fill: #e0d4b0;
+            stroke: #c9a227;
+            stroke-width: 1.5;
+            stroke-dasharray: 4 3;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .event-space-child:hover { fill: #d4c498; stroke-width: 2; }
+        .event-space-child.selected {
+            fill: #c9a227;
+            stroke: #0F162A;
+            stroke-width: 2.5;
+            stroke-dasharray: 0;
+        }
+        .event-divider {
+            stroke: #c9a227;
+            stroke-width: 1.5;
+            stroke-dasharray: 4 3;
+            pointer-events: none;
+        }
+        .event-label {
+            font-family: 'Georgia', serif;
+            font-size: 11px;
+            font-weight: 700;
+            fill: #2d3a36;
+            pointer-events: none;
+            text-anchor: middle;
+        }
+        .event-sublabel {
+            font-family: 'Georgia', serif;
+            font-size: 9px;
+            fill: #4a5568;
+            pointer-events: none;
+            text-anchor: middle;
+        }
+        .reference-space {
+            fill: #f5f4f0;
+            stroke: #cbd5e0;
+            stroke-width: 1;
+            stroke-dasharray: 3 3;
+            pointer-events: none;
+        }
+        .reference-label {
+            font-family: 'Georgia', serif;
+            font-size: 9px;
+            fill: #94a3b8;
+            font-style: italic;
+            pointer-events: none;
+            text-anchor: middle;
+        }
         
         .corridor {
             fill: none;
@@ -805,6 +871,7 @@
     </div>
     
     <div class="floor-toggle">
+        <button class="floor-btn" data-floor="1">First Floor</button>
         <button class="floor-btn" data-floor="2">Second Floor</button>
         <button class="floor-btn" data-floor="3">Third Floor</button>
         <button class="floor-btn active" data-floor="4">Fourth Floor</button>
@@ -1231,7 +1298,62 @@
                 floorLayouts[2]['2' + roomSuffix] = [...coords];
             }
         });
-        
+
+        // Floor 1 has no guest rooms — empty layout, event spaces only
+        floorLayouts[1] = {};
+
+        // Event spaces (bookable function rooms). Specs to be filled in with Kelsey.
+        const eventSpaceData = {
+            "SESTINA": { name: "Sestina", floor: 1, notes: "Full restaurant. Booking includes the PDR at the back." },
+            "PDR": { name: "Private Dining Room", floor: 1, parent: "SESTINA", notes: "Sits at the back of Sestina. Bookable standalone or used as part of regular service." },
+            "GALLERY": { name: "The Gallery", floor: 1 },
+            "FIELD_NOTES": { name: "Field Notes", floor: 1 },
+            "EDDY": { name: "The Eddy", floor: 2, notes: "Buyout always includes the Sunroom." },
+            "SUNROOM": { name: "Sunroom", floor: 2, parent: "EDDY", notes: "Bookable standalone or as part of The Eddy." },
+            "OZARK": { name: "Ozark Room", floor: 2 },
+            "DOGWOOD": { name: "Dogwood Ballroom", floor: 2, notes: "Combined Dogwood A + Dogwood B." },
+            "DOGWOOD_A": { name: "Dogwood A", floor: 2, parent: "DOGWOOD" },
+            "DOGWOOD_B": { name: "Dogwood B", floor: 2, parent: "DOGWOOD" }
+        };
+
+        // Reference spaces — visible context, not clickable, no booking.
+        const referenceSpaces = {
+            1: [
+                { id: "EXEC_OFFICES", label: "Executive Offices", x: 90, y: 200, w: 220, h: 80 },
+                { id: "EMPLOYEE_BREAK", label: "Employee Break", x: 320, y: 230, w: 100, h: 50 },
+                { id: "LOBBY", label: "Lobby / Atrium", x: 470, y: 80, w: 160, h: 130 },
+                { id: "FRONT_DESK", label: "Front Desk", x: 380, y: 220, w: 80, h: 60 },
+                { id: "FRONT_PORCH", label: "Front Porch", x: 470, y: 220, w: 160, h: 60 }
+            ],
+            2: [
+                { id: "GYM", label: "Gym", x: 235, y: 0, w: 90, h: 130 },
+                { id: "BANQUET_KITCHEN", label: "Banquet Kitchen", x: 240, y: 245, w: 80, h: 80 },
+                { id: "STORAGE", label: "Storage", x: 235, y: 340, w: 100, h: 110 }
+            ]
+        };
+
+        // Event space layouts — by floor, keyed by space ID. [x, y, w, h]
+        // Floor 4 coord system is used so SVG sizing is consistent.
+        const eventSpaceLayouts = {
+            1: {
+                // PDR sits at the back (right) of Sestina. Sestina drawn first, PDR on top.
+                SESTINA:    [50,  20, 350, 110],
+                PDR:        [320, 25, 75,  100],
+                FIELD_NOTES:[490, 20, 90,  60],
+                GALLERY:    [50,  300, 240, 80]
+            },
+            2: {
+                // Eddy + Sunroom — side by side. No outer parent rect; siblings visually unified.
+                EDDY:       [350, 0,   140, 110],
+                SUNROOM:    [490, 0,   90,  110],
+                OZARK:      [380, 140, 200, 100],
+                // Dogwood Ballroom — outer parent with a 25px label strip at top, A/B fill below
+                DOGWOOD:    [380, 270, 350, 200],
+                DOGWOOD_A:  [380, 297, 175, 173],
+                DOGWOOD_B:  [555, 297, 175, 173]
+            }
+        };
+
         let currentFloor = 4;
         let selectedRoom = null;
         let activeFilters = new Set();
@@ -1326,9 +1448,31 @@
             html += renderGroup('East Wing — South View', eastSouth);
             html += renderGroup('East Wing — City View', eastCity);
             html += renderGroup('East Wing — Park View', eastPark);
-            
+
+            // Event spaces — only on floors 1 and 2
+            const floorEvents = Object.entries(eventSpaceData).filter(([, d]) => d.floor === currentFloor);
+            if (floorEvents.length) {
+                html += `<h3>Event Spaces</h3>`;
+                // Render parents first; show children indented under them
+                const parents = floorEvents.filter(([, d]) => !d.parent);
+                parents.forEach(([id, d]) => {
+                    const sel = selectedRoom === id ? ' selected' : '';
+                    html += `<div class="room-item event-item${sel}" data-room="${id}">
+                        <span class="room-num" style="font-size: 0.85rem;">⬛</span>
+                        <span class="room-type" style="font-weight: 600; color: #2d3a36;">${d.name}</span>
+                    </div>`;
+                    floorEvents.filter(([, c]) => c.parent === id).forEach(([cid, c]) => {
+                        const csel = selectedRoom === cid ? ' selected' : '';
+                        html += `<div class="room-item event-item${csel}" data-room="${cid}" style="padding-left: 32px;">
+                            <span class="room-num" style="font-size: 0.75rem;">↳</span>
+                            <span class="room-type">${c.name}</span>
+                        </div>`;
+                    });
+                });
+            }
+
             container.innerHTML = html;
-            
+
             container.querySelectorAll('.room-item').forEach(el => {
                 el.addEventListener('click', () => {
                     selectRoom(el.dataset.room);
@@ -1461,14 +1605,54 @@
                 svg += `<text class="fitness-label" x="${fcX + fcW/2}" y="${fcY + fcH/2 - 4}" text-anchor="middle">FITNESS</text>`;
                 svg += `<text class="fitness-label" x="${fcX + fcW/2}" y="${fcY + fcH/2 + 10}" text-anchor="middle">CENTER</text>`;
             }
-            
+
+            // Reference (non-bookable) spaces — labels-only context
+            (referenceSpaces[currentFloor] || []).forEach((rs) => {
+                svg += `<rect class="reference-space" x="${rs.x + padding}" y="${rs.y + padding}" width="${rs.w}" height="${rs.h}" rx="3"/>`;
+                svg += `<text class="reference-label" x="${rs.x + padding + rs.w/2}" y="${rs.y + padding + rs.h/2 + 3}">${rs.label}</text>`;
+            });
+
+            // Event spaces — bookable function rooms (floors 1 and 2)
+            const evtLayout = eventSpaceLayouts[currentFloor] || {};
+            // Render parents first, then children, so children sit on top
+            const parentIds = Object.keys(evtLayout).filter(id => !eventSpaceData[id]?.parent);
+            const childIds = Object.keys(evtLayout).filter(id => eventSpaceData[id]?.parent);
+            [...parentIds, ...childIds].forEach((id) => {
+                const data = eventSpaceData[id];
+                if (!data) return;
+                const [x, y, w, h] = evtLayout[id];
+                const isChild = !!data.parent;
+                const sel = selectedRoom === id ? ' selected' : '';
+                const cls = isChild ? `event-space-child${sel}` : `event-space${sel}`;
+                svg += `<rect class="${cls}" data-event="${id}" x="${x + padding}" y="${y + padding}" width="${w}" height="${h}" rx="4"/>`;
+                // Position the label — for parent with overlapping child, label goes upper-center;
+                // for everything else, centered vertically.
+                const hasOverlappingChild = !isChild && childIds.some(cid => {
+                    if (eventSpaceData[cid]?.parent !== id) return false;
+                    const [cx, cy] = evtLayout[cid];
+                    return cx >= x && cy >= y && cx < x + w && cy < y + h;
+                });
+                const labelY = hasOverlappingChild ? (y + padding + 16) : (y + padding + h/2 - 2);
+                svg += `<text class="event-label" x="${x + padding + w/2}" y="${labelY}">${data.name}</text>`;
+            });
+
             svg += '</svg>';
             document.getElementById('floor-plan').innerHTML = svg;
-            
+
             document.querySelectorAll('.room-box').forEach(el => {
                 el.addEventListener('click', () => {
                     selectRoom(el.dataset.room);
                     // Close mobile drawer after selection
+                    if (window.innerWidth <= 768 && mobileRoomListOpen) {
+                        toggleMobileRoomList();
+                    }
+                });
+            });
+
+            document.querySelectorAll('.event-space, .event-space-child').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectRoom(el.dataset.event);
                     if (window.innerWidth <= 768 && mobileRoomListOpen) {
                         toggleMobileRoomList();
                     }
@@ -1529,9 +1713,13 @@
         }
         
         function showDetails(roomNum) {
+            if (eventSpaceData[roomNum]) {
+                showEventSpaceDetails(roomNum);
+                return;
+            }
             const room = roomData[roomNum];
             if (!room) return;
-            
+
             document.getElementById('detail-num').textContent = `Room ${roomNum}`;
             document.getElementById('detail-type').textContent = room['Room Type Name'] || '';
             document.getElementById('detail-category').textContent = room['Room Category'] || '';
@@ -1587,7 +1775,64 @@
 
             document.getElementById('room-details').classList.add('visible');
         }
-        
+
+        function showEventSpaceDetails(spaceId) {
+            const space = eventSpaceData[spaceId];
+            if (!space) return;
+            const floorLabel = space.floor === 1 ? "First Floor" : space.floor === 2 ? "Second Floor" : `Floor ${space.floor}`;
+
+            document.getElementById('detail-num').textContent = space.name;
+            document.getElementById('detail-type').textContent = "Event Space";
+            document.getElementById('detail-category').textContent = floorLabel;
+
+            // Show parent/child relationship in the count line
+            let relationLine = "";
+            if (space.parent) {
+                const parentName = eventSpaceData[space.parent]?.name || space.parent;
+                relationLine = `Sub-space within ${parentName}`;
+            } else {
+                const children = Object.entries(eventSpaceData)
+                    .filter(([, d]) => d.parent === spaceId)
+                    .map(([, d]) => d.name);
+                if (children.length) relationLine = `Includes ${children.join(" + ")}`;
+            }
+            document.getElementById('detail-count').textContent = relationLine;
+
+            const fields = [
+                { label: "Square Feet", key: "sf" },
+                { label: "Capacity", key: "capacity" },
+                { label: "Theater", key: "theater" },
+                { label: "Banquet", key: "banquet" },
+                { label: "Classroom", key: "classroom" },
+                { label: "Reception", key: "reception" }
+            ];
+            const gridParts = fields
+                .filter(f => space[f.key] != null && space[f.key] !== "")
+                .map(f => `<div class="detail-box"><div class="detail-label">${f.label}</div><div class="detail-value">${space[f.key]}</div></div>`);
+            const gridHTML = gridParts.length
+                ? gridParts.join("")
+                : `<div class="detail-box" style="grid-column: 1 / -1; text-align:center; color:#94a3b8;">Specs coming soon — Kelsey will fill these in</div>`;
+            document.getElementById('detail-grid').innerHTML = gridHTML;
+
+            const features = [];
+            (space.features || []).forEach(ft => features.push(ft));
+            document.getElementById('detail-features').innerHTML = features.map(f => `<span class="feature-tag">${f}</span>`).join('');
+
+            const notesEl = document.getElementById('detail-notes');
+            if (space.notes) {
+                notesEl.textContent = space.notes;
+                notesEl.style.display = 'block';
+            } else {
+                notesEl.style.display = 'none';
+            }
+
+            const cameraBtn = document.getElementById('detail-camera-btn');
+            cameraBtn.disabled = true;
+            cameraBtn.title = 'No photos available yet';
+
+            document.getElementById('room-details').classList.add('visible');
+        }
+
         function closeDetails() {
             selectedRoom = null;
             document.getElementById('room-details').classList.remove('visible');
@@ -1690,14 +1935,36 @@
         // Close room details when clicking outside
         document.addEventListener('click', (e) => {
             const detailsPanel = document.getElementById('room-details');
-            if (detailsPanel.classList.contains('visible') && 
-                !e.target.closest('.room-details') && 
+            if (detailsPanel.classList.contains('visible') &&
+                !e.target.closest('.room-details') &&
                 !e.target.closest('.room-box') &&
-                !e.target.closest('.room-item')) {
+                !e.target.closest('.room-item') &&
+                !e.target.closest('.event-space') &&
+                !e.target.closest('.event-space-child') &&
+                !e.target.closest('.event-item')) {
                 closeDetails();
             }
         });
         
+        // Embed mode: ?event-spaces hides guest-room features and defaults to Floor 1
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('event-spaces')) {
+            document.body.classList.add('event-spaces-mode');
+            // Default to First Floor
+            currentFloor = 1;
+            document.querySelectorAll('.floor-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.floor-btn[data-floor="1"]')?.classList.add('active');
+            // Hide floors 3-6 + Room Types button + filter tab
+            ['3', '4', '5', '6'].forEach(f => {
+                const btn = document.querySelector(`.floor-btn[data-floor="${f}"]`);
+                if (btn) btn.style.display = 'none';
+            });
+            const typesBtn = document.getElementById('types-btn');
+            if (typesBtn) typesBtn.style.display = 'none';
+            const filterTab = document.getElementById('filter-tab');
+            if (filterTab) filterTab.style.display = 'none';
+        }
+
         // Initial render
         renderRoomList();
         renderFloorPlan();
