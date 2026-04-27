@@ -1307,7 +1307,7 @@
         // Event spaces (bookable function rooms). Specs to be filled in with Kelsey.
         const eventSpaceData = {
             "SESTINA": { name: "Sestina", floor: 1, notes: "Full restaurant. Booking includes the PDR at the back." },
-            "PDR": { name: "Private Dining Room", floor: 1, parent: "SESTINA", notes: "Sits at the back of Sestina. Bookable standalone or used as part of regular service." },
+            "PDR": { name: "Private Dining Room", floor: 1, parent: "SESTINA", labelLines: ["Private", "Dining", "Room"], notes: "Sits at the back of Sestina. Bookable standalone or used as part of regular service." },
             "GALLERY": { name: "The Gallery", floor: 1 },
             "FIELD_NOTES": { name: "Field Notes", floor: 1 },
             "EDDY": { name: "The Eddy", floor: 2, notes: "Buyout always includes the Sunroom." },
@@ -1326,11 +1326,11 @@
                 // where Ozark Room is on Floor 2.
                 { id: "ATRIUM", label: "Atrium", x: 490, y: 125, w: 110, h: 135 },
                 { id: "LOBBY", label: "Lobby", x: 605, y: 110, w: 95, h: 160 },
-                { id: "EXEC_OFFICES", label: "Executive Offices", x: 50, y: 220, w: 130, h: 90 },
-                { id: "EMPLOYEE_BREAK", label: "Employee Break", x: 200, y: 220, w: 110, h: 60 },
                 // Front Desk is a tall rectangle in the room 440 footprint.
                 { id: "FRONT_DESK", label: "Front Desk", x: 510, y: 395, w: 35, h: 105 },
-                { id: "FRONT_PORCH", label: "Front Porch", x: 570, y: 290, w: 130, h: 60 }
+                // Front Porch sits below the building so its label aligns with
+                // the "Dave Peel Park" landmark text.
+                { id: "FRONT_PORCH", label: "Front Porch", x: 570, y: 527, w: 130, h: 60 }
             ],
             2: [
                 // Gym is rendered separately as the Fitness Center. Atrium nestles
@@ -1352,7 +1352,7 @@
                 PDR:        [120, 0,   80,  105],
                 // Field Notes covers Sunroom + half of Eddy on floor 2 — runs
                 // from the Atrium's left edge (x=490) out to the right wall.
-                FIELD_NOTES:[490, 0,   210, 110],
+                FIELD_NOTES:[405, 0,   295, 110],
                 // The Gallery sits in the footprint of rooms 432, 434, and 436.
                 GALLERY:    [290, 395, 175, 110]
             },
@@ -1513,7 +1513,7 @@
             const svgW = maxX + padding * 2;
             const svgH = maxY + padding * 2;
             
-            let svg = `<svg class="floor-svg" viewBox="-80 -20 ${svgW + 160} ${svgH + 60}" width="${svgW + 160}" height="${svgH + 60}">`;
+            let svg = `<svg class="floor-svg" viewBox="-80 -20 ${svgW + 160} ${svgH + 100}" width="${svgW + 160}" height="${svgH + 100}">`;
             
             // Compass in top-right corner (W at top, N at right, E at bottom, S at left)
             svg += `<g transform="translate(${svgW + 50}, 25)">`;
@@ -1626,15 +1626,28 @@
                 const sel = selectedRoom === id ? ' selected' : '';
                 const cls = isChild ? `event-space-child${sel}` : `event-space${sel}`;
                 svg += `<rect class="${cls}" data-event="${id}" x="${x + padding}" y="${y + padding}" width="${w}" height="${h}" rx="4"/>`;
-                // Position the label — for parent with overlapping child, label goes upper-center;
-                // for everything else, centered vertically.
-                const hasOverlappingChild = !isChild && childIds.some(cid => {
+                // Choose label position: if a centered label would overlap a
+                // child rect, push the parent label to the top strip; otherwise
+                // center it vertically in the available space.
+                const cxLabel = x + w/2;
+                const cyLabel = y + h/2;
+                const labelHitsChild = !isChild && childIds.some(cid => {
                     if (eventSpaceData[cid]?.parent !== id) return false;
-                    const [cx, cy] = evtLayout[cid];
-                    return cx >= x && cy >= y && cx < x + w && cy < y + h;
+                    const [chX, chY, chW, chH] = evtLayout[cid];
+                    return cxLabel >= chX && cxLabel <= chX + chW && cyLabel >= chY && cyLabel <= chY + chH;
                 });
-                const labelY = hasOverlappingChild ? (y + padding + 16) : (y + padding + h/2 - 2);
-                svg += `<text class="event-label" x="${x + padding + w/2}" y="${labelY}">${data.name}</text>`;
+                const lines = data.labelLines || [data.name];
+                const lineHeight = 12;
+                const totalLabelH = (lines.length - 1) * lineHeight;
+                let firstLineY;
+                if (labelHitsChild) {
+                    firstLineY = y + padding + 16;
+                } else {
+                    firstLineY = y + padding + h/2 - 2 - totalLabelH/2;
+                }
+                lines.forEach((line, i) => {
+                    svg += `<text class="event-label" x="${x + padding + w/2}" y="${firstLineY + i * lineHeight}">${line}</text>`;
+                });
             });
 
             // Elevator + NE Stair — same physical x,y on every floor (the
