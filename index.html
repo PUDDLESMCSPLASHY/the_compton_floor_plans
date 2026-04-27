@@ -1327,6 +1327,7 @@
             ],
             2: [
                 { id: "GYM", label: "Gym", x: 320, y: 0, w: 60, h: 130 },
+                { id: "ATRIUM", label: "Atrium (open below)", x: 400, y: 126, w: 150, h: 128 },
                 { id: "BANQUET_KITCHEN", label: "Banquet Kitchen", x: 280, y: 270, w: 90, h: 70 },
                 { id: "STORAGE", label: "Storage", x: 280, y: 350, w: 90, h: 110 }
             ]
@@ -1516,6 +1517,17 @@
             svg += `<text class="landmark-label" x="${svgW + 55}" y="${svgH/4}" text-anchor="middle" transform="rotate(90, ${svgW + 55}, ${svgH/4})">↑ City Square</text>`;
             svg += `<text class="landmark-label" x="${svgW/2 + 100}" y="${svgH + 35}" text-anchor="middle">↓ Dave Peel Park</text>`;
 
+            // SW Stairwell — comes down to Floor 2 as well as the guest floors
+            if (currentFloor >= 2) {
+                const room403_sw = floorLayouts[4]['403'];
+                const room407_sw = floorLayouts[4]['407'];
+                const swStairX = room403_sw[0] + padding + TW + (room407_sw[0] - room403_sw[0] - TW) / 2 - 16;
+                const swStairY = room403_sw[1] + padding + TH - 32;
+                svg += `<rect x="${swStairX}" y="${swStairY}" width="32" height="32" fill="#fef3c7" stroke="#d97706" stroke-width="1" rx="3"/>`;
+                svg += `<text x="${swStairX + 16}" y="${swStairY + 12}" text-anchor="middle" font-size="6" fill="#92400e">SW</text>`;
+                svg += `<text x="${swStairX + 16}" y="${swStairY + 21}" text-anchor="middle" font-size="6" fill="#92400e">STAIR</text>`;
+            }
+
             // Guest-floor infrastructure — corridors, elevator, stairs, ice/water
             // Only applies to floors 3-6 which share the typical guest-room layout.
             if (currentFloor >= 3) {
@@ -1546,15 +1558,6 @@
                 svg += `<rect x="${elevX}" y="${elevY}" width="32" height="32" fill="#e2e8f0" stroke="#718096" stroke-width="1" rx="3"/>`;
                 svg += `<text x="${elevX + 16}" y="${elevY + 14}" text-anchor="middle" font-size="8" fill="#4a5568">ELEV</text>`;
                 svg += `<text x="${elevX + 16}" y="${elevY + 26}" text-anchor="middle" font-size="11" fill="#4a5568">↕</text>`;
-
-                // SW Stairwell
-                const room403 = floorLayouts[4]['403'];
-                const room407 = floorLayouts[4]['407'];
-                const swStairX = room403[0] + padding + TW + (room407[0] - room403[0] - TW) / 2 - 16;
-                const swStairY = room403[1] + padding + TH - 32;
-                svg += `<rect x="${swStairX}" y="${swStairY}" width="32" height="32" fill="#fef3c7" stroke="#d97706" stroke-width="1" rx="3"/>`;
-                svg += `<text x="${swStairX + 16}" y="${swStairY + 12}" text-anchor="middle" font-size="6" fill="#92400e">SW</text>`;
-                svg += `<text x="${swStairX + 16}" y="${swStairY + 21}" text-anchor="middle" font-size="6" fill="#92400e">STAIR</text>`;
 
                 // NE Stairwell
                 const neStairX = elevX + 32 + SP;
