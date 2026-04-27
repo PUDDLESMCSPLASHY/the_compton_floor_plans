@@ -1304,11 +1304,33 @@
         // Floor 1 has no guest rooms — empty layout, event spaces only
         floorLayouts[1] = {};
 
-        // Event spaces (bookable function rooms). Specs to be filled in with Kelsey.
+        // Event spaces (bookable function rooms).
         const eventSpaceData = {
-            "SESTINA": { name: "Sestina", floor: 1, notes: "Full restaurant. Booking includes the PDR at the back." },
-            "PDR": { name: "Private Dining Room", floor: 1, parent: "SESTINA", labelLines: ["Private", "Dining", "Room"], notes: "Sits at the back of Sestina. Bookable standalone or used as part of regular service." },
-            "GALLERY": { name: "The Gallery", floor: 1 },
+            "SESTINA": {
+                name: "Sestina",
+                floor: 1,
+                sf: 2748,
+                capacity: 98,
+                features: ["Patio"],
+                notes: "Full restaurant. Booking includes the PDR at the back."
+            },
+            "PDR": {
+                name: "Private Dining Room",
+                floor: 1,
+                parent: "SESTINA",
+                labelLines: ["Private", "Dining", "Room"],
+                sf: 520,
+                capacity: 22,
+                notes: "Sits at the back of Sestina. Bookable standalone or used as part of regular service."
+            },
+            "GALLERY": {
+                name: "The Gallery",
+                floor: 1,
+                sf: 1379,
+                capacity: 65,
+                banquet: 50,
+                features: ["Dimmable lights", "Privacy blinds", "Plug-in sound system", "Interior + exterior entrance", "Attaches to Front Porch"]
+            },
             "FIELD_NOTES": { name: "Field Notes", floor: 1 },
             "EDDY": { name: "The Eddy", floor: 2, notes: "Buyout always includes the Sunroom." },
             "SUNROOM": { name: "Sunroom", floor: 2, parent: "EDDY", notes: "Bookable standalone or as part of The Eddy." },
@@ -1837,17 +1859,18 @@
             }
             document.getElementById('detail-count').textContent = relationLine;
 
+            const fmt = (n) => typeof n === "number" ? n.toLocaleString() : n;
             const fields = [
-                { label: "Square Feet", key: "sf" },
-                { label: "Capacity", key: "capacity" },
+                { label: "Square Feet", key: "sf", suffix: " sq ft" },
+                { label: "Max Capacity", key: "capacity" },
+                { label: "Banquet (Rounds)", key: "banquet" },
                 { label: "Theater", key: "theater" },
-                { label: "Banquet", key: "banquet" },
                 { label: "Classroom", key: "classroom" },
-                { label: "Reception", key: "reception" }
+                { label: "Boardroom", key: "boardroom" }
             ];
             const gridParts = fields
                 .filter(f => space[f.key] != null && space[f.key] !== "")
-                .map(f => `<div class="detail-box"><div class="detail-label">${f.label}</div><div class="detail-value">${space[f.key]}</div></div>`);
+                .map(f => `<div class="detail-box"><div class="detail-label">${f.label}</div><div class="detail-value">${fmt(space[f.key])}${f.suffix || ""}</div></div>`);
             const gridHTML = gridParts.length
                 ? gridParts.join("")
                 : `<div class="detail-box" style="grid-column: 1 / -1; text-align:center; color:#94a3b8;">Specs coming soon — Kelsey will fill these in</div>`;
