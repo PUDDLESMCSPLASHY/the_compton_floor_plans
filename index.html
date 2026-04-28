@@ -581,6 +581,53 @@
             max-width: 1200px;
             margin: 0 auto;
         }
+        .photo-tabs {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin: 0 auto 22px;
+            max-width: 1200px;
+            background: #f1ebdf;
+            padding: 4px;
+            border-radius: 999px;
+            width: fit-content;
+        }
+        .photo-tab {
+            background: transparent;
+            border: none;
+            padding: 8px 22px;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #5a4a30;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+        .photo-tab:hover { color: #0F162A; }
+        .photo-tab.active {
+            background: white;
+            color: #0F162A;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+        .type-card.no-photos {
+            cursor: default;
+            opacity: 0.85;
+        }
+        .type-card.no-photos:hover {
+            transform: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-color: #e2d9c8;
+        }
+        .type-card-cover.placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1ebdf;
+            color: #94785a;
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 12px;
+        }
         .type-card {
             background: white;
             border-radius: 10px;
@@ -878,7 +925,7 @@
         <button class="floor-btn" data-floor="5">Fifth Floor</button>
         <button class="floor-btn" data-floor="6">Sixth Floor</button>
         <div class="view-divider"></div>
-        <button class="floor-btn types-btn" id="types-btn" onclick="showRoomTypesView()">📷 Room Types</button>
+        <button class="floor-btn types-btn" id="types-btn" onclick="showRoomTypesView()">📷 Photos</button>
     </div>
     
     <div class="main">
@@ -996,7 +1043,12 @@
 
     <!-- Room Types view -->
     <div class="room-types-view" id="room-types-view">
+        <div class="photo-tabs">
+            <button class="photo-tab active" data-photo-tab="rooms" onclick="setPhotoTab('rooms')">Guestrooms</button>
+            <button class="photo-tab" data-photo-tab="events" onclick="setPhotoTab('events')">Event Spaces</button>
+        </div>
         <div class="types-grid" id="types-grid"></div>
+        <div class="types-grid" id="event-spaces-grid" style="display:none;"></div>
     </div>
 
     <!-- Photo gallery modal -->
@@ -1087,6 +1139,55 @@
         function photoUrl(folder, file) {
             return 'photos/' + encodeURIComponent(folder) + '/' + encodeURIComponent(file);
         }
+
+        // Event space photo manifest — keyed by eventSpaceData ID.
+        // Photos go in photos/<folder>/. Empty arrays render a "coming soon" card.
+        const EVENT_SPACE_PHOTOS = {
+            SESTINA:     { folder: 'Sestina', photos: [
+                'Sestina Dining Room IMG_5739.jpg'
+            ]},
+            PDR:         { folder: 'PDR',     photos: [] },
+            GALLERY:     { folder: 'Gallery', photos: [
+                'Gallery Empty_67A3083m-2.jpg',
+                'Gallery with Benches_67A3083m.jpg',
+                'Gallery Boardroom 5798-3.jpg',
+                'Gallery Classroom IMG_5848.jpg'
+            ]},
+            FIELD_NOTES: { folder: 'Field Notes', photos: [
+                'Field Notes Full Room_67A2594.jpg',
+                'Field Notes Central Seating_67A2552.jpg'
+            ]},
+            EDDY:        { folder: 'Eddy', photos: [
+                'The Eddy Full Room IMG_5360-m.jpg',
+                'The Eddy Dusk Sun Room_67A2272.jpg'
+            ]},
+            SUNROOM:     { folder: 'Sunroom', photos: [
+                'The Eddy Dusk Sun Room_67A2272.jpg'
+            ]},
+            OZARK:       { folder: 'Ozark Room', photos: [
+                'Ozark Room Wide _67A2494-2.jpg',
+                'Ozark Room Library Day_67A2529.jpg',
+                'Ozark Room Dusk_67A2411.jpg'
+            ]},
+            DOGWOOD:     { folder: 'Dogwood', photos: [
+                'Dogwood Full_67A2836.jpg',
+                'Dogwood Full Rounds_67A2355.jpg',
+                'Dogwood Full Classroom IMG_6018-2.jpg',
+                'Dogwood Full Classroom IMG_6176.jpg',
+                'Prefunction_67A2478.jpg'
+            ]},
+            DOGWOOD_A:   { folder: 'Dogwood A', photos: [
+                'Dogwood A_67A3014.jpg',
+                'Dogwood A Reception IMG_6497.jpg',
+                'Dogwood A Classroom IMG_5968.jpg',
+                'Dogwood A Crescent Rounds IMG_5620-4.jpg',
+                'Dogwood A Cresent Rounds IMG_5715.jpg'
+            ]},
+            DOGWOOD_B:   { folder: 'Dogwood B', photos: [
+                'Dogwood B_67A2894.jpg',
+                'Dogwood B U Shape_67A2379.jpg'
+            ]}
+        };
         function getRoomType(roomNum) {
             const room = roomData[roomNum];
             if (!room) return null;
@@ -1101,6 +1202,8 @@
         let galleryPhotos = [];
         let galleryIndex = 0;
 
+        let activePhotoTab = 'rooms';
+
         function showRoomTypesView() {
             if (document.body.classList.contains('types-mode')) {
                 showFloorView();
@@ -1108,11 +1211,28 @@
             }
             document.body.classList.add('types-mode');
             document.getElementById('types-btn').classList.add('active');
-            renderRoomTypesView();
+            setPhotoTab(activePhotoTab);
         }
         function showFloorView() {
             document.body.classList.remove('types-mode');
             document.getElementById('types-btn').classList.remove('active');
+        }
+        function setPhotoTab(tab) {
+            activePhotoTab = tab;
+            document.querySelectorAll('.photo-tab').forEach(b => {
+                b.classList.toggle('active', b.dataset.photoTab === tab);
+            });
+            const roomsGrid = document.getElementById('types-grid');
+            const eventsGrid = document.getElementById('event-spaces-grid');
+            if (tab === 'events') {
+                roomsGrid.style.display = 'none';
+                eventsGrid.style.display = 'grid';
+                renderEventSpacesGrid();
+            } else {
+                roomsGrid.style.display = 'grid';
+                eventsGrid.style.display = 'none';
+                renderRoomTypesView();
+            }
         }
         function renderRoomTypesView() {
             const grid = document.getElementById('types-grid');
@@ -1132,20 +1252,77 @@
                     </div>`;
             }).join('');
         }
+        function renderEventSpacesGrid() {
+            const grid = document.getElementById('event-spaces-grid');
+            const order = ['SESTINA','PDR','GALLERY','FIELD_NOTES','EDDY','SUNROOM','OZARK','DOGWOOD','DOGWOOD_A','DOGWOOD_B'];
+            grid.innerHTML = order.map(id => {
+                const space = eventSpaceData[id];
+                const manifest = EVENT_SPACE_PHOTOS[id] || { photos: [], folder: '' };
+                const photos = manifest.photos || [];
+                const floorLabel = space.floor === 1 ? 'First Floor' : space.floor === 2 ? 'Second Floor' : `Floor ${space.floor}`;
+                if (photos.length) {
+                    const cover = photoUrl(manifest.folder, photos[0]);
+                    return `
+                        <div class="type-card" onclick="openEventSpaceGallery('${id}')">
+                            <div class="type-card-cover" style="background-image: url('${cover}');"></div>
+                            <div class="type-card-body">
+                                <div class="type-card-name">${space.name}</div>
+                                <div class="type-card-meta">
+                                    <span>${photos.length} photo${photos.length === 1 ? '' : 's'}</span>
+                                    <span class="type-card-count">${floorLabel}</span>
+                                </div>
+                            </div>
+                        </div>`;
+                }
+                return `
+                    <div class="type-card no-photos">
+                        <div class="type-card-cover placeholder">📷 Photos coming soon</div>
+                        <div class="type-card-body">
+                            <div class="type-card-name">${space.name}</div>
+                            <div class="type-card-meta">
+                                <span>—</span>
+                                <span class="type-card-count">${floorLabel}</span>
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
 
-        function openGallery(typeKey) {
-            const type = ROOM_TYPES.find(t => t.key === typeKey);
-            if (!type || !type.photos.length) return;
-            galleryPhotos = type.photos.map(p => photoUrl(type.folder, p));
+        function openGalleryWithPhotos(photos, title, subtitle) {
+            if (!photos || !photos.length) return;
+            galleryPhotos = photos;
             galleryIndex = 0;
-            document.getElementById('gallery-title').textContent = type.name;
-            document.getElementById('gallery-subtitle').textContent = type.description || '';
+            document.getElementById('gallery-title').textContent = title || '';
+            document.getElementById('gallery-subtitle').textContent = subtitle || '';
             renderGalleryImage();
             renderGalleryThumbs();
             document.getElementById('gallery-overlay').classList.add('open');
         }
+        function openGallery(typeKey) {
+            const type = ROOM_TYPES.find(t => t.key === typeKey);
+            if (!type || !type.photos.length) return;
+            openGalleryWithPhotos(
+                type.photos.map(p => photoUrl(type.folder, p)),
+                type.name,
+                type.description || ''
+            );
+        }
+        function openEventSpaceGallery(spaceId) {
+            const space = eventSpaceData[spaceId];
+            const manifest = EVENT_SPACE_PHOTOS[spaceId];
+            if (!space || !manifest || !manifest.photos.length) return;
+            openGalleryWithPhotos(
+                manifest.photos.map(p => photoUrl(manifest.folder, p)),
+                space.name,
+                space.notes || ''
+            );
+        }
         function openGalleryForSelectedRoom() {
             if (!selectedRoom) return;
+            if (eventSpaceData[selectedRoom]) {
+                openEventSpaceGallery(selectedRoom);
+                return;
+            }
             const type = getRoomType(selectedRoom);
             if (type) openGallery(type.key);
         }
@@ -1918,8 +2095,14 @@
             }
 
             const cameraBtn = document.getElementById('detail-camera-btn');
-            cameraBtn.disabled = true;
-            cameraBtn.title = 'No photos available yet';
+            const photoCount = (EVENT_SPACE_PHOTOS[spaceId]?.photos || []).length;
+            if (photoCount) {
+                cameraBtn.disabled = false;
+                cameraBtn.title = `View ${space.name} photos`;
+            } else {
+                cameraBtn.disabled = true;
+                cameraBtn.title = 'No photos available yet';
+            }
 
             document.getElementById('room-details').classList.add('visible');
         }
@@ -2045,15 +2228,14 @@
             currentFloor = 1;
             document.querySelectorAll('.floor-btn').forEach(b => b.classList.remove('active'));
             document.querySelector('.floor-btn[data-floor="1"]')?.classList.add('active');
-            // Hide floors 3-6 + Room Types button + filter tab
+            // Hide floors 3-6 + filter tab. Keep Photos button and default sub-tab to Event Spaces.
             ['3', '4', '5', '6'].forEach(f => {
                 const btn = document.querySelector(`.floor-btn[data-floor="${f}"]`);
                 if (btn) btn.style.display = 'none';
             });
-            const typesBtn = document.getElementById('types-btn');
-            if (typesBtn) typesBtn.style.display = 'none';
             const filterTab = document.getElementById('filter-tab');
             if (filterTab) filterTab.style.display = 'none';
+            activePhotoTab = 'events';
         }
 
         // Initial render
