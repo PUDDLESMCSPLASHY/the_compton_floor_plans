@@ -518,6 +518,69 @@
         }
         .feature-tag.ada { background: #c6f6d5; color: #276749; }
         .feature-tag.balcony { background: #dcfce7; color: #166534; font-weight: 600; }
+        .booking-card {
+            margin-top: 18px;
+            padding: 14px 16px;
+            border-radius: 8px;
+            border-left: 4px solid #c9a227;
+            background: #faf9f7;
+        }
+        .booking-card-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #94785a;
+            margin-bottom: 6px;
+        }
+        .booking-card-title {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: #0F162A;
+            margin-bottom: 4px;
+        }
+        .booking-card-line {
+            font-size: 0.88rem;
+            color: #4a5568;
+            margin: 3px 0;
+        }
+        .booking-card-line strong { color: #0F162A; font-weight: 500; }
+        .booking-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 10px 0;
+        }
+        .booking-badge {
+            font-size: 0.72rem;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: white;
+            border: 1px solid #d6cdb6;
+            color: #5a4a30;
+        }
+        .booking-jump-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 6px;
+            padding: 8px 14px;
+            background: #0F162A;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+        .booking-jump-btn:hover { background: #2d4a6f; }
+        .booking-extra {
+            font-size: 0.78rem;
+            color: #94785a;
+            margin-top: 8px;
+            font-style: italic;
+        }
         .room-notes {
             margin-top: 10px;
             padding: 8px;
@@ -620,6 +683,49 @@
         /* Open Full View button — only visible in embed mode. */
         .open-full-btn { display: none; text-decoration: none; }
         body.event-spaces-mode .open-full-btn { display: inline-flex; align-items: center; }
+
+        /* Date picker (bookings overlay) */
+        .date-picker-group {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .date-picker {
+            font-family: inherit;
+            font-size: 0.9rem;
+            padding: 8px 10px;
+            border: 2px solid #c9a227;
+            border-radius: 6px;
+            background: white;
+            color: #0F162A;
+            cursor: pointer;
+        }
+        .today-btn {
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 8px 14px;
+            border: 2px solid #c9a227;
+            border-radius: 6px;
+            background: white;
+            color: #0F162A;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+        .today-btn:hover { background: #faf5eb; }
+        .today-btn.active { background: #c9a227; color: white; }
+
+        /* Booked event-space overlay — fill/stroke set inline by renderer.
+           The .booked class flips the hover behavior so the booking color
+           is preserved. */
+        .event-space.booked,
+        .event-space-child.booked,
+        .reference-space.booked,
+        .fitness-center.booked { stroke-width: 2.5; }
+        .event-space.booked:hover,
+        .event-space-child.booked:hover,
+        .reference-space.clickable.booked:hover,
+        .fitness-center.clickable.booked:hover { filter: brightness(0.92); }
         body.event-spaces-mode .main { height: calc(100vh - 70px); }
         body.event-spaces-mode .floor-plan-container { padding: 10px; overflow: hidden; }
         body.event-spaces-mode .floor-svg { max-width: 100%; max-height: 100%; height: auto; width: auto; }
@@ -982,6 +1088,10 @@
         <div class="view-divider"></div>
         <button class="floor-btn types-btn" id="types-btn" onclick="showRoomTypesView()">📷 Photos</button>
         <a class="floor-btn open-full-btn" id="open-full-btn" href="https://puddlesmcsplashy.github.io/the_compton_floor_plans/" target="_blank" rel="noopener">Open Full View ↗</a>
+        <div class="date-picker-group">
+            <input type="date" class="date-picker" id="booking-date" />
+            <button class="today-btn" id="today-btn" onclick="setBookingDate('today')">Today</button>
+        </div>
     </div>
     
     <div class="main">
@@ -1095,6 +1205,7 @@
         <div class="detail-grid" id="detail-grid"></div>
         <div class="feature-tags" id="detail-features"></div>
         <div class="room-notes" id="detail-notes" style="display:none;"></div>
+        <div class="booking-card" id="detail-booking" style="display:none;"></div>
     </div>
 
     <!-- Room Types view -->
@@ -1762,6 +1873,135 @@
         let currentFloor = 4;
         let selectedRoom = null;
         let activeFilters = new Set();
+
+        // ── Bookings overlay state ──
+        // Map Delphi's function-room names to our space IDs.
+        const ROOM_NAME_MAP = {
+            'Sestina':                'SESTINA',
+            'Sestina Private Dining': 'PDR',
+            'The Gallery':            'GALLERY',
+            'Field Notes':            'FIELD_NOTES',
+            'The Eddy':               'EDDY',
+            'The Sunroom':            'SUNROOM',
+            'Ozark Room':             'OZARK',
+            'Dogwood Ballroom':       'DOGWOOD',
+            'Dogwood Ballroom A':     'DOGWOOD_A',
+            'Dogwood Ballroom B':     'DOGWOOD_B',
+            'The Front Porch':        'FRONT_PORCH',
+            'The Atrium':             'ATRIUM',
+            'Lobby Lounge':           'LOBBY'
+        };
+        // Brand "Grounded Warmth" palette — distinct from existing room colors.
+        const BOOKING_PALETTE = [
+            { fill: '#E8C9BC', stroke: '#B85C3C' }, // terracotta
+            { fill: '#CCD9CD', stroke: '#3F6041' }, // forest green
+            { fill: '#D5C5CE', stroke: '#7E5A6E' }, // plum
+            { fill: '#C5D2E0', stroke: '#5A7A9A' }, // slate blue
+            { fill: '#D9D2B8', stroke: '#8B7E4E' }, // olive
+            { fill: '#E5C9C9', stroke: '#A85F5F' }  // dusty rose
+        ];
+        let bookingsByRoom = {};        // { SPACE_ID: [event, ...] }
+        let bookingsByBookingId = {};   // { booking_id: [event, ...] (across all rooms) }
+
+        function bookingColor(bookingId) {
+            let h = 0;
+            for (let i = 0; i < bookingId.length; i++) h = (h * 31 + bookingId.charCodeAt(i)) >>> 0;
+            return BOOKING_PALETTE[h % BOOKING_PALETTE.length];
+        }
+        function getBookingForSpace(spaceId) {
+            const evs = bookingsByRoom[spaceId];
+            return (evs && evs.length) ? evs[0] : null;
+        }
+        function bookingStyleAttr(spaceId) {
+            const ev = getBookingForSpace(spaceId);
+            if (!ev) return { cls: '', style: '' };
+            const c = bookingColor(ev.booking_id);
+            // When selected, skip the inline color so the gold selection
+            // state still wins — the detail panel shows the booking card.
+            if (selectedRoom === spaceId) return { cls: ' booked', style: '' };
+            return { cls: ' booked', style: ` style="fill:${c.fill};stroke:${c.stroke};"` };
+        }
+        function todayISO() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+        async function loadBookings(dateStr) {
+            const url = `https://delphi.kelphi.app/api/availability/events?start=${dateStr}&end=${dateStr}&statuses=Definite`;
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                bookingsByRoom = {};
+                bookingsByBookingId = {};
+                for (const ev of (data.events || [])) {
+                    const sid = ROOM_NAME_MAP[ev.room];
+                    if (sid) (bookingsByRoom[sid] ||= []).push(ev);
+                    (bookingsByBookingId[ev.booking_id] ||= []).push(ev);
+                }
+            } catch (e) {
+                console.warn('Bookings fetch failed:', e);
+                bookingsByRoom = {};
+                bookingsByBookingId = {};
+            }
+            renderFloorPlan();
+            // If a booked space is open in the detail panel, refresh it.
+            if (selectedRoom && (eventSpaceData[selectedRoom] || publicSpaceData[selectedRoom])) {
+                showDetails(selectedRoom);
+            }
+        }
+        function setBookingDate(arg) {
+            const picker = document.getElementById('booking-date');
+            const dateStr = (arg === 'today') ? todayISO() : arg;
+            picker.value = dateStr;
+            document.getElementById('today-btn').classList.toggle('active', dateStr === todayISO());
+            loadBookings(dateStr);
+        }
+        function renderBookingCard(spaceId) {
+            const card = document.getElementById('detail-booking');
+            const events = bookingsByRoom[spaceId] || [];
+            if (!events.length) { card.style.display = 'none'; return; }
+            const ev = events[0];
+            const allEventsForBooking = bookingsByBookingId[ev.booking_id] || [];
+            const otherSpaces = allEventsForBooking
+                .filter(e => e.event_id !== ev.event_id && ROOM_NAME_MAP[e.room])
+                .map(e => e.room);
+            const uniqueOtherSpaces = [...new Set(otherSpaces)];
+            const isMultiDay = ev.start_date !== ev.end_date;
+            const isMultiSpace = uniqueOtherSpaces.length > 0;
+            const badges = [];
+            if (isMultiDay) badges.push('Multi-day');
+            if (isMultiSpace) badges.push('Multi-space');
+            if (ev.has_guestrooms) badges.push('Has guestrooms');
+
+            const c = bookingColor(ev.booking_id);
+            const timeRange = (ev.start_time && ev.end_time)
+                ? `${ev.start_time} – ${ev.end_time}`
+                : (ev.start_time || ev.end_time || '');
+            const eventLine = ev.event_name
+                ? `${ev.event_name}${timeRange ? ` · ${timeRange}` : ''}`
+                : timeRange;
+            const headcount = ev.headcount ? ` · ${ev.headcount} ppl` : '';
+
+            const extraEvents = events.length > 1
+                ? `<div class="booking-extra">+${events.length - 1} more event${events.length - 1 === 1 ? '' : 's'} in this space today</div>`
+                : '';
+            const otherSpacesLine = isMultiSpace
+                ? `<div class="booking-card-line"><strong>Also in:</strong> ${uniqueOtherSpaces.join(', ')}</div>`
+                : '';
+
+            card.style.display = 'block';
+            card.style.borderLeftColor = c.stroke;
+            card.innerHTML = `
+                <div class="booking-card-header">In House Today</div>
+                <div class="booking-card-title">${ev.booking_name || '—'}</div>
+                ${ev.contact ? `<div class="booking-card-line"><strong>Contact:</strong> ${ev.contact}</div>` : ''}
+                ${ev.seller ? `<div class="booking-card-line"><strong>Seller:</strong> ${ev.seller}</div>` : ''}
+                ${eventLine ? `<div class="booking-card-line">${eventLine}${headcount}</div>` : ''}
+                ${otherSpacesLine}
+                ${badges.length ? `<div class="booking-badges">${badges.map(b => `<span class="booking-badge">${b}</span>`).join('')}</div>` : ''}
+                <a class="booking-jump-btn" href="https://dashboard.kelphi.app/in-house/${ev.booking_id}" target="_blank" rel="noopener">Jump to full details ↗</a>
+                ${extraEvents}
+            `;
+        }
         let filterPanelOpen = false;
         
         function getRoomClass(roomNum) {
@@ -1993,7 +2233,8 @@
                 const fcW = (room419pos[0] + room419pos[2]) - room417pos[0];
                 const fcH = room417pos[3];
                 const gymSel = selectedRoom === 'GYM' ? ' selected' : '';
-                svg += `<rect class="fitness-center clickable${gymSel}" x="${fcX}" y="${fcY}" width="${fcW}" height="${fcH}" rx="3" onclick="selectRoom('GYM')"/>`;
+                const gymBk = bookingStyleAttr('GYM');
+                svg += `<rect class="fitness-center clickable${gymSel}${gymBk.cls}" x="${fcX}" y="${fcY}" width="${fcW}" height="${fcH}" rx="3" onclick="selectRoom('GYM')"${gymBk.style}/>`;
                 svg += `<text class="fitness-label" x="${fcX + fcW/2}" y="${fcY + fcH/2 - 4}" text-anchor="middle">FITNESS</text>`;
                 svg += `<text class="fitness-label" x="${fcX + fcW/2}" y="${fcY + fcH/2 + 10}" text-anchor="middle">CENTER</text>`;
             }
@@ -2004,8 +2245,10 @@
                 const cls = ['reference-space'];
                 if (isClickable) cls.push('clickable');
                 if (selectedRoom === rs.id) cls.push('selected');
+                const refBk = bookingStyleAttr(rs.id);
+                if (refBk.cls) cls.push('booked');
                 const onclick = isClickable ? ` onclick="selectRoom('${rs.id}')"` : '';
-                svg += `<rect class="${cls.join(' ')}" x="${rs.x + padding}" y="${rs.y + padding}" width="${rs.w}" height="${rs.h}" rx="3"${onclick}/>`;
+                svg += `<rect class="${cls.join(' ')}" x="${rs.x + padding}" y="${rs.y + padding}" width="${rs.w}" height="${rs.h}" rx="3"${onclick}${refBk.style}/>`;
                 svg += `<text class="reference-label" x="${rs.x + padding + rs.w/2}" y="${rs.y + padding + rs.h/2 + 3}">${rs.label}</text>`;
             });
 
@@ -2020,8 +2263,9 @@
                 const [x, y, w, h] = evtLayout[id];
                 const isChild = !!data.parent;
                 const sel = selectedRoom === id ? ' selected' : '';
-                const cls = isChild ? `event-space-child${sel}` : `event-space${sel}`;
-                svg += `<rect class="${cls}" data-event="${id}" x="${x + padding}" y="${y + padding}" width="${w}" height="${h}" rx="4"/>`;
+                const evBk = bookingStyleAttr(id);
+                const cls = (isChild ? `event-space-child${sel}` : `event-space${sel}`) + evBk.cls;
+                svg += `<rect class="${cls}" data-event="${id}" x="${x + padding}" y="${y + padding}" width="${w}" height="${h}" rx="4"${evBk.style}/>`;
                 // Choose label position: if a centered label would overlap a
                 // child rect, push the parent label to the top strip; otherwise
                 // center it vertically in the available space.
@@ -2147,6 +2391,8 @@
         }
         
         function showDetails(roomNum) {
+            // Default: hide booking card; event/public-space handlers re-show it.
+            document.getElementById('detail-booking').style.display = 'none';
             if (eventSpaceData[roomNum]) {
                 showEventSpaceDetails(roomNum);
                 return;
@@ -2275,6 +2521,7 @@
                 cameraBtn.title = 'No photos available yet';
             }
 
+            renderBookingCard(spaceId);
             document.getElementById('room-details').classList.add('visible');
         }
 
@@ -2318,6 +2565,7 @@
                 cameraBtn.title = 'No photos available yet';
             }
 
+            renderBookingCard(spaceId);
             document.getElementById('room-details').classList.add('visible');
         }
 
@@ -2457,6 +2705,14 @@
         // Initial render
         renderRoomList();
         renderFloorPlan();
+
+        // Bookings overlay: default to today, fetch, re-fetch on date change.
+        document.getElementById('booking-date').value = todayISO();
+        document.getElementById('today-btn').classList.add('active');
+        document.getElementById('booking-date').addEventListener('change', (e) => {
+            setBookingDate(e.target.value);
+        });
+        loadBookings(todayISO());
     </script>
 </body>
 </html>
