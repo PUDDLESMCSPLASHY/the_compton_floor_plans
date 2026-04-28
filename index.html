@@ -1301,7 +1301,7 @@
         }
         function renderRoomTypesView() {
             const grid = document.getElementById('types-grid');
-            grid.innerHTML = ROOM_TYPES.map(t => {
+            const roomCards = ROOM_TYPES.map(t => {
                 const count = countRoomsOfType(t);
                 const cover = t.photos.length ? photoUrl(t.folder, t.photos[0]) : '';
                 return `
@@ -1316,6 +1316,23 @@
                         </div>
                     </div>`;
             }).join('');
+            // Fitness Center is guest-only — show it under Guestrooms.
+            const gym = publicSpaceData.GYM;
+            const gymManifest = PUBLIC_SPACE_PHOTOS.GYM;
+            const gymPhotos = gymManifest?.photos || [];
+            const gymCover = gymPhotos.length ? photoUrl(gymManifest.folder, gymPhotos[0]) : '';
+            const gymCard = `
+                <div class="type-card" onclick="openPublicSpaceGallery('GYM')">
+                    <div class="type-card-cover" style="background-image: url('${gymCover}');"></div>
+                    <div class="type-card-body">
+                        <div class="type-card-name">${gym.name}</div>
+                        <div class="type-card-meta">
+                            <span>${gymPhotos.length} photo${gymPhotos.length === 1 ? '' : 's'}</span>
+                            <span class="type-card-count">Guests only</span>
+                        </div>
+                    </div>
+                </div>`;
+            grid.innerHTML = roomCards + gymCard;
         }
         function renderEventSpacesGrid() {
             const grid = document.getElementById('event-spaces-grid');
@@ -1355,7 +1372,7 @@
 
         function renderPublicSpacesGrid() {
             const grid = document.getElementById('public-spaces-grid');
-            const order = ['FIELD_NOTES','GYM','ATRIUM','LOBBY','FRONT_DESK','EXTERIOR'];
+            const order = ['FIELD_NOTES','ATRIUM','LOBBY','FRONT_DESK','EXTERIOR'];
             grid.innerHTML = order.map(id => {
                 const space = publicSpaceData[id];
                 const manifest = PUBLIC_SPACE_PHOTOS[id] || { photos: [], folder: '' };
