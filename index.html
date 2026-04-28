@@ -1937,6 +1937,16 @@
                     if (sid) (bookingsByRoom[sid] ||= []).push(ev);
                     (bookingsByBookingId[ev.booking_id] ||= []).push(ev);
                 }
+                // Parent bookings cascade to children: e.g. Eddy buyout
+                // always includes Sunroom; Sestina buyout includes PDR;
+                // full Dogwood Ballroom buyout includes A + B. Children
+                // with their own bookings keep theirs.
+                for (const [childId, sd] of Object.entries(eventSpaceData)) {
+                    if (!sd.parent) continue;
+                    if (bookingsByRoom[childId]?.length) continue;
+                    const parentEvents = bookingsByRoom[sd.parent];
+                    if (parentEvents?.length) bookingsByRoom[childId] = parentEvents;
+                }
             } catch (e) {
                 console.warn('Bookings fetch failed:', e);
                 bookingsByRoom = {};
