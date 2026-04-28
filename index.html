@@ -182,6 +182,18 @@
             stroke: #718096;
             stroke-width: 1.5;
         }
+        .fitness-center.clickable {
+            cursor: pointer;
+            transition: fill 0.15s, stroke 0.15s;
+        }
+        .fitness-center.clickable:hover {
+            fill: #d8e0eb;
+            stroke: #4a5568;
+        }
+        .fitness-center.selected {
+            fill: #c9a227;
+            stroke: #8b6914;
+        }
         .fitness-label {
             font-family: 'Georgia', serif;
             font-size: 10px;
@@ -189,6 +201,8 @@
             font-weight: 600;
             pointer-events: none;
         }
+        .fitness-center.selected + .fitness-label,
+        .fitness-center.selected ~ .fitness-label { fill: white; }
 
         /* Event spaces — bookable function rooms */
         .event-space {
@@ -246,6 +260,20 @@
             stroke-width: 1;
             stroke-dasharray: 3 3;
             pointer-events: none;
+        }
+        .reference-space.clickable {
+            pointer-events: auto;
+            cursor: pointer;
+            transition: fill 0.15s, stroke 0.15s;
+        }
+        .reference-space.clickable:hover {
+            fill: #ede9dc;
+            stroke: #94785a;
+        }
+        .reference-space.selected {
+            fill: #c9a227;
+            stroke: #8b6914;
+            stroke-dasharray: none;
         }
         .reference-label {
             font-family: 'Georgia', serif;
@@ -1046,9 +1074,11 @@
         <div class="photo-tabs">
             <button class="photo-tab active" data-photo-tab="rooms" onclick="setPhotoTab('rooms')">Guestrooms</button>
             <button class="photo-tab" data-photo-tab="events" onclick="setPhotoTab('events')">Event Spaces</button>
+            <button class="photo-tab" data-photo-tab="public" onclick="setPhotoTab('public')">Public Spaces</button>
         </div>
         <div class="types-grid" id="types-grid"></div>
         <div class="types-grid" id="event-spaces-grid" style="display:none;"></div>
+        <div class="types-grid" id="public-spaces-grid" style="display:none;"></div>
     </div>
 
     <!-- Photo gallery modal -->
@@ -1188,6 +1218,42 @@
                 'Dogwood B U Shape_67A2379.jpg'
             ]}
         };
+
+        // Public spaces — non-bookable but clickable, with photos.
+        // GYM is rendered as the Fitness Center on Floor 2; ATRIUM/LOBBY/
+        // FRONT_DESK/FRONT_PORCH are reference labels (made clickable).
+        // EXTERIOR has no rect on the floor plan — Photos tab only.
+        const publicSpaceData = {
+            GYM:         { name: "Fitness Center", floor: 2, sf: 504, capacity: 11 },
+            ATRIUM:      { name: "Atrium", notes: "Multi-story atrium with rock-wall feature, connecting first and second floors." },
+            LOBBY:       { name: "Lobby", floor: 1, notes: "First-floor lobby with fireplace lounge." },
+            FRONT_DESK:  { name: "Front Desk", floor: 1 },
+            FRONT_PORCH: { name: "Front Porch", floor: 1, notes: "Outdoor porch facing Dave Peel Park." },
+            EXTERIOR:    { name: "Building Exterior" }
+        };
+        const PUBLIC_SPACE_PHOTOS = {
+            GYM:         { folder: 'Fitness Center', photos: [
+                'Fitness Center IMG_6596.jpg'
+            ]},
+            ATRIUM:      { folder: 'Atrium', photos: [
+                'Atrium Rock Wall_67A2933m.jpg',
+                'Atrium Lounge Seating_67A2923m.jpg',
+                'Atrium Seating Area_67A2733m.jpg'
+            ]},
+            LOBBY:       { folder: 'Lobby', photos: [
+                'Lobby Lounge with Fireplace_67A2994.jpg'
+            ]},
+            FRONT_DESK:  { folder: 'Front Desk', photos: [
+                'Reception Foyer Front Desk_67A2775.jpg'
+            ]},
+            FRONT_PORCH: { folder: 'Front Porch', photos: [
+                'Front Porch_67A2957.jpg'
+            ]},
+            EXTERIOR:    { folder: 'Exterior', photos: [
+                'Front Door Dusk_67A2425-2.jpg',
+                'A St Promenade Corner_67A2436-3.jpg'
+            ]}
+        };
         function getRoomType(roomNum) {
             const room = roomData[roomNum];
             if (!room) return null;
@@ -1224,15 +1290,13 @@
             });
             const roomsGrid = document.getElementById('types-grid');
             const eventsGrid = document.getElementById('event-spaces-grid');
-            if (tab === 'events') {
-                roomsGrid.style.display = 'none';
-                eventsGrid.style.display = 'grid';
-                renderEventSpacesGrid();
-            } else {
-                roomsGrid.style.display = 'grid';
-                eventsGrid.style.display = 'none';
-                renderRoomTypesView();
-            }
+            const publicGrid = document.getElementById('public-spaces-grid');
+            roomsGrid.style.display = tab === 'rooms' ? 'grid' : 'none';
+            eventsGrid.style.display = tab === 'events' ? 'grid' : 'none';
+            publicGrid.style.display = tab === 'public' ? 'grid' : 'none';
+            if (tab === 'rooms') renderRoomTypesView();
+            else if (tab === 'events') renderEventSpacesGrid();
+            else if (tab === 'public') renderPublicSpacesGrid();
         }
         function renderRoomTypesView() {
             const grid = document.getElementById('types-grid');
@@ -1288,6 +1352,42 @@
             }).join('');
         }
 
+        function renderPublicSpacesGrid() {
+            const grid = document.getElementById('public-spaces-grid');
+            const order = ['GYM','ATRIUM','LOBBY','FRONT_DESK','FRONT_PORCH','EXTERIOR'];
+            grid.innerHTML = order.map(id => {
+                const space = publicSpaceData[id];
+                const manifest = PUBLIC_SPACE_PHOTOS[id] || { photos: [], folder: '' };
+                const photos = manifest.photos || [];
+                const sub = space.floor === 1 ? 'First Floor' : space.floor === 2 ? 'Second Floor' : space.floor ? `Floor ${space.floor}` : '';
+                if (photos.length) {
+                    const cover = photoUrl(manifest.folder, photos[0]);
+                    return `
+                        <div class="type-card" onclick="openPublicSpaceGallery('${id}')">
+                            <div class="type-card-cover" style="background-image: url('${cover}');"></div>
+                            <div class="type-card-body">
+                                <div class="type-card-name">${space.name}</div>
+                                <div class="type-card-meta">
+                                    <span>${photos.length} photo${photos.length === 1 ? '' : 's'}</span>
+                                    <span class="type-card-count">${sub}</span>
+                                </div>
+                            </div>
+                        </div>`;
+                }
+                return `
+                    <div class="type-card no-photos">
+                        <div class="type-card-cover placeholder">📷 Photos coming soon</div>
+                        <div class="type-card-body">
+                            <div class="type-card-name">${space.name}</div>
+                            <div class="type-card-meta">
+                                <span>—</span>
+                                <span class="type-card-count">${sub}</span>
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
         function openGalleryWithPhotos(photos, title, subtitle) {
             if (!photos || !photos.length) return;
             galleryPhotos = photos;
@@ -1317,10 +1417,24 @@
                 space.notes || ''
             );
         }
+        function openPublicSpaceGallery(spaceId) {
+            const space = publicSpaceData[spaceId];
+            const manifest = PUBLIC_SPACE_PHOTOS[spaceId];
+            if (!space || !manifest || !manifest.photos.length) return;
+            openGalleryWithPhotos(
+                manifest.photos.map(p => photoUrl(manifest.folder, p)),
+                space.name,
+                space.notes || ''
+            );
+        }
         function openGalleryForSelectedRoom() {
             if (!selectedRoom) return;
             if (eventSpaceData[selectedRoom]) {
                 openEventSpaceGallery(selectedRoom);
+                return;
+            }
+            if (publicSpaceData[selectedRoom]) {
+                openPublicSpaceGallery(selectedRoom);
                 return;
             }
             const type = getRoomType(selectedRoom);
@@ -1823,7 +1937,7 @@
             });
             
             // Fitness Center on Floor 2 (where 217/219 would be) — also serves
-            // as the Gym reference space.
+            // as the Gym reference space and is clickable.
             if (currentFloor === 2) {
                 const room417pos = floorLayouts[4]['417'];
                 const room419pos = floorLayouts[4]['419'];
@@ -1831,14 +1945,20 @@
                 const fcY = room417pos[1] + padding;
                 const fcW = (room419pos[0] + room419pos[2]) - room417pos[0];
                 const fcH = room417pos[3];
-                svg += `<rect class="fitness-center" x="${fcX}" y="${fcY}" width="${fcW}" height="${fcH}" rx="3"/>`;
+                const gymSel = selectedRoom === 'GYM' ? ' selected' : '';
+                svg += `<rect class="fitness-center clickable${gymSel}" x="${fcX}" y="${fcY}" width="${fcW}" height="${fcH}" rx="3" onclick="selectRoom('GYM')"/>`;
                 svg += `<text class="fitness-label" x="${fcX + fcW/2}" y="${fcY + fcH/2 - 4}" text-anchor="middle">FITNESS</text>`;
                 svg += `<text class="fitness-label" x="${fcX + fcW/2}" y="${fcY + fcH/2 + 10}" text-anchor="middle">CENTER</text>`;
             }
 
-            // Reference (non-bookable) spaces — labels-only context
+            // Reference spaces — clickable when an entry exists in publicSpaceData.
             (referenceSpaces[currentFloor] || []).forEach((rs) => {
-                svg += `<rect class="reference-space" x="${rs.x + padding}" y="${rs.y + padding}" width="${rs.w}" height="${rs.h}" rx="3"/>`;
+                const isClickable = !!publicSpaceData[rs.id];
+                const cls = ['reference-space'];
+                if (isClickable) cls.push('clickable');
+                if (selectedRoom === rs.id) cls.push('selected');
+                const onclick = isClickable ? ` onclick="selectRoom('${rs.id}')"` : '';
+                svg += `<rect class="${cls.join(' ')}" x="${rs.x + padding}" y="${rs.y + padding}" width="${rs.w}" height="${rs.h}" rx="3"${onclick}/>`;
                 svg += `<text class="reference-label" x="${rs.x + padding + rs.w/2}" y="${rs.y + padding + rs.h/2 + 3}">${rs.label}</text>`;
             });
 
@@ -1984,6 +2104,10 @@
                 showEventSpaceDetails(roomNum);
                 return;
             }
+            if (publicSpaceData[roomNum]) {
+                showPublicSpaceDetails(roomNum);
+                return;
+            }
             const room = roomData[roomNum];
             if (!room) return;
 
@@ -2107,6 +2231,49 @@
             document.getElementById('room-details').classList.add('visible');
         }
 
+        function showPublicSpaceDetails(spaceId) {
+            const space = publicSpaceData[spaceId];
+            if (!space) return;
+            const floorLabel = space.floor === 1 ? "First Floor" : space.floor === 2 ? "Second Floor" : space.floor ? `Floor ${space.floor}` : "";
+
+            document.getElementById('detail-num').textContent = space.name;
+            document.getElementById('detail-type').textContent = "Public Space";
+            document.getElementById('detail-category').textContent = floorLabel;
+            document.getElementById('detail-count').textContent = "";
+
+            const fmt = (n) => typeof n === "number" ? n.toLocaleString() : n;
+            const fields = [
+                { label: "Square Feet", key: "sf", suffix: " sq ft" },
+                { label: "Max Capacity", key: "capacity" }
+            ];
+            const gridParts = fields
+                .filter(f => space[f.key] != null && space[f.key] !== "")
+                .map(f => `<div class="detail-box"><div class="detail-label">${f.label}</div><div class="detail-value">${fmt(space[f.key])}${f.suffix || ""}</div></div>`);
+            document.getElementById('detail-grid').innerHTML = gridParts.join("");
+
+            document.getElementById('detail-features').innerHTML = "";
+
+            const notesEl = document.getElementById('detail-notes');
+            if (space.notes) {
+                notesEl.textContent = space.notes;
+                notesEl.style.display = 'block';
+            } else {
+                notesEl.style.display = 'none';
+            }
+
+            const cameraBtn = document.getElementById('detail-camera-btn');
+            const photoCount = (PUBLIC_SPACE_PHOTOS[spaceId]?.photos || []).length;
+            if (photoCount) {
+                cameraBtn.disabled = false;
+                cameraBtn.title = `View ${space.name} photos`;
+            } else {
+                cameraBtn.disabled = true;
+                cameraBtn.title = 'No photos available yet';
+            }
+
+            document.getElementById('room-details').classList.add('visible');
+        }
+
         function closeDetails() {
             selectedRoom = null;
             document.getElementById('room-details').classList.remove('visible');
@@ -2215,7 +2382,9 @@
                 !e.target.closest('.room-item') &&
                 !e.target.closest('.event-space') &&
                 !e.target.closest('.event-space-child') &&
-                !e.target.closest('.event-item')) {
+                !e.target.closest('.event-item') &&
+                !e.target.closest('.fitness-center') &&
+                !e.target.closest('.reference-space')) {
                 closeDetails();
             }
         });
