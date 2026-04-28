@@ -612,6 +612,13 @@
         body.event-spaces-mode .room-box:hover { fill: #e8e6df !important; stroke: #94a3b8 !important; }
         body.event-spaces-mode .room-box.selected { fill: #94a3b8 !important; stroke: #4a5568 !important; }
         body.event-spaces-mode .room-ada-icon { display: none !important; }
+
+        /* Embed mode: hide top banner, scale SVG to fit, tighten padding so
+           the whole map fits without scrolling. */
+        body.event-spaces-mode .header { display: none !important; }
+        body.event-spaces-mode .main { height: calc(100vh - 70px); }
+        body.event-spaces-mode .floor-plan-container { padding: 10px; overflow: hidden; }
+        body.event-spaces-mode .floor-svg { max-width: 100%; max-height: 100%; height: auto; width: auto; }
         body.types-mode .legend { display: none; }
         body.types-mode .room-types-view { display: block; }
         body.types-mode .floor-toggle .floor-btn:not(.types-btn).active {
