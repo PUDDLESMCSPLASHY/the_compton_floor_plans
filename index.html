@@ -684,13 +684,14 @@
         .open-full-btn { display: none; text-decoration: none; }
         body.event-spaces-mode .open-full-btn { display: inline-flex; align-items: center; }
 
-        /* Date picker (bookings overlay) */
+        /* Date picker (bookings overlay) — embed mode only */
         .date-picker-group {
             margin-left: auto;
-            display: flex;
+            display: none;
             align-items: center;
             gap: 6px;
         }
+        body.event-spaces-mode .date-picker-group { display: flex; }
         .date-picker {
             font-family: inherit;
             font-size: 0.9rem;
@@ -2719,13 +2720,15 @@
         renderRoomList();
         renderFloorPlan();
 
-        // Bookings overlay: default to today, fetch, re-fetch on date change.
-        document.getElementById('booking-date').value = todayISO();
-        document.getElementById('today-btn').classList.add('active');
-        document.getElementById('booking-date').addEventListener('change', (e) => {
-            setBookingDate(e.target.value);
-        });
-        loadBookings(todayISO());
+        // Bookings overlay: embed mode only. Default to today, fetch, re-fetch on date change.
+        if (urlParams.has('event-spaces')) {
+            document.getElementById('booking-date').value = todayISO();
+            document.getElementById('today-btn').classList.add('active');
+            document.getElementById('booking-date').addEventListener('change', (e) => {
+                setBookingDate(e.target.value);
+            });
+            loadBookings(todayISO());
+        }
     </script>
 </body>
 </html>
