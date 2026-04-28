@@ -617,6 +617,9 @@
            the whole map fits without scrolling. */
         body.event-spaces-mode { overflow: hidden; }
         body.event-spaces-mode .header { display: none !important; }
+        /* Open Full View button — only visible in embed mode. */
+        .open-full-btn { display: none; text-decoration: none; }
+        body.event-spaces-mode .open-full-btn { display: inline-flex; align-items: center; }
         body.event-spaces-mode .main { height: calc(100vh - 70px); }
         body.event-spaces-mode .floor-plan-container { padding: 10px; overflow: hidden; }
         body.event-spaces-mode .floor-svg { max-width: 100%; max-height: 100%; height: auto; width: auto; }
@@ -978,6 +981,7 @@
         <button class="floor-btn" data-floor="6">Sixth Floor</button>
         <div class="view-divider"></div>
         <button class="floor-btn types-btn" id="types-btn" onclick="showRoomTypesView()">📷 Photos</button>
+        <a class="floor-btn open-full-btn" id="open-full-btn" href="https://puddlesmcsplashy.github.io/the_compton_floor_plans/" target="_blank" rel="noopener">Open Full View ↗</a>
     </div>
     
     <div class="main">
