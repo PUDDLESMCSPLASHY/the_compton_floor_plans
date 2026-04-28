@@ -1184,6 +1184,9 @@
                 'Gallery Classroom IMG_5848.jpg',
                 'Dogwood A Crescent Rounds IMG_5620-4.jpg'
             ]},
+            FRONT_PORCH: { folder: 'Front Porch', photos: [
+                'Front Porch_67A2957.jpg'
+            ]},
             EDDY:        { folder: 'Eddy', photos: [
                 'The Eddy Full Room IMG_5360-m.jpg',
                 'The Eddy Dusk Sun Room_67A2272.jpg'
@@ -1217,15 +1220,15 @@
 
         // Public spaces — non-bookable but clickable, with photos.
         // GYM is rendered as the Fitness Center on Floor 2; ATRIUM/LOBBY/
-        // FRONT_DESK/FRONT_PORCH are reference labels (made clickable).
-        // EXTERIOR has no rect on the floor plan — Photos tab only.
+        // FRONT_DESK are reference labels (made clickable). FIELD_NOTES is
+        // technically rentable but uncommonly booked. EXTERIOR has no rect
+        // on the floor plan — Photos tab only.
         const publicSpaceData = {
             FIELD_NOTES: { name: "Field Notes", floor: 1, notes: "Community café on The Bentonville Square. 6 am–8 pm daily, Happy Hour 3–5 pm. Technically rentable but not commonly booked." },
             GYM:         { name: "Fitness Center", floor: 2, sf: 504, capacity: 11 },
             ATRIUM:      { name: "Atrium", notes: "Multi-story atrium with rock-wall feature, connecting first and second floors." },
             LOBBY:       { name: "Lobby", floor: 1, notes: "First-floor lobby with fireplace lounge." },
             FRONT_DESK:  { name: "Front Desk", floor: 1 },
-            FRONT_PORCH: { name: "Front Porch", floor: 1, notes: "Outdoor porch facing Dave Peel Park." },
             EXTERIOR:    { name: "Building Exterior" }
         };
         const PUBLIC_SPACE_PHOTOS = {
@@ -1246,9 +1249,6 @@
             ]},
             FRONT_DESK:  { folder: 'Front Desk', photos: [
                 'Reception Foyer Front Desk_67A2775.jpg'
-            ]},
-            FRONT_PORCH: { folder: 'Front Porch', photos: [
-                'Front Porch_67A2957.jpg'
             ]},
             EXTERIOR:    { folder: 'Exterior', photos: [
                 'Front Door Dusk_67A2425-2.jpg',
@@ -1319,7 +1319,7 @@
         }
         function renderEventSpacesGrid() {
             const grid = document.getElementById('event-spaces-grid');
-            const order = ['SESTINA','PDR','GALLERY','OZARK','EDDY','SUNROOM','DOGWOOD','DOGWOOD_A','DOGWOOD_B'];
+            const order = ['SESTINA','PDR','GALLERY','FRONT_PORCH','OZARK','EDDY','SUNROOM','DOGWOOD','DOGWOOD_A','DOGWOOD_B'];
             grid.innerHTML = order.map(id => {
                 const space = eventSpaceData[id];
                 const manifest = EVENT_SPACE_PHOTOS[id] || { photos: [], folder: '' };
@@ -1355,7 +1355,7 @@
 
         function renderPublicSpacesGrid() {
             const grid = document.getElementById('public-spaces-grid');
-            const order = ['FIELD_NOTES','GYM','ATRIUM','LOBBY','FRONT_DESK','FRONT_PORCH','EXTERIOR'];
+            const order = ['FIELD_NOTES','GYM','ATRIUM','LOBBY','FRONT_DESK','EXTERIOR'];
             grid.innerHTML = order.map(id => {
                 const space = publicSpaceData[id];
                 const manifest = PUBLIC_SPACE_PHOTOS[id] || { photos: [], folder: '' };
@@ -1622,6 +1622,13 @@
                 capacity: 65,
                 features: ["Dimmable lights", "Privacy blinds", "Plug-in sound system", "Interior + exterior entrance", "Attaches to Front Porch"]
             },
+            "FRONT_PORCH": {
+                name: "Front Porch",
+                floor: 1,
+                sf: 2229,
+                capacity: 35,
+                features: ["Outdoor", "Faces Dave Peel Park", "Attaches to The Gallery"]
+            },
             "EDDY": {
                 name: "The Eddy",
                 floor: 2,
@@ -1668,10 +1675,7 @@
                 { id: "ATRIUM", label: "Atrium", x: 490, y: 125, w: 110, h: 135 },
                 { id: "LOBBY", label: "Lobby", x: 605, y: 110, w: 95, h: 390 },
                 // Front Desk is a tall rectangle in the room 440 footprint.
-                { id: "FRONT_DESK", label: "Front Desk", x: 510, y: 395, w: 35, h: 105 },
-                // Front Porch sits below the building so its label aligns with
-                // the "Dave Peel Park" landmark text.
-                { id: "FRONT_PORCH", label: "Front Porch", x: 570, y: 527, w: 130, h: 60 }
+                { id: "FRONT_DESK", label: "Front Desk", x: 510, y: 395, w: 35, h: 105 }
             ],
             2: [
                 // Gym is rendered separately as the Fitness Center. Atrium nestles
@@ -1692,7 +1696,10 @@
                 SESTINA:    [120, 0,   280, 110],
                 PDR:        [120, 0,   80,  110],
                 // The Gallery sits in the footprint of rooms 432, 434, and 436.
-                GALLERY:    [290, 395, 175, 110]
+                GALLERY:    [290, 395, 175, 110],
+                // Front Porch sits below the building, aligning with the
+                // "Dave Peel Park" landmark text.
+                FRONT_PORCH: [570, 527, 130, 60]
             },
             2: {
                 // East-side event spaces. Eddy stretches from the Gym's right
