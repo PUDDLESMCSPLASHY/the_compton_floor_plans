@@ -596,6 +596,14 @@
             background: #faf9f7;
         }
         body.types-mode .main { display: none; }
+
+        /* Embed mode (?event-spaces): strip the side list, mobile toggle,
+           and filter UI — embed should be a clean map + Photos only. */
+        body.event-spaces-mode .room-list,
+        body.event-spaces-mode .room-list-overlay,
+        body.event-spaces-mode .mobile-room-toggle,
+        body.event-spaces-mode .filter-tab,
+        body.event-spaces-mode .filter-panel { display: none !important; }
         body.types-mode .legend { display: none; }
         body.types-mode .room-types-view { display: block; }
         body.types-mode .floor-toggle .floor-btn:not(.types-btn).active {
